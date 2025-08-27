@@ -7,7 +7,7 @@ With features like top restaurants, location-based filtering, and cart managemen
 ---
 
 ## 🚀 Live Demo
-*(Add your deployed link here if you have one)*
+*(https://qwickbite.netlify.app/)*
 
 ---
 
