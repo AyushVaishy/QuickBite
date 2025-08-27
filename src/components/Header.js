@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
-import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { FiLogIn, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
 
 const GET_LOCATION_API_URL =
   "https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/";
@@ -26,7 +26,7 @@ const DEFAULT_ADDRESSES = [
 ];
 
 const Header = ({ location, setLocation }) => {
-  const [btnNameReact, setBtnNameReact] = useState("Login");
+  const [userData, setUserData] = useState(null);
   const cartItems = useSelector((store) => store.cart.items);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchAddress, setSearchAddress] = useState("");
@@ -37,6 +37,7 @@ const Header = ({ location, setLocation }) => {
   const [savedAddresses, setSavedAddresses] = useState(DEFAULT_ADDRESSES);
   const [editIdx, setEditIdx] = useState(null);
   const [editLabel, setEditLabel] = useState("");
+  const [isDark, setIsDark] = useState(false);
   
   const searchInputRef = useRef(null);
 
@@ -87,6 +88,58 @@ const Header = ({ location, setLocation }) => {
       setTimeout(() => searchInputRef.current.focus(), 100);
     }
   }, [sidebarOpen]);
+
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const enableDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+    setIsDark(enableDark);
+    document.documentElement.classList.toggle('dark', enableDark);
+  }, []);
+
+  // Initialize user data from localStorage and listen for changes
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      setUserData(JSON.parse(savedUserData));
+    }
+
+    // Listen for storage changes (when user signs in from another tab/window)
+    const handleStorageChange = (e) => {
+      if (e.key === 'userData') {
+        if (e.newValue) {
+          setUserData(JSON.parse(e.newValue));
+        } else {
+          setUserData(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Toggle dark mode and persist
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('userData');
+    // Trigger storage event for other components
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'userData',
+      newValue: null
+    }));
+    setUserData(null);
+    // Redirect to landing page
+    window.location.href = '/';
+  };
 
   // Add to recent searches (avoid duplicates, most recent first)
   const addToRecentSearches = (result) => {
@@ -154,7 +207,7 @@ const Header = ({ location, setLocation }) => {
 
   // Sidebar for address selection
   const AddressSidebar = () => (
-    <div className={`fixed top-0 left-0 h-full w-[400px] bg-white shadow-2xl z-[9999] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+    <div className={`fixed top-0 left-0 h-full w-[400px] bg-white dark:bg-gray-800 shadow-2xl z-[9999] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="bg-orange-500 text-white p-6">
@@ -183,7 +236,7 @@ const Header = ({ location, setLocation }) => {
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search for area, city, landmark..."
-                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-300 text-gray-700 placeholder-gray-500"
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-300 text-gray-700 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900"
                 value={searchAddress}
                 onChange={e => setSearchAddress(e.target.value)}
               />
@@ -197,15 +250,15 @@ const Header = ({ location, setLocation }) => {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <div className="text-red-600 text-sm">{error}</div>
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>
             </div>
           )}
           
           {/* Show search results */}
           {searchResults.length > 0 && (
             <div className="mb-6">
-              <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+              <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
                 <FaSearch className="text-orange-500" />
                 SEARCH RESULTS ({searchResults.length})
               </div>
@@ -213,7 +266,7 @@ const Header = ({ location, setLocation }) => {
                 {searchResults.map((result, idx) => (
                   <div
                     key={result.place_id}
-                    className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-orange-50 hover:border-orange-300 transition-all duration-300 group"
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-orange-50 dark:hover:bg-gray-700 hover:border-orange-300 transition-all duration-300 group bg-white dark:bg-gray-800"
                     onClick={() => handleAddressSelect(result)}
                   >
                     <div className="flex items-start gap-3">
@@ -221,10 +274,10 @@ const Header = ({ location, setLocation }) => {
                         <FaMapMarkerAlt className="text-orange-500 text-sm" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-800 group-hover:text-orange-600 transition-colors">
+                        <div className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
                           {result.display_name.split(",")[0]}
                         </div>
-                        <div className="text-xs text-gray-600 mt-1 leading-relaxed">
+                        <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
                           {result.display_name}
                         </div>
                       </div>
@@ -237,7 +290,7 @@ const Header = ({ location, setLocation }) => {
 
           {/* Saved Addresses */}
           <div className="mb-6">
-            <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
               <FaMapMarkerAlt className="text-orange-500" />
               SAVED ADDRESSES ({savedAddresses.length})
             </div>
@@ -245,10 +298,10 @@ const Header = ({ location, setLocation }) => {
               {savedAddresses.map((addr, idx) => (
                 <div
                   key={addr.label + idx}
-                  className={`border-2 rounded-lg p-4 transition-all duration-300 ${
+                  className={`border-2 rounded-lg p-4 transition-all duration-300 bg-white dark:bg-gray-800 ${
                     location.address === addr.address 
-                      ? "border-orange-500 bg-orange-50 shadow-md" 
-                      : "border-gray-200 hover:border-orange-300 hover:bg-orange-50"
+                      ? "border-orange-500 bg-orange-50 dark:bg-gray-700 shadow-md" 
+                      : "border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:bg-orange-50 dark:hover:bg-gray-700"
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -274,7 +327,7 @@ const Header = ({ location, setLocation }) => {
                         </div>
                         {editIdx === idx ? (
                           <input
-                            className="border px-2 py-1 rounded text-sm font-semibold w-24 bg-white"
+                            className="border px-2 py-1 rounded text-sm font-semibold w-24 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100"
                             value={editLabel}
                             onChange={e => setEditLabel(e.target.value)}
                             onBlur={() => saveEditLabel(idx)}
@@ -282,10 +335,10 @@ const Header = ({ location, setLocation }) => {
                             autoFocus
                           />
                         ) : (
-                          <span className="font-semibold text-gray-800">{addr.label}</span>
+                          <span className="font-semibold text-gray-800 dark:text-gray-100">{addr.label}</span>
                         )}
                       </div>
-                      <div className="text-xs text-gray-600 leading-relaxed ml-11">
+                      <div className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed ml-11">
                         {addr.address}
                       </div>
                     </div>
@@ -322,13 +375,13 @@ const Header = ({ location, setLocation }) => {
           
           {/* Recent Searches */}
           <div>
-            <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
               <FaMapMarkerAlt className="text-orange-500" />
               RECENT SEARCHES ({recentSearches.length})
             </div>
             {recentSearches.length === 0 ? (
-              <div className="text-center text-gray-400 text-sm py-8">
-                <FaMapMarkerAlt className="text-4xl mx-auto mb-2 text-gray-300" />
+              <div className="text-center text-gray-400 dark:text-gray-300 text-sm py-8">
+                <FaMapMarkerAlt className="text-4xl mx-auto mb-2 text-gray-300 dark:text-gray-500" />
                 <p>No recent searches yet</p>
                 <p className="text-xs">Your recent location searches will appear here</p>
               </div>
@@ -337,18 +390,18 @@ const Header = ({ location, setLocation }) => {
                 {recentSearches.map((result, idx) => (
                   <div
                     key={result.place_id + idx}
-                    className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-orange-50 hover:border-orange-300 transition-all duration-300 group"
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-orange-50 dark:hover:bg-gray-700 hover:border-orange-300 transition-all duration-300 group bg-white dark:bg-gray-800"
                     onClick={() => handleAddressSelect(result)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <FaMapMarkerAlt className="text-gray-500 text-sm" />
+                      <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <FaMapMarkerAlt className="text-gray-500 dark:text-gray-300 text-sm" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-800 group-hover:text-orange-600 transition-colors">
+                        <div className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
                           {result.display_name.split(",")[0]}
                         </div>
-                        <div className="text-xs text-gray-600 mt-1 leading-relaxed">
+                        <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
                           {result.display_name}
                         </div>
                       </div>
@@ -377,13 +430,13 @@ const Header = ({ location, setLocation }) => {
       <AddressSidebar />
       
       {/* Simple & Beautiful Header */}
-      <header className="bg-white shadow-lg fixed w-full top-0 z-50">
+      <header className="bg-white dark:bg-gray-900 shadow-lg fixed w-full top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             {/* Logo & Address Section */}
             <div className="flex items-center gap-6">
               {/* Simple Logo */}
-              <Link to="/" className="flex items-center gap-3">
+              <Link to="/home" className="flex items-center gap-3">
                 <img
                   src={LOGO}
                   alt="QuickBite Logo"
@@ -397,7 +450,7 @@ const Header = ({ location, setLocation }) => {
 
               {/* Simple & Beautiful Address Selector */}
               <button
-                className="flex items-center gap-3 bg-orange-50 hover:bg-orange-100 text-orange-700 px-4 py-3 rounded-lg border border-orange-200 hover:border-orange-300 transition-all duration-300 min-w-[280px] max-w-[350px]"
+                className="flex items-center gap-3 bg-orange-50 dark:bg-gray-800 hover:bg-orange-100 dark:hover:bg-gray-700 text-orange-700 px-4 py-3 rounded-lg border border-orange-200 dark:border-gray-700 hover:border-orange-300 transition-all duration-300 min-w-[280px] max-w-[350px]"
                 onClick={() => setSidebarOpen(true)}
               >
                 <FaMapMarkerAlt className="text-orange-500 text-lg flex-shrink-0" />
@@ -417,26 +470,35 @@ const Header = ({ location, setLocation }) => {
 
             {/* Right Section */}
             <div className="flex items-center gap-4">
+              {/* Dark mode toggle */}
+              <button
+                aria-label="Toggle dark mode"
+                className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={toggleTheme}
+                title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {isDark ? <FiSun className="text-yellow-400 text-xl" /> : <FiMoon className="text-gray-600 dark:text-gray-300 text-xl" />}
+              </button>
               {/* Navigation Links */}
-              <nav className="hidden lg:flex items-center gap-4">
-                <Link
-                  to="/help"
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-orange-600 transition-colors duration-300"
-                >
-                  <span>❓</span>
-                  <span className="font-medium">Help</span>
-                </Link>
-                <Link
-                  to="/contact"
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-orange-600 transition-colors duration-300"
-                >
-                  <span>📞</span>
-                  <span className="font-medium">Contact</span>
-                </Link>
-              </nav>
+                             <nav className="hidden lg:flex items-center gap-4">
+                 <Link
+                   to="help"
+                   className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors duration-300"
+                 >
+                   <span>❓</span>
+                   <span className="font-medium">Help</span>
+                 </Link>
+                 <Link
+                   to="contact"
+                   className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors duration-300"
+                 >
+                   <span>📞</span>
+                   <span className="font-medium">Contact</span>
+                 </Link>
+               </nav>
 
-              {/* Simple Cart Icon */}
-              <Link to="/cart" className="relative">
+               {/* Simple Cart Icon */}
+               <Link to="cart" className="relative">
                 <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center hover:bg-orange-200 transition-colors duration-300">
                   <FaShoppingCart className="text-xl text-orange-600" />
                 </div>
@@ -447,23 +509,26 @@ const Header = ({ location, setLocation }) => {
                 )}
               </Link>
 
-              {/* Simple Login/Logout Button */}
-              <button
-                className="flex items-center gap-2 bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors duration-300"
-                onClick={() => setBtnNameReact(btnNameReact === "Login" ? "Logout" : "Login")}
-              >
-                {btnNameReact === "Login" ? (
-                  <>
-                    <FiLogIn className="text-lg" />
-                    <span>Login</span>
-                  </>
-                ) : (
-                  <>
-                    <FiLogOut className="text-lg" />
-                    <span>Logout</span>
-                  </>
-                )}
-              </button>
+                             {/* User Profile / Login Button */}
+               {userData ? (
+                 <div className="flex items-center gap-3">
+                   <div className="text-right">
+                     <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                       Welcome, {userData.firstName}!
+                     </div>
+                     <div className="text-xs text-gray-500 dark:text-gray-400">
+                       {userData.email}
+                     </div>
+                   </div>
+                   <button
+                     className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors duration-300"
+                     onClick={handleLogout}
+                   >
+                     <FiLogOut className="text-sm" />
+                     <span>Logout</span>
+                   </button>
+                 </div>
+                               ) : null}
             </div>
           </div>
         </div>

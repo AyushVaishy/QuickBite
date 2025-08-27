@@ -11,3 +11,13 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Light/Dark base colors */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+}

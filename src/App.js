@@ -6,6 +6,8 @@ import Contact from "./components/Contact";
 import Error from "./components/Error";
 import Help from "./components/Help";
 import RestaurantMenu from './components/RestaurantMenu';
+import LandingPage from "./components/LandingPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
@@ -21,7 +23,7 @@ const Applayout = () => {
 
   return (
     <Provider store={appStore}>
-      <div className="app">
+      <div className="app min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
         <Header
           location={location}
           setLocation={setLocation}
@@ -37,26 +39,30 @@ const Applayout = () => {
 const appRouter = createBrowserRouter([
   {
     path: "/",
-    element: <Applayout />,
+    element: <LandingPage />,
+  },
+  {
+    path: "/home",
+    element: <ProtectedRoute><Applayout /></ProtectedRoute>,
     children:[
       {
-        path: "/",
+        path: "",
         element: <Body />,
       },
       {
-        path: "/help",
+        path: "help",
         element: <Help />,
       },
       {
-        path: "/contact",
+        path: "contact",
         element: <Contact />,
       },
       {
-        path: '/restaurants/:resId',
+        path: 'restaurants/:resId',
         element: <RestaurantMenu />,
       },
       {
-        path: '/cart',
+        path: 'cart',
         element: <Cart />,
       },
     ],
