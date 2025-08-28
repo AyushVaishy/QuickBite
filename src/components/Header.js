@@ -1,9 +1,11 @@
 import LOGO from "../utils/android-chrome-192x192.png";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt, FaUserCircle } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
+import { setQuery, setSuggestions, setIsLoading, addRecentSearch, setAllRestaurants } from "../utils/searchSlice";
+import { searchRestaurants, generateSearchSuggestions, getPopularSearches } from "../utils/searchUtils";
 
 const GET_LOCATION_API_URL =
   "https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/";
@@ -26,8 +28,11 @@ const DEFAULT_ADDRESSES = [
 ];
 
 const Header = ({ location, setLocation }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const cartItems = useSelector((store) => store.cart.items);
+  const { query: searchQuery, suggestions: searchSuggest, isLoading: searchLoading, recentSearches: searchRecentSearches, allRestaurants } = useSelector((store) => store.search);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchAddress, setSearchAddress] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,9 +45,6 @@ const Header = ({ location, setLocation }) => {
   const [isDark, setIsDark] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchSuggest, setSearchSuggest] = useState([]);
-  const [searchLoading, setSearchLoading] = useState(false);
   
   const searchInputRef = useRef(null);
   const userMenuRef = useRef(null);
@@ -97,42 +99,75 @@ const Header = ({ location, setLocation }) => {
     return () => clearTimeout(timeoutId);
   }, [searchAddress, debouncedSearch]);
 
-  // Global search suggestions using Swiggy search endpoint proxy when query changes
+  // Fetch all restaurants for search when location changes
+  useEffect(() => {
+    const fetchRestaurantsForSearch = async () => {
+      try {
+        const response = await fetch(
+          `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${location.lat}&lng=${location.lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`
+        );
+        if (response.ok) {
+          const json = await response.json();
+          const restaurants = json.data.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
+          dispatch(setAllRestaurants(restaurants));
+        }
+      } catch (error) {
+        console.error('Error fetching restaurants for search:', error);
+      }
+    };
+    
+    if (location.lat && location.lng) {
+      fetchRestaurantsForSearch();
+    }
+  }, [location.lat, location.lng, dispatch]);
+
+  // Generate search suggestions when query changes
   useEffect(() => {
     const q = searchQuery.trim();
     if (!q) {
-      setSearchSuggest([]);
+      dispatch(setSuggestions([]));
       return;
     }
-    const controller = new AbortController();
-    const run = async () => {
-      try {
-        setSearchLoading(true);
-        const url = `https://www.swiggy.com/dapi/restaurants/search/v3?lat=${location.lat}&lng=${location.lng}&str=${encodeURIComponent(q)}&trackingId=&submitAction=SUGGESTION&queryUniqueId=${Date.now()}`;
-        const res = await fetch(url, { signal: controller.signal });
-        const data = await res.json();
-        const cards = data?.data?.cards || [];
-        const suggestions = [];
-        cards.forEach((c) => {
-          const items = c?.groupedCard?.cardGroupMap?.DISH?.cards || c?.groupedCard?.cardGroupMap?.RESTAURANT?.cards || [];
-          items.forEach((it) => {
-            const i = it?.card?.card || it?.card || {};
-            if (i?.text || i?.title) suggestions.push({ text: i.text, title: i.title, subTitle: i.subTitle, type: i.type });
-          });
-        });
-        setSearchSuggest(suggestions.slice(0, 10));
-      } catch (e) {
-        if (e.name !== 'AbortError') setSearchSuggest([]);
-      } finally {
-        setSearchLoading(false);
+    
+    dispatch(setIsLoading(true));
+    
+    const timeoutId = setTimeout(() => {
+      if (allRestaurants.length > 0) {
+        const suggestions = generateSearchSuggestions(allRestaurants, q);
+        const popularSearches = getPopularSearches().filter(search => 
+          search.text.toLowerCase().includes(q.toLowerCase())
+        );
+        
+        const combinedSuggestions = [...suggestions, ...popularSearches].slice(0, 8);
+        dispatch(setSuggestions(combinedSuggestions));
+      } else {
+        // Fallback to popular searches if no restaurants loaded
+        const popularSearches = getPopularSearches().filter(search => 
+          search.text.toLowerCase().includes(q.toLowerCase())
+        );
+        dispatch(setSuggestions(popularSearches));
       }
-    };
-    const t = setTimeout(run, 200);
-    return () => {
-      controller.abort();
-      clearTimeout(t);
-    };
-  }, [searchQuery, location.lat, location.lng]);
+      dispatch(setIsLoading(false));
+    }, 300);
+    
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, allRestaurants, dispatch]);
+
+  // Handle search submission
+  const handleSearchSubmit = (query) => {
+    if (query.trim()) {
+      dispatch(addRecentSearch(query.trim()));
+      setIsSearchOpen(false);
+      navigate(`/home/search?q=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
+  // Handle Enter key press in search input
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit(searchQuery);
+    }
+  };
 
   // Focus search input when sidebar opens
   useEffect(() => {
@@ -512,7 +547,8 @@ const Header = ({ location, setLocation }) => {
               <input
                 autoFocus
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => dispatch(setQuery(e.target.value))}
+                onKeyPress={handleSearchKeyPress}
                 placeholder="Search for restaurants or dishes"
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100"
               />
@@ -528,15 +564,74 @@ const Header = ({ location, setLocation }) => {
             {!searchLoading && searchSuggest.length > 0 && (
               <ul>
                 {searchSuggest.map((s, idx) => (
-                  <li key={idx} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
-                    <div className="w-10 h-10 rounded bg-orange-100 text-orange-600 flex items-center justify-center">{(s?.type || 'R')[0]}</div>
+                  <li 
+                    key={idx} 
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onClick={() => {
+                      dispatch(setQuery(s.text));
+                      dispatch(addRecentSearch(s.text));
+                      handleSearchSubmit(s.text);
+                    }}
+                  >
+                    <div className="w-10 h-10 rounded bg-orange-100 text-orange-600 flex items-center justify-center">
+                      {s.type === 'restaurant' ? '🍽️' : s.type === 'cuisine' ? '🍕' : '📍'}
+                    </div>
                     <div className="min-w-0">
-                      <div className="font-medium text-gray-800 dark:text-gray-100 truncate">{s?.text || s?.title || 'Result'}</div>
-                      {s?.subTitle && <div className="text-xs text-gray-500 truncate">{s.subTitle}</div>}
+                      <div className="font-medium text-gray-800 dark:text-gray-100 truncate">{s.text}</div>
+                      {s.subTitle && <div className="text-xs text-gray-500 truncate">{s.subTitle}</div>}
                     </div>
                   </li>
                 ))}
               </ul>
+            )}
+            
+            {/* Recent Searches */}
+            {!searchLoading && searchQuery.trim() === '' && searchRecentSearches.length > 0 && (
+              <div className="p-4">
+                <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">Recent Searches</h3>
+                <ul>
+                  {searchRecentSearches.slice(0, 5).map((search, idx) => (
+                    <li 
+                      key={idx}
+                      className="flex items-center gap-3 px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer rounded"
+                      onClick={() => {
+                        dispatch(setQuery(search));
+                        handleSearchSubmit(search);
+                      }}
+                    >
+                      <div className="w-8 h-8 rounded bg-gray-100 text-gray-600 flex items-center justify-center">
+                        🕒
+                      </div>
+                      <div className="font-medium text-gray-700 dark:text-gray-200">{search}</div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {/* Popular Searches */}
+            {!searchLoading && searchQuery.trim() === '' && searchRecentSearches.length === 0 && (
+              <div className="p-4">
+                <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">Popular Searches</h3>
+                <ul>
+                  {getPopularSearches().slice(0, 6).map((search, idx) => (
+                    <li 
+                      key={idx}
+                      className="flex items-center gap-3 px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer rounded"
+                      onClick={() => {
+                        dispatch(setQuery(search.text));
+                        dispatch(addRecentSearch(search.text));
+                        handleSearchSubmit(search.text);
+                      }}
+                    >
+                      <div className="w-8 h-8 rounded bg-orange-100 text-orange-600 flex items-center justify-center">
+                        🔥
+                      </div>
+                      <div className="font-medium text-gray-700 dark:text-gray-200">{search.text}</div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </div>
         </div>
