@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaSearch, FaUtensils, FaShoppingCart } from "react-icons/fa";
+import { FiSun, FiMoon } from "react-icons/fi";
 import LOGO from "../utils/android-chrome-192x192.png";
 import SignInSidebar from "./SignInSidebar";
 
@@ -9,6 +10,7 @@ const LandingPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
   const [signInSidebarOpen, setSignInSidebarOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const navigate = useNavigate();
 
   // Check if user is already signed in and redirect to home
@@ -22,6 +24,32 @@ const LandingPage = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  // Initialize theme from localStorage or system preference and keep in sync
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const enableDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+    setIsDark(enableDark);
+    document.documentElement.classList.toggle('dark', enableDark);
+
+    const onStorage = (e) => {
+      if (e.key === 'theme') {
+        const nextIsDark = e.newValue === 'dark';
+        setIsDark(nextIsDark);
+        document.documentElement.classList.toggle('dark', nextIsDark);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
 
   const handleSignInClick = () => {
     setSignInSidebarOpen(true);
@@ -93,13 +121,27 @@ const LandingPage = () => {
               </div>
             </Link>
 
-                         {/* Sign In Button */}
-             <button
-               onClick={handleSignInClick}
-               className="bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-             >
-               Sign In
-             </button>
+            {/* Right controls: theme + sign in */}
+            <div className="flex items-center gap-3">
+              <button
+                aria-label="Toggle dark mode"
+                onClick={toggleTheme}
+                title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-gray-800/70 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                {isDark ? (
+                  <FiSun className="text-yellow-400 text-xl" />
+                ) : (
+                  <FiMoon className="text-gray-600 dark:text-gray-300 text-xl" />
+                )}
+              </button>
+              <button
+                onClick={handleSignInClick}
+                className="bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                Sign In
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -146,14 +188,14 @@ const LandingPage = () => {
                   />
                 </div>
 
-                                 {/* Find Food Button */}
-                 <button
-                   onClick={handleSignInClick}
-                   className="bg-orange-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                 >
-                   <FaUtensils className="text-xl" />
-                   Find Food
-                 </button>
+                {/* Find Food Button */}
+                <button
+                  onClick={handleSignInClick}
+                  className="bg-orange-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                >
+                  <FaUtensils className="text-xl" />
+                  Find Food
+                </button>
               </div>
             </div>
           </div>
@@ -199,7 +241,7 @@ const LandingPage = () => {
                 <div
                   key={index}
                   className="bg-white dark:bg-gray-800 rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer group"
-                                     onClick={handleSignInClick}
+                  onClick={handleSignInClick}
                 >
                   <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300`}>
                     {category.image}
@@ -250,13 +292,13 @@ const LandingPage = () => {
             <p className="text-xl text-orange-100 mb-8">
               Join thousands of satisfied customers who trust QuickBite for their food delivery needs.
             </p>
-                             <button
-                   onClick={handleSignInClick}
-                   className="bg-white text-orange-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
-                 >
-                   <FaShoppingCart className="text-xl" />
-                   Start Ordering Now
-                 </button>
+            <button
+              onClick={handleSignInClick}
+              className="bg-white text-orange-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center gap-2 mx-auto"
+            >
+              <FaShoppingCart className="text-xl" />
+              Start Ordering Now
+            </button>
           </div>
         </div>
       </section>

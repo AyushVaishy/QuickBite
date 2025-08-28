@@ -13,6 +13,11 @@ export const apiKey = "3e4e471433mshb90d2fd16ca0a7ep12ca07jsnf69a5e6732d7";
 export const swiggyAPI = (lat, lng) => {
   return `https://foodfire.onrender.com/api/restaurants?lat=${lat}&lng=${lng}&page_type=DESKTOP_WEB_LISTING`;
 };
+export const SEARCH_API = (lat, lng, query) => {
+  return `https://www.swiggy.com/dapi/restaurants/search/v3?lat=${lat}&lng=${lng}&str=${encodeURIComponent(
+    query
+  )}&trackingId=&submitAction=SUGGESTION&queryUniqueId=${Date.now()}`;
+};
 export const IMG_CDN_URL =
   "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/";
 

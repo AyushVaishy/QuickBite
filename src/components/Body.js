@@ -196,7 +196,7 @@ const Body = () => {
       setListOfRestaurants(restaurants || []);
       setFilteredRestaurant(restaurants || []);
     } catch (error) {
-      setError("No restaurants found for this location or Swiggy is not available here.");
+      setError("");
       setListOfRestaurants([]);
       setFilteredRestaurant([]);
     }
@@ -249,10 +249,23 @@ const Body = () => {
     );
 
   if (loading) return <Shimmer />;
-  if (error) return <div className="text-center mt-24 text-xl font-semibold text-red-500">{error}</div>;
 
   return listOfRestaurants && listOfRestaurants.length === 0 ? (
-    <Shimmer />
+    <div className="flex flex-col items-center justify-center min-h-[60vh] mt-24 px-6">
+      <img
+        src={require("../assets/location_unserviceable.webp")}
+        alt="Service not available"
+        className="w-56 h-56 object-contain opacity-90 mb-6"
+      />
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">We’ll be there soon!</h2>
+      <p className="text-gray-600 dark:text-gray-300 max-w-xl text-center mb-6">QuickBite is not serving this location yet. We’re expanding rapidly and hope to serve your area soon.</p>
+      <button
+        onClick={() => window.dispatchEvent(new Event('openLocationSidebar'))}
+        className="px-5 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+      >
+        Choose a different location
+      </button>
+    </div>
   ) : (
           <div className="body bg-gray-100 dark:bg-gray-950 min-h-screen">
                 {/* WhatsOnYourMind Section */}
@@ -344,7 +357,7 @@ const Body = () => {
 
       {/* Top Restaurants Section */}
       <div className="bg-white dark:bg-gray-900 py-8">
-        <div className="max-w-6xl mx-auto px-12">
+        <div className="max-w-6xl mx-auto px-12 mt-4">
           {/* Section Header */}
           <div className="flex justify-between items-center mb-6">
             <div>
