@@ -2,8 +2,8 @@ import LOGO from "../utils/android-chrome-192x192.png";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
-import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt, FaUserCircle } from "react-icons/fa";
+import { FiLogIn, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
 
 const GET_LOCATION_API_URL =
   "https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/";
@@ -26,7 +26,7 @@ const DEFAULT_ADDRESSES = [
 ];
 
 const Header = ({ location, setLocation }) => {
-  const [btnNameReact, setBtnNameReact] = useState("Login");
+  const [userData, setUserData] = useState(null);
   const cartItems = useSelector((store) => store.cart.items);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchAddress, setSearchAddress] = useState("");
@@ -37,13 +37,22 @@ const Header = ({ location, setLocation }) => {
   const [savedAddresses, setSavedAddresses] = useState(DEFAULT_ADDRESSES);
   const [editIdx, setEditIdx] = useState(null);
   const [editLabel, setEditLabel] = useState("");
+  const [isDark, setIsDark] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggest, setSearchSuggest] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   
   const searchInputRef = useRef(null);
+  const userMenuRef = useRef(null);
+  const searchPanelRef = useRef(null);
 
   // Debounced search function
   const debouncedSearch = useCallback(
     async (query) => {
-      if (!query.trim() || query.length < 2) {
+      const trimmed = query.trim();
+      if (!trimmed) {
         setSearchResults([]);
         setError("");
         return;
@@ -52,9 +61,16 @@ const Header = ({ location, setLocation }) => {
       setLoading(true);
       setError("");
       try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}&format=json&limit=8`
-        );
+        const isSixDigitPincode = /^\d{6}$/.test(trimmed);
+        const url = isSixDigitPincode
+          ? `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(trimmed)}&countrycodes=in&format=json&addressdetails=1&limit=8`
+          : `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(trimmed)}&countrycodes=in&format=json&addressdetails=1&limit=8`;
+
+        const response = await fetch(url, {
+          headers: {
+            'Accept-Language': 'en',
+          },
+        });
         const data = await response.json();
         if (!data || data.length === 0) {
           setError("No results found for this location.");
@@ -72,7 +88,7 @@ const Header = ({ location, setLocation }) => {
     []
   );
 
-  // Effect for debounced search
+  // Effect for debounced search (from first character)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       debouncedSearch(searchAddress);
@@ -81,12 +97,130 @@ const Header = ({ location, setLocation }) => {
     return () => clearTimeout(timeoutId);
   }, [searchAddress, debouncedSearch]);
 
+  // Global search suggestions using Swiggy search endpoint proxy when query changes
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (!q) {
+      setSearchSuggest([]);
+      return;
+    }
+    const controller = new AbortController();
+    const run = async () => {
+      try {
+        setSearchLoading(true);
+        const url = `https://www.swiggy.com/dapi/restaurants/search/v3?lat=${location.lat}&lng=${location.lng}&str=${encodeURIComponent(q)}&trackingId=&submitAction=SUGGESTION&queryUniqueId=${Date.now()}`;
+        const res = await fetch(url, { signal: controller.signal });
+        const data = await res.json();
+        const cards = data?.data?.cards || [];
+        const suggestions = [];
+        cards.forEach((c) => {
+          const items = c?.groupedCard?.cardGroupMap?.DISH?.cards || c?.groupedCard?.cardGroupMap?.RESTAURANT?.cards || [];
+          items.forEach((it) => {
+            const i = it?.card?.card || it?.card || {};
+            if (i?.text || i?.title) suggestions.push({ text: i.text, title: i.title, subTitle: i.subTitle, type: i.type });
+          });
+        });
+        setSearchSuggest(suggestions.slice(0, 10));
+      } catch (e) {
+        if (e.name !== 'AbortError') setSearchSuggest([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
+    const t = setTimeout(run, 200);
+    return () => {
+      controller.abort();
+      clearTimeout(t);
+    };
+  }, [searchQuery, location.lat, location.lng]);
+
   // Focus search input when sidebar opens
   useEffect(() => {
     if (sidebarOpen && searchInputRef.current) {
       setTimeout(() => searchInputRef.current.focus(), 100);
     }
   }, [sidebarOpen]);
+
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const enableDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+    setIsDark(enableDark);
+    document.documentElement.classList.toggle('dark', enableDark);
+  }, []);
+
+  // Close user menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Close search panel on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchPanelRef.current && !searchPanelRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+      }
+    };
+    if (isSearchOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isSearchOpen]);
+
+  // Listen for global event to open the address sidebar (from other components)
+  useEffect(() => {
+    const handler = () => setSidebarOpen(true);
+    window.addEventListener('openLocationSidebar', handler);
+    return () => window.removeEventListener('openLocationSidebar', handler);
+  }, []);
+
+  // Initialize user data from localStorage and listen for changes
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      setUserData(JSON.parse(savedUserData));
+    }
+
+    // Listen for storage changes (when user signs in from another tab/window)
+    const handleStorageChange = (e) => {
+      if (e.key === 'userData') {
+        if (e.newValue) {
+          setUserData(JSON.parse(e.newValue));
+        } else {
+          setUserData(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Toggle dark mode and persist
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('userData');
+    // Trigger storage event for other components
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'userData',
+      newValue: null
+    }));
+    setUserData(null);
+    // Redirect to landing page
+    window.location.href = '/';
+  };
 
   // Add to recent searches (avoid duplicates, most recent first)
   const addToRecentSearches = (result) => {
@@ -152,9 +286,9 @@ const Header = ({ location, setLocation }) => {
     setLoading(false);
   };
 
-  // Sidebar for address selection
-  const AddressSidebar = () => (
-    <div className={`fixed top-0 left-0 h-full w-[400px] bg-white shadow-2xl z-[9999] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+  // Sidebar for address selection (inlined to avoid remount + focus loss)
+  const addressSidebarContent = (
+    <div className={`fixed top-0 left-0 h-full w-[400px] bg-white dark:bg-gray-800 shadow-2xl z-[9999] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="bg-orange-500 text-white p-6">
@@ -183,7 +317,7 @@ const Header = ({ location, setLocation }) => {
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search for area, city, landmark..."
-                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-300 text-gray-700 placeholder-gray-500"
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-300 text-gray-700 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900"
                 value={searchAddress}
                 onChange={e => setSearchAddress(e.target.value)}
               />
@@ -197,15 +331,15 @@ const Header = ({ location, setLocation }) => {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <div className="text-red-600 text-sm">{error}</div>
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>
             </div>
           )}
           
           {/* Show search results */}
           {searchResults.length > 0 && (
             <div className="mb-6">
-              <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+              <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
                 <FaSearch className="text-orange-500" />
                 SEARCH RESULTS ({searchResults.length})
               </div>
@@ -213,7 +347,7 @@ const Header = ({ location, setLocation }) => {
                 {searchResults.map((result, idx) => (
                   <div
                     key={result.place_id}
-                    className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-orange-50 hover:border-orange-300 transition-all duration-300 group"
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-orange-50 dark:hover:bg-gray-700 hover:border-orange-300 transition-all duration-300 group bg-white dark:bg-gray-800"
                     onClick={() => handleAddressSelect(result)}
                   >
                     <div className="flex items-start gap-3">
@@ -221,10 +355,10 @@ const Header = ({ location, setLocation }) => {
                         <FaMapMarkerAlt className="text-orange-500 text-sm" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-800 group-hover:text-orange-600 transition-colors">
+                        <div className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
                           {result.display_name.split(",")[0]}
                         </div>
-                        <div className="text-xs text-gray-600 mt-1 leading-relaxed">
+                        <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
                           {result.display_name}
                         </div>
                       </div>
@@ -237,7 +371,7 @@ const Header = ({ location, setLocation }) => {
 
           {/* Saved Addresses */}
           <div className="mb-6">
-            <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
               <FaMapMarkerAlt className="text-orange-500" />
               SAVED ADDRESSES ({savedAddresses.length})
             </div>
@@ -245,10 +379,10 @@ const Header = ({ location, setLocation }) => {
               {savedAddresses.map((addr, idx) => (
                 <div
                   key={addr.label + idx}
-                  className={`border-2 rounded-lg p-4 transition-all duration-300 ${
+                  className={`border-2 rounded-lg p-4 transition-all duration-300 bg-white dark:bg-gray-800 ${
                     location.address === addr.address 
-                      ? "border-orange-500 bg-orange-50 shadow-md" 
-                      : "border-gray-200 hover:border-orange-300 hover:bg-orange-50"
+                      ? "border-orange-500 bg-orange-50 dark:bg-gray-700 shadow-md" 
+                      : "border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:bg-orange-50 dark:hover:bg-gray-700"
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -274,7 +408,7 @@ const Header = ({ location, setLocation }) => {
                         </div>
                         {editIdx === idx ? (
                           <input
-                            className="border px-2 py-1 rounded text-sm font-semibold w-24 bg-white"
+                            className="border px-2 py-1 rounded text-sm font-semibold w-24 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100"
                             value={editLabel}
                             onChange={e => setEditLabel(e.target.value)}
                             onBlur={() => saveEditLabel(idx)}
@@ -282,10 +416,10 @@ const Header = ({ location, setLocation }) => {
                             autoFocus
                           />
                         ) : (
-                          <span className="font-semibold text-gray-800">{addr.label}</span>
+                          <span className="font-semibold text-gray-800 dark:text-gray-100">{addr.label}</span>
                         )}
                       </div>
-                      <div className="text-xs text-gray-600 leading-relaxed ml-11">
+                      <div className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed ml-11">
                         {addr.address}
                       </div>
                     </div>
@@ -311,24 +445,16 @@ const Header = ({ location, setLocation }) => {
             </div>
           </div>
           
-          {/* Add current location to saved addresses */}
-          <button
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-all duration-300 text-sm font-semibold mb-6"
-            onClick={addCurrentToSaved}
-          >
-            <FaPlus className="text-sm" /> 
-            Add current address to saved
-          </button>
           
           {/* Recent Searches */}
           <div>
-            <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
               <FaMapMarkerAlt className="text-orange-500" />
               RECENT SEARCHES ({recentSearches.length})
             </div>
             {recentSearches.length === 0 ? (
-              <div className="text-center text-gray-400 text-sm py-8">
-                <FaMapMarkerAlt className="text-4xl mx-auto mb-2 text-gray-300" />
+              <div className="text-center text-gray-400 dark:text-gray-300 text-sm py-8">
+                <FaMapMarkerAlt className="text-4xl mx-auto mb-2 text-gray-300 dark:text-gray-500" />
                 <p>No recent searches yet</p>
                 <p className="text-xs">Your recent location searches will appear here</p>
               </div>
@@ -337,18 +463,18 @@ const Header = ({ location, setLocation }) => {
                 {recentSearches.map((result, idx) => (
                   <div
                     key={result.place_id + idx}
-                    className="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-orange-50 hover:border-orange-300 transition-all duration-300 group"
+                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-orange-50 dark:hover:bg-gray-700 hover:border-orange-300 transition-all duration-300 group bg-white dark:bg-gray-800"
                     onClick={() => handleAddressSelect(result)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <FaMapMarkerAlt className="text-gray-500 text-sm" />
+                      <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <FaMapMarkerAlt className="text-gray-500 dark:text-gray-300 text-sm" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-800 group-hover:text-orange-600 transition-colors">
+                        <div className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
                           {result.display_name.split(",")[0]}
                         </div>
-                        <div className="text-xs text-gray-600 mt-1 leading-relaxed">
+                        <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
                           {result.display_name}
                         </div>
                       </div>
@@ -374,16 +500,56 @@ const Header = ({ location, setLocation }) => {
   return (
     <>
       {sidebarOpen && <SidebarOverlay />}
-      <AddressSidebar />
+      {addressSidebarContent}
+      {isSearchOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9997]" onClick={() => setIsSearchOpen(false)}></div>
+      )}
+      {isSearchOpen && (
+        <div ref={searchPanelRef} className="fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-3xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-[9998]">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="relative">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for restaurants or dishes"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100"
+              />
+            </div>
+          </div>
+          <div className="max-h-[60vh] overflow-y-auto p-2">
+            {searchLoading && (
+              <div className="p-4 text-gray-500">Searching…</div>
+            )}
+            {!searchLoading && searchSuggest.length === 0 && (
+              <div className="p-6 text-gray-500">Type to search restaurants or dishes</div>
+            )}
+            {!searchLoading && searchSuggest.length > 0 && (
+              <ul>
+                {searchSuggest.map((s, idx) => (
+                  <li key={idx} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
+                    <div className="w-10 h-10 rounded bg-orange-100 text-orange-600 flex items-center justify-center">{(s?.type || 'R')[0]}</div>
+                    <div className="min-w-0">
+                      <div className="font-medium text-gray-800 dark:text-gray-100 truncate">{s?.text || s?.title || 'Result'}</div>
+                      {s?.subTitle && <div className="text-xs text-gray-500 truncate">{s.subTitle}</div>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
       
       {/* Simple & Beautiful Header */}
-      <header className="bg-white shadow-lg fixed w-full top-0 z-50">
+      <header className="bg-white dark:bg-gray-900 shadow-lg fixed w-full top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             {/* Logo & Address Section */}
             <div className="flex items-center gap-6">
               {/* Simple Logo */}
-              <Link to="/" className="flex items-center gap-3">
+              <Link to="/home" className="flex items-center gap-3">
                 <img
                   src={LOGO}
                   alt="QuickBite Logo"
@@ -397,7 +563,7 @@ const Header = ({ location, setLocation }) => {
 
               {/* Simple & Beautiful Address Selector */}
               <button
-                className="flex items-center gap-3 bg-orange-50 hover:bg-orange-100 text-orange-700 px-4 py-3 rounded-lg border border-orange-200 hover:border-orange-300 transition-all duration-300 min-w-[280px] max-w-[350px]"
+                className="flex items-center gap-3 bg-orange-50 dark:bg-gray-800 hover:bg-orange-100 dark:hover:bg-gray-700 text-orange-700 px-4 py-3 rounded-lg border border-orange-200 dark:border-gray-700 hover:border-orange-300 transition-all duration-300 min-w-[280px] max-w-[350px]"
                 onClick={() => setSidebarOpen(true)}
               >
                 <FaMapMarkerAlt className="text-orange-500 text-lg flex-shrink-0" />
@@ -417,26 +583,42 @@ const Header = ({ location, setLocation }) => {
 
             {/* Right Section */}
             <div className="flex items-center gap-4">
+              {/* Dark mode toggle */}
+              <button
+                aria-label="Toggle dark mode"
+                className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={toggleTheme}
+                title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {isDark ? <FiSun className="text-yellow-400 text-xl" /> : <FiMoon className="text-gray-600 dark:text-gray-300 text-xl" />}
+              </button>
               {/* Navigation Links */}
-              <nav className="hidden lg:flex items-center gap-4">
-                <Link
-                  to="/help"
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-orange-600 transition-colors duration-300"
-                >
-                  <span>❓</span>
-                  <span className="font-medium">Help</span>
-                </Link>
-                <Link
-                  to="/contact"
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-orange-600 transition-colors duration-300"
-                >
-                  <span>📞</span>
-                  <span className="font-medium">Contact</span>
-                </Link>
-              </nav>
+                             <nav className="hidden lg:flex items-center gap-4">
+                 <Link
+                   to="help"
+                   className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors duration-300"
+                 >
+                   <span>❓</span>
+                   <span className="font-medium">Help</span>
+                 </Link>
+                 <Link
+                   to="contact"
+                   className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors duration-300"
+                 >
+                   <span>📞</span>
+                   <span className="font-medium">Contact</span>
+                 </Link>
+               </nav>
+              <button
+                className="hidden md:flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                onClick={() => setIsSearchOpen(true)}
+              >
+                <FaSearch />
+                <span className="font-medium">Search</span>
+              </button>
 
-              {/* Simple Cart Icon */}
-              <Link to="/cart" className="relative">
+               {/* Simple Cart Icon */}
+               <Link to="cart" className="relative">
                 <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center hover:bg-orange-200 transition-colors duration-300">
                   <FaShoppingCart className="text-xl text-orange-600" />
                 </div>
@@ -447,23 +629,41 @@ const Header = ({ location, setLocation }) => {
                 )}
               </Link>
 
-              {/* Simple Login/Logout Button */}
-              <button
-                className="flex items-center gap-2 bg-orange-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors duration-300"
-                onClick={() => setBtnNameReact(btnNameReact === "Login" ? "Logout" : "Login")}
-              >
-                {btnNameReact === "Login" ? (
-                  <>
-                    <FiLogIn className="text-lg" />
-                    <span>Login</span>
-                  </>
-                ) : (
-                  <>
-                    <FiLogOut className="text-lg" />
-                    <span>Logout</span>
-                  </>
-                )}
-              </button>
+              {/* User Profile / Dropdown Logout */}
+               {userData ? (
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    onClick={() => setIsUserMenuOpen((prev) => !prev)}
+                    aria-haspopup="menu"
+                    aria-expanded={isUserMenuOpen}
+                  >
+                    <FaUserCircle className="text-2xl text-gray-600 dark:text-gray-300" />
+                    <span className="font-medium text-gray-700 dark:text-gray-200 max-w-[140px] truncate">
+                      {userData.firstName}
+                    </span>
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {isUserMenuOpen && (
+                    <div
+                      className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-50"
+                      role="menu"
+                    >
+                   <button
+                        className="w-full flex items-center gap-2 px-4 py-2 text-left text-red-600 hover:bg-red-50 dark:hover:bg-gray-800"
+                     onClick={handleLogout}
+                        role="menuitem"
+                   >
+                        <FiLogOut className="text-base" />
+                     <span>Logout</span>
+                   </button>
+                    </div>
+                  )}
+                 </div>
+                               ) : null}
             </div>
           </div>
         </div>

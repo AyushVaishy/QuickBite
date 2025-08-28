@@ -32,23 +32,23 @@ const Help = () => {
   return (
     <div className="mt-20 min-h-screen min-w-[85%] mx-auto">
       {/* Header Section */}
-      <div className="text-orange-500 bg-gray-100 pb-20 px-10">
+      <div className="text-orange-500 bg-gray-100 dark:bg-gray-900 pb-20 px-10">
         <div className="flex flex-col flex-1 pt-14 px-8 xl:max-w-[80%] lg:max-w-[80%] md:max-w-[90%] sm:max-w-[90%] mx-auto text-center">
-          <h1 className="mt-5 font-extrabold text-4xl">Help & Support 🍽️</h1>
-          <h4 className="pb-12 font-light text-lg">
+          <h1 className="mt-5 font-extrabold text-4xl text-gray-900 dark:text-gray-100">Help & Support 🍽️</h1>
+          <h4 className="pb-12 font-light text-lg text-gray-700 dark:text-gray-300">
             Need assistance? We’re here to help!
           </h4>
         </div>
 
         {/* Help Section */}
-        <div className="flex bg-white text-gray-700 mx-auto p-10 shadow-2xl rounded-lg xl:max-w-[80%] lg:max-w-[80%] md:max-w-[90%] sm:max-w-[90%]">
+        <div className="flex bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 mx-auto p-10 shadow-2xl rounded-lg xl:max-w-[80%] lg:max-w-[80%] md:max-w-[90%] sm:max-w-[90%]">
           {/* Sidebar Navigation */}
-          <div className="py-5 pl-3 bg-gray-100 rounded-lg list-none min-w-fit h-fit shadow-md">
+          <div className="py-5 pl-3 bg-gray-100 dark:bg-gray-900 rounded-lg list-none min-w-fit h-fit shadow-md">
             {helpTitle.map((curr, index) => (
               <div
                 key={index}
                 className={`ml-2 px-6 py-4 text-[14px] font-medium cursor-pointer rounded-md transition-all duration-300 hover:bg-orange-400 hover:text-white ${
-                  activeTitle === index ? "bg-orange-500 text-white font-bold" : "text-gray-700"
+                  activeTitle === index ? "bg-orange-500 text-white font-bold" : "text-gray-700 dark:text-gray-300"
                 }`}
                 onClick={(event) => handleClick(event, index)}
               >

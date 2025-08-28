@@ -53,6 +53,7 @@ async function fetchAllRestaurants(lat, lng) {
 
 const Body = () => {
   const { location } = useOutletContext();
+  const [userData, setUserData] = useState(null);
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
   const [filteredRestaurant, setFilteredRestaurant] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -141,6 +142,28 @@ const Body = () => {
     // eslint-disable-next-line
   }, [location]);
 
+  // Initialize user data from localStorage and listen for changes
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      setUserData(JSON.parse(savedUserData));
+    }
+
+    // Listen for storage changes (when user signs in from another tab/window)
+    const handleStorageChange = (e) => {
+      if (e.key === 'userData') {
+        if (e.newValue) {
+          setUserData(JSON.parse(e.newValue));
+        } else {
+          setUserData(null);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const fetchAllRestaurantsData = async () => {
     setAllRestaurantsLoading(true);
     setAllRestaurantsError("");
@@ -173,7 +196,7 @@ const Body = () => {
       setListOfRestaurants(restaurants || []);
       setFilteredRestaurant(restaurants || []);
     } catch (error) {
-      setError("No restaurants found for this location or Swiggy is not available here.");
+      setError("");
       setListOfRestaurants([]);
       setFilteredRestaurant([]);
     }
@@ -226,22 +249,35 @@ const Body = () => {
     );
 
   if (loading) return <Shimmer />;
-  if (error) return <div className="text-center mt-24 text-xl font-semibold text-red-500">{error}</div>;
 
   return listOfRestaurants && listOfRestaurants.length === 0 ? (
-    <Shimmer />
+    <div className="flex flex-col items-center justify-center min-h-[60vh] mt-24 px-6">
+      <img
+        src={require("../assets/location_unserviceable.webp")}
+        alt="Service not available"
+        className="w-56 h-56 object-contain opacity-90 mb-6"
+      />
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">We’ll be there soon!</h2>
+      <p className="text-gray-600 dark:text-gray-300 max-w-xl text-center mb-6">QuickBite is not serving this location yet. We’re expanding rapidly and hope to serve your area soon.</p>
+      <button
+        onClick={() => window.dispatchEvent(new Event('openLocationSidebar'))}
+        className="px-5 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors"
+      >
+        Choose a different location
+      </button>
+    </div>
   ) : (
-          <div className="body bg-gray-100 min-h-screen">
+          <div className="body bg-gray-100 dark:bg-gray-950 min-h-screen">
                 {/* WhatsOnYourMind Section */}
-        <div className="bg-gray-100 py-8 mt-[70px]">
+        <div className="bg-gray-100 dark:bg-gray-900 py-8 mt-[70px]">
           <div className="max-w-6xl mx-auto px-12">
             {/* Header Section */}
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                  Ayush, what's on your mind?
-                </h2>
-                <p className="text-gray-500 text-lg">Explore delicious food categories</p>
+                                 <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+                   {userData ? `${userData.firstName}, what's on your mind?` : "What's on your mind?"}
+                 </h2>
+                <p className="text-gray-500 dark:text-gray-300 text-lg">Explore delicious food categories</p>
               </div>
               
               {/* Navigation Arrows */}
@@ -249,19 +285,19 @@ const Body = () => {
                 {showLeftArrow && (
                   <button
                     onClick={() => scroll('left')}
-                    className="w-12 h-12 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                    className="w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
                     aria-label="Scroll left"
                   >
-                    <FaChevronLeft className="text-gray-600 text-lg" />
+                    <FaChevronLeft className="text-gray-600 dark:text-gray-300 text-lg" />
                   </button>
                 )}
                 {showRightArrow && (
                   <button
                     onClick={() => scroll('right')}
-                    className="w-12 h-12 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                    className="w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
                     aria-label="Scroll right"
                   >
-                    <FaChevronRight className="text-gray-600 text-lg" />
+                    <FaChevronRight className="text-gray-600 dark:text-gray-300 text-lg" />
                   </button>
                 )}
               </div>
@@ -303,7 +339,7 @@ const Body = () => {
                   </div>
                   
                   {/* Category Name */}
-                  <h3 className="text-base font-semibold text-gray-800 text-center group-hover:text-orange-600 transition-colors duration-300 mb-1">
+                  <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 text-center group-hover:text-orange-600 transition-colors duration-300 mb-1">
                     {category.name}
                   </h3>
                   
@@ -320,32 +356,32 @@ const Body = () => {
       </div>
 
       {/* Top Restaurants Section */}
-      <div className="bg-white py-8">
-        <div className="max-w-6xl mx-auto px-12">
+      <div className="bg-white dark:bg-gray-900 py-8">
+        <div className="max-w-6xl mx-auto px-12 mt-4">
           {/* Section Header */}
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
                 Top restaurants in {location.address ? location.address.split(',')[0] : 'your area'}
               </h2>
-              <p className="text-gray-500 text-lg">Best rated places to order from</p>
+              <p className="text-gray-500 dark:text-gray-300 text-lg">Best rated places to order from</p>
             </div>
             
             {/* Navigation Arrows */}
             <div className="flex gap-3">
               <button
                 onClick={() => scrollTopRestaurants('left')}
-                className="w-12 h-12 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                className="w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
                 aria-label="Scroll left"
               >
-                <FaChevronLeft className="text-gray-600 text-lg" />
+                <FaChevronLeft className="text-gray-600 dark:text-gray-300 text-lg" />
               </button>
               <button
                 onClick={() => scrollTopRestaurants('right')}
-                className="w-12 h-12 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                className="w-12 h-12 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg"
                 aria-label="Scroll right"
               >
-                <FaChevronRight className="text-gray-600 text-lg" />
+                <FaChevronRight className="text-gray-600 dark:text-gray-300 text-lg" />
               </button>
             </div>
           </div>
@@ -364,9 +400,9 @@ const Body = () => {
                 listOfRestaurants
                   .filter(restaurant => restaurant?.info && restaurant.info.id)
                   .map((restaurant) => (
+                  <Link to={`restaurants/${restaurant.info.id}`} key={restaurant.info.id}>
                   <div
-                    key={restaurant.info.id}
-                    className="min-w-[280px] bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                    className="min-w-[280px] bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer border border-transparent dark:border-gray-700"
                   >
                                          {/* Restaurant Image */}
                      <div className="relative h-48 rounded-t-xl overflow-hidden">
@@ -399,30 +435,31 @@ const Body = () => {
                      
                      {/* Restaurant Details */}
                      <div className="p-4">
-                       <h3 className="font-bold text-lg text-gray-800 mb-2 group-hover:text-orange-600 transition-colors duration-300">
+                       <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2 group-hover:text-orange-600 transition-colors duration-300">
                          {restaurant.info.name || "Restaurant"}
                        </h3>
                        
                        <div className="flex items-center gap-2 mb-2">
-                         <span className="flex items-center gap-1 text-sm text-gray-600">
+                         <span className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
                            <span className="text-yellow-500">★</span>
                            {restaurant.info.avgRating || "N/A"}
                          </span>
-                         <span className="text-gray-400">•</span>
-                         <span className="text-sm text-gray-600">
+                         <span className="text-gray-400 dark:text-gray-500">•</span>
+                         <span className="text-sm text-gray-600 dark:text-gray-300">
                            {restaurant.info.sla?.deliveryTime || "N/A"} mins
                          </span>
                        </div>
                        
-                       <p className="text-sm text-gray-600 mb-2">
+                       <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
                          {restaurant.info.cuisines?.slice(0, 2).join(', ') || "Various cuisines"}
                        </p>
                        
-                       <p className="text-sm text-gray-500">
+                       <p className="text-sm text-gray-500 dark:text-gray-400">
                          {restaurant.info.areaName || "Location"}
                        </p>
                      </div>
                   </div>
+                  </Link>
                 ))
               ) : loading ? (
                 <div className="text-center text-gray-500 py-8">
@@ -439,17 +476,17 @@ const Body = () => {
       </div>
 
       {/* Separator Line */}
-      <div className="w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent h-px"></div>
+      <div className="w-full bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent h-px"></div>
 
       {/* All Restaurants Near Me Section */}
-      <div className="bg-gray-100 py-8">
+      <div className="bg-gray-100 dark:bg-gray-900 py-8">
         <div className="max-w-6xl mx-auto px-12">
           {/* Section Header */}
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               All Restaurants Near Me
             </h2>
-            <p className="text-gray-500 text-lg mb-3">
+            <p className="text-gray-500 dark:text-gray-300 text-lg mb-3">
               Discover amazing places to eat in your area
             </p>
             {/* Total count hidden as requested */}
@@ -458,7 +495,7 @@ const Body = () => {
           {/* Loading State */}
           {allRestaurantsLoading && (
             <div className="text-center py-12">
-              <div className="inline-flex items-center gap-3 text-gray-600">
+              <div className="inline-flex items-center gap-3 text-gray-600 dark:text-gray-300">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
                 <span className="text-lg">Loading all restaurants...</span>
               </div>
@@ -468,7 +505,7 @@ const Body = () => {
           {/* Error State - Show shimmer instead of error */}
           {allRestaurantsError && !allRestaurantsLoading && (
             <div className="text-center py-12">
-              <div className="inline-flex items-center gap-3 text-gray-600">
+              <div className="inline-flex items-center gap-3 text-gray-600 dark:text-gray-300">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
                 <span className="text-lg">Loading all restaurants...</span>
               </div>
@@ -480,9 +517,9 @@ const Body = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {allRestaurants.slice(0, 32).map((restaurant) => (
+                  <Link to={`restaurants/${restaurant.info.id}`} key={restaurant.info.id}>
                   <div
-                    key={restaurant.info.id}
-                    className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden group cursor-pointer"
+                    className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden group cursor-pointer border border-transparent dark:border-gray-700"
                   >
                     {/* Restaurant Image */}
                     <div className="relative h-48 overflow-hidden">
@@ -514,42 +551,43 @@ const Body = () => {
 
                     {/* Restaurant Details */}
                     <div className="p-4">
-                      <h3 className="font-bold text-lg text-gray-800 mb-2 group-hover:text-orange-600 transition-colors duration-300 line-clamp-1">
+                      <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2 group-hover:text-orange-600 transition-colors duration-300 line-clamp-1">
                         {restaurant.info.name}
                       </h3>
                       
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="flex items-center gap-1 text-sm text-gray-600">
+                        <span className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
                           <span className="text-yellow-500">★</span>
                           {restaurant.info.avgRating || "N/A"}
                         </span>
-                        <span className="text-gray-400">•</span>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-gray-400 dark:text-gray-500">•</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-300">
                           {restaurant.info.sla?.deliveryTime || "N/A"} mins
                         </span>
                       </div>
                       
-                      <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
                         {restaurant.info.cuisines?.join(', ') || "Various cuisines"}
                       </p>
                       
-                      <p className="text-sm text-gray-500 mb-3">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
                         {restaurant.info.areaName || "Location"}
                       </p>
 
                       {/* Cost for Two */}
                       {restaurant.info.costForTwo && (
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                             {restaurant.info.costForTwo}
                           </span>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
                             for two people
                           </span>
                         </div>
                       )}
                     </div>
                   </div>
+                  </Link>
                 ))}
               </div>
               
@@ -560,7 +598,7 @@ const Body = () => {
           {/* Empty State */}
           {!allRestaurantsLoading && !allRestaurantsError && allRestaurants.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-gray-500 text-lg">
+              <div className="text-gray-500 dark:text-gray-400 text-lg">
                 No restaurants found in your area. Please try a different location.
               </div>
             </div>

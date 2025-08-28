@@ -1,11 +1,13 @@
 import { CDN_URL } from "../utils/constants";
+import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa"; // Import star icon
 
 const RestaurantCard = ({ resData }) => {
   const { cloudinaryImageId, name, cuisines, avgRating, costForTwo, sla } = resData?.info;
 
   return (
-    <div className="m-6 p-4 w-[280px] h-[380px] bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-gray-200 relative overflow-hidden">
+    <Link to={`restaurants/${resData?.info?.id}`} className="block">
+    <div className="m-6 p-4 w-[280px] h-[380px] bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-gray-200 dark:border-gray-700 relative overflow-hidden">
       
       {/* Image Section with Gradient Overlay */}
       <div className="relative w-full h-[170px] rounded-xl overflow-hidden">
@@ -19,8 +21,8 @@ const RestaurantCard = ({ resData }) => {
 
       {/* Restaurant Info */}
       <div className="p-3">
-        <h3 className="font-extrabold text-lg text-gray-800">{name}</h3>
-        <p className="text-gray-600 text-sm truncate">{cuisines.join(", ")}</p>
+        <h3 className="font-extrabold text-lg text-gray-800 dark:text-gray-100">{name}</h3>
+        <p className="text-gray-600 dark:text-gray-300 text-sm truncate">{cuisines.join(", ")}</p>
 
         {/* Rating & Price */}
         <div className="flex items-center justify-between mt-3">
@@ -28,7 +30,7 @@ const RestaurantCard = ({ resData }) => {
             <FaStar className="mr-1 text-yellow-500" />
             {avgRating}
           </span>
-          <span className="text-sm font-medium text-gray-700">{costForTwo}</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{costForTwo}</span>
         </div>
 
         {/* Delivery Time */}
@@ -42,6 +44,7 @@ const RestaurantCard = ({ resData }) => {
       {/* Glow Effect on Hover */}
       <div className="absolute inset-0 bg-orange-100 opacity-0 hover:opacity-20 transition-all duration-300 rounded-xl"></div>
     </div>
+    </Link>
   );
 };
 

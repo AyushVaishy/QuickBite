@@ -29,7 +29,7 @@ const RestaurantMenu = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-[90px]">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-[90px]">
       {/* 🔥 Hero Section (Restaurant Info) */}
       <div className="relative w-full h-[200px] flex items-center justify-center bg-gradient-to-r from-orange-500 to-yellow-400 shadow-lg">
         <div className="absolute w-full h-full bg-black bg-opacity-40 backdrop-blur-sm"></div>
@@ -54,8 +54,8 @@ const RestaurantMenu = () => {
       </div>
 
       {/* 🍽️ Unified Menu Container */}
-      <div className="max-w-screen-2xl mx-auto py-12 px-16 bg-white shadow-lg rounded-xl">
-        <h2 className="text-4xl font-bold text-center text-gray-800 mb-10">
+      <div className="max-w-screen-2xl mx-auto py-12 px-16 bg-white dark:bg-gray-800 shadow-lg rounded-xl">
+        <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-10">
           📜 Explore Our Exclusive Menu
         </h2>
 
