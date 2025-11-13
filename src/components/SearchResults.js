@@ -1,88 +1,106 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useOutletContext } from 'react-router-dom';
 import { FaSearch, FaFilter, FaStar } from 'react-icons/fa';
-import { searchRestaurants, searchByCategory } from '../utils/searchUtils';
-import { setFilteredRestaurants, setQuery } from '../utils/searchSlice';
+import { SEARCH_API } from '../utils/constants';
 
 const SearchResults = () => {
-  const dispatch = useDispatch();
+  const { location } = useOutletContext();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
-  
-  const { allRestaurants, filteredRestaurants } = useSelector((store) => store.search);
+  const [restaurants, setRestaurants] = useState([]);
   const [sortBy, setSortBy] = useState('relevance');
   const [filterBy, setFilterBy] = useState('all');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (query) {
-      dispatch(setQuery(query));
       performSearch(query);
     }
-  }, [query, allRestaurants, dispatch]);
+  }, [query, location?.lat, location?.lng]);
 
-  const performSearch = (searchQuery) => {
+  const performSearch = async (searchQuery) => {
     setLoading(true);
-    
-    setTimeout(() => {
-      let results = [];
-      
-      if (allRestaurants.length > 0) {
-        // Search in restaurants
-        results = searchRestaurants(allRestaurants, searchQuery);
-        
-        // If no direct matches, try category search
-        if (results.length === 0) {
-          results = searchByCategory(allRestaurants, searchQuery);
+    setError('');
+    try {
+      const url = SEARCH_API(location.lat, location.lng, searchQuery);
+      const res = await fetch(url);
+      const data = await res.json();
+
+      // Extract restaurants from RESTAURANT group
+      const cards = data?.data?.cards || [];
+      let restaurantCards = [];
+      for (const c of cards) {
+        const groups = c?.groupedCard?.cardGroupMap;
+        if (groups?.RESTAURANT?.cards) {
+          restaurantCards = restaurantCards.concat(groups.RESTAURANT.cards);
         }
-      }
-      
-      // Apply filters
-      if (filterBy !== 'all') {
-        results = results.filter(restaurant => {
-          switch (filterBy) {
-            case 'veg':
-              return restaurant.info?.veg === true;
-            case 'rating':
-              return parseFloat(restaurant.info?.avgRating || 0) >= 4.0;
-            case 'fast':
-              return parseInt(restaurant.info?.sla?.deliveryTime || 60) <= 30;
-            default:
-              return true;
+        // If only DISH results, try to map to their parent restaurants
+        if (groups?.DISH?.cards) {
+          for (const dc of groups.DISH.cards) {
+            const rInfo = dc?.card?.card?.restaurant?.info;
+            if (rInfo) {
+              restaurantCards.push({ card: { card: { info: rInfo } } });
+            }
           }
-        });
-      }
-      
-      // Apply sorting
-      results = [...results].sort((a, b) => {
-        switch (sortBy) {
-          case 'rating':
-            return parseFloat(b.info?.avgRating || 0) - parseFloat(a.info?.avgRating || 0);
-          case 'deliveryTime':
-            return parseInt(a.info?.sla?.deliveryTime || 60) - parseInt(b.info?.sla?.deliveryTime || 60);
-          case 'costLowToHigh':
-            return parseInt(a.info?.costForTwo?.replace(/[^\d]/g, '') || 0) - parseInt(b.info?.costForTwo?.replace(/[^\d]/g, '') || 0);
-          case 'costHighToLow':
-            return parseInt(b.info?.costForTwo?.replace(/[^\d]/g, '') || 0) - parseInt(a.info?.costForTwo?.replace(/[^\d]/g, '') || 0);
-          default:
-            return 0;
         }
-      });
-      
-      dispatch(setFilteredRestaurants(results));
-      setLoading(false);
-    }, 300);
+      }
+
+      const extracted = restaurantCards
+        .map((rc) => rc?.card?.card?.info)
+        .filter(Boolean);
+
+      setRestaurants(extracted);
+    } catch (e) {
+      setError('Failed to load results. Please try again.');
+      setRestaurants([]);
+    }
+    setLoading(false);
   };
 
   const handleSortChange = (newSortBy) => {
     setSortBy(newSortBy);
-    performSearch(query);
+    // sort locally
+    setRestaurants((prev) => sortRestaurants(prev, newSortBy));
   };
 
   const handleFilterChange = (newFilterBy) => {
     setFilterBy(newFilterBy);
-    performSearch(query);
+    setRestaurants((prev) => filterRestaurants(prev, newFilterBy));
+  };
+
+  const filterRestaurants = (list, fb) => {
+    if (fb === 'all') return list;
+    return list.filter((restaurant) => {
+      switch (fb) {
+        case 'veg':
+          return restaurant?.veg === true;
+        case 'rating':
+          return parseFloat(restaurant?.avgRating || 0) >= 4.0;
+        case 'fast':
+          return parseInt(restaurant?.sla?.deliveryTime || 60) <= 30;
+        default:
+          return true;
+      }
+    });
+  };
+
+  const sortRestaurants = (list, sb) => {
+    const copy = [...list];
+    return copy.sort((a, b) => {
+      switch (sb) {
+        case 'rating':
+          return parseFloat(b?.avgRating || 0) - parseFloat(a?.avgRating || 0);
+        case 'deliveryTime':
+          return parseInt(a?.sla?.deliveryTime || 60) - parseInt(b?.sla?.deliveryTime || 60);
+        case 'costLowToHigh':
+          return parseInt(a?.costForTwo?.replace(/[^\d]/g, '') || 0) - parseInt(b?.costForTwo?.replace(/[^\d]/g, '') || 0);
+        case 'costHighToLow':
+          return parseInt(b?.costForTwo?.replace(/[^\d]/g, '') || 0) - parseInt(a?.costForTwo?.replace(/[^\d]/g, '') || 0);
+        default:
+          return 0;
+      }
+    });
   };
 
   if (loading) {
@@ -103,6 +121,11 @@ const SearchResults = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950 pt-24">
       <div className="max-w-6xl mx-auto px-6">
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300">
+            {error}
+          </div>
+        )}
         {/* Search Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
@@ -112,7 +135,7 @@ const SearchResults = () => {
             </h1>
           </div>
           <p className="text-gray-600 dark:text-gray-300">
-            Found {filteredRestaurants.length} restaurant{filteredRestaurants.length !== 1 ? 's' : ''}
+            Found {restaurants.length} restaurant{restaurants.length !== 1 ? 's' : ''}
           </p>
         </div>
 
@@ -156,16 +179,16 @@ const SearchResults = () => {
         </div>
 
         {/* Results */}
-        {filteredRestaurants.length > 0 ? (
+        {restaurants.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredRestaurants.map((restaurant) => (
-              <Link to={`/home/restaurants/${restaurant.info.id}`} key={restaurant.info.id}>
+            {restaurants.map((info) => (
+              <Link to={`/home/restaurants/${info.id}`} key={info.id}>
                 <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden group cursor-pointer border border-transparent dark:border-gray-700">
                   {/* Restaurant Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_508,h_320,c_fill/${restaurant.info.cloudinaryImageId}`}
-                      alt={restaurant.info.name}
+                      src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_508,h_320,c_fill/${info.cloudinaryImageId}`}
+                      alt={info.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -174,7 +197,7 @@ const SearchResults = () => {
                           <div class="w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white">
                             <div class="text-center">
                               <div class="text-4xl mb-2">🍽️</div>
-                              <div class="font-bold text-lg">${restaurant.info.name}</div>
+                              <div class="font-bold text-lg">${info.name}</div>
                             </div>
                           </div>
                         `;
@@ -182,14 +205,14 @@ const SearchResults = () => {
                     />
                     
                     {/* Offer Badge */}
-                    {restaurant.info.aggregatedDiscountInfoV3?.header && (
+                    {info.aggregatedDiscountInfoV3?.header && (
                       <div className="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                        {restaurant.info.aggregatedDiscountInfoV3.header}
+                        {info.aggregatedDiscountInfoV3.header}
                       </div>
                     )}
 
                     {/* Veg Badge */}
-                    {restaurant.info.veg && (
+                    {info.veg && (
                       <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                         VEG
                       </div>
@@ -199,33 +222,33 @@ const SearchResults = () => {
                   {/* Restaurant Details */}
                   <div className="p-4">
                     <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2 group-hover:text-orange-600 transition-colors duration-300 line-clamp-1">
-                      {restaurant.info.name}
+                      {info.name}
                     </h3>
                     
                     <div className="flex items-center gap-2 mb-2">
                       <div className="flex items-center gap-1 text-sm">
                         <FaStar className="text-yellow-500" />
                         <span className="text-gray-600 dark:text-gray-300">
-                          {restaurant.info.avgRating || "N/A"}
+                          {info.avgRating || "N/A"}
                         </span>
                       </div>
                       <span className="text-gray-400 dark:text-gray-500">•</span>
                       <span className="text-sm text-gray-600 dark:text-gray-300">
-                        {restaurant.info.sla?.deliveryTime || "N/A"} mins
+                        {info.sla?.deliveryTime || "N/A"} mins
                       </span>
                     </div>
                     
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
-                      {restaurant.info.cuisines?.join(', ') || "Various cuisines"}
+                      {info.cuisines?.join(', ') || "Various cuisines"}
                     </p>
                     
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {restaurant.info.areaName || "Location"}
+                        {info.areaName || "Location"}
                       </p>
-                      {restaurant.info.costForTwo && (
+                      {info.costForTwo && (
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                          {restaurant.info.costForTwo}
+                          {info.costForTwo}
                         </span>
                       )}
                     </div>

@@ -1,42 +1,38 @@
-import React from "react";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const FAQItem = ({ title, description }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const toggleFAQ = () => {
-    setIsOpen(!isOpen);
-  };
+
   return (
-    <div className="border-b border-[#cfd1dd]">
-      <div
-        className="flex justify-between cursor-pointer pt-6 pb-7 text-[#111113]"
-        onClick={toggleFAQ}
+    <div className="border-b border-gray-200 dark:border-gray-800">
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="w-full flex justify-between items-start gap-4 py-5 text-left text-gray-900 dark:text-gray-100 hover:text-orange-500 transition-colors"
       >
-        <h3
-          className={`font-light text-base text-left hover:text-orange ${
-            description !== null && isOpen ? "text-orange" : ""
-          }`}
-        >
+        <span className={`text-base font-medium ${isOpen ? "text-orange-500" : ""}`}>
           {title}
-        </h3>
+        </span>
         {description ? (
-          <div className={`${isOpen ? "text-orange rotate-180" : ""}`}>
-            {<FontAwesomeIcon icon={faChevronDown} />}
-          </div>
+          <span
+            className={`mt-1 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
+              isOpen ? "rotate-180 text-orange-500" : ""
+            }`}
+          >
+            <FontAwesomeIcon icon={faChevronDown} />
+          </span>
         ) : (
-          <div />
+          <span className="w-4 h-4" />
         )}
-      </div>
-      {isOpen && description ? (
-        <div className="w-full pb-7 pr-12">
-          <h3 className="font-normal text-[13px] text-[#5a5c66] whitespace-pre-wrap tracking-tight">
+      </button>
+      {isOpen && description && (
+        <div className="pb-6 pr-4 md:pr-12">
+          <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300 whitespace-pre-wrap">
             {description}
-          </h3>
+          </p>
         </div>
-      ) : (
-        <div />
       )}
     </div>
   );
