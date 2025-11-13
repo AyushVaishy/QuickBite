@@ -4,51 +4,21 @@ import Shimmer from "./Shimmer";
 import { Link, useOutletContext } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { swiggyAPI } from "../utils/constants";
 
-// Helper: fetch with pagination to get 30-32 restaurants (including duplicates from top restaurants)
-async function fetchAllRestaurants(lat, lng) {
-  const MIN_RESTAURANTS = 30;
-  const MAX_RESTAURANTS = 32;
-  let allRestaurants = [];
-  let seenIds = new Set(); // Track unique IDs to avoid exact duplicates
-  let offset = "";
-  let hasMore = true;
-  let pageCount = 0;
-  const MAX_PAGES = 8; // Limit pages to avoid infinite loops
-
-  while (hasMore && allRestaurants.length < MAX_RESTAURANTS && pageCount < MAX_PAGES) {
-    const url = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING${offset ? `&offset=${encodeURIComponent(offset)}` : ""}`;
-    
-    const res = await fetch(url);
-    if (!res.ok) break;
-    
-    const data = await res.json();
-    const restaurantsCard = data?.data?.cards?.find(
-      (c) => c?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-    const restaurants = restaurantsCard?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
-
-    for (const rest of restaurants) {
-      if (rest?.info?.id && !seenIds.has(rest.info.id)) {
-        seenIds.add(rest.info.id);
-        allRestaurants.push(rest);
-        if (allRestaurants.length >= MAX_RESTAURANTS) break;
-      }
-    }
-
-    if (allRestaurants.length >= MAX_RESTAURANTS) break;
-    
-    offset = data?.data?.pageOffset?.nextOffset;
-    hasMore = !!offset;
-    pageCount++;
-    
-    // Small delay between requests
-    if (hasMore && allRestaurants.length < MIN_RESTAURANTS) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-  }
-
-  return allRestaurants;
+// Helper: fetch a single page from Swiggy list API (supports pagination via nextOffset)
+async function fetchRestaurantsPage(lat, lng, offset) {
+  const base = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`;
+  const url = offset ? `${base}&offset=${encodeURIComponent(offset)}` : base;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed list: ${res.status}`);
+  const data = await res.json();
+  const restaurantsCard = data?.data?.cards?.find(
+    (c) => c?.card?.card?.gridElements?.infoWithStyle?.restaurants
+  );
+  const restaurants = restaurantsCard?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
+  const nextOffset = data?.data?.pageOffset?.nextOffset || null;
+  return { restaurants, nextOffset };
 }
 
 const Body = () => {
@@ -63,6 +33,10 @@ const Body = () => {
   const [allRestaurants, setAllRestaurants] = useState([]);
   const [allRestaurantsLoading, setAllRestaurantsLoading] = useState(false);
   const [allRestaurantsError, setAllRestaurantsError] = useState("");
+  const [nextOffset, setNextOffset] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const loadMoreRef = useRef(null);
   
   // WhatsOnYourMind section state and refs
   const scrollContainerRef = useRef(null);
@@ -138,7 +112,11 @@ const Body = () => {
 
   useEffect(() => {
     fetchData();
-    fetchAllRestaurantsData();
+    // reset and load All Restaurants for new location
+    setAllRestaurants([]);
+    setNextOffset(null);
+    setHasMore(true);
+    initialLoadAllRestaurants();
     // eslint-disable-next-line
   }, [location]);
 
@@ -164,24 +142,96 @@ const Body = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const fetchAllRestaurantsData = async () => {
+  const initialLoadAllRestaurants = async () => {
     setAllRestaurantsLoading(true);
     setAllRestaurantsError("");
     try {
-      const restaurants = await fetchAllRestaurants(location.lat, location.lng);
-      setAllRestaurants(restaurants);
+      const { restaurants, nextOffset: n } = await fetchRestaurantsPage(location.lat, location.lng, null);
+      const unique = [];
+      const seen = new Set();
+      for (const r of restaurants) {
+        if (r?.info?.id && !seen.has(r.info.id)) {
+          seen.add(r.info.id);
+          unique.push(r);
+        }
+      }
+      setAllRestaurants(unique);
+      setNextOffset(n);
+      setHasMore(!!n);
     } catch (error) {
-      // Don't show error, just set empty array to show shimmer
-      setAllRestaurants([]);
-      console.error("Error fetching all restaurants:", error);
+      // Fallback to proxy API from constants if available
+      try {
+        const res = await fetch(swiggyAPI(location.lat, location.lng));
+        const data = await res.json();
+        const restaurantsCard = data?.data?.cards?.find(
+          (c) => c?.card?.card?.gridElements?.infoWithStyle?.restaurants
+        );
+        const restaurants = restaurantsCard?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
+        const unique = [];
+        const seen = new Set();
+        for (const r of restaurants) {
+          if (r?.info?.id && !seen.has(r.info.id)) {
+            seen.add(r.info.id);
+            unique.push(r);
+          }
+        }
+        setAllRestaurants(unique);
+        setNextOffset(null);
+        setHasMore(false);
+      } catch (e) {
+        setAllRestaurantsError("Failed to load restaurants");
+        setAllRestaurants([]);
+      }
     }
     setAllRestaurantsLoading(false);
+  };
+
+  // Load next pages on intersection until at least 100 unique or no more
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
+    const observer = new IntersectionObserver((entries) => {
+      const first = entries[0];
+      if (first.isIntersecting) {
+        loadNextPage();
+      }
+    }, { rootMargin: "600px" });
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+    // eslint-disable-next-line
+  }, [loadMoreRef.current, nextOffset, hasMore, allRestaurants.length, location]);
+
+  const loadNextPage = async () => {
+    if (isLoadingMore) return;
+    if (!hasMore) return;
+    if (allRestaurants.length >= 100) return;
+    setIsLoadingMore(true);
+    try {
+      const { restaurants, nextOffset: n } = await fetchRestaurantsPage(location.lat, location.lng, nextOffset);
+      // merge uniquely
+      const existing = new Set(allRestaurants.map((r) => r?.info?.id));
+      const merged = [...allRestaurants];
+      for (const r of restaurants) {
+        const id = r?.info?.id;
+        if (id && !existing.has(id)) {
+          existing.add(id);
+          merged.push(r);
+          if (merged.length >= 100) break;
+        }
+      }
+      setAllRestaurants(merged);
+      setNextOffset(n);
+      setHasMore(!!n);
+    } catch (e) {
+      // swallow errors to keep UX smooth
+    }
+    setIsLoadingMore(false);
   };
 
   const fetchData = async () => {
     setLoading(true);
     setError("");
     try {
+      // Use Swiggy homepage list for Top Restaurants and then sort by rating
       const response = await fetch(
         `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${location.lat}&lng=${location.lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`
       );
@@ -192,9 +242,11 @@ const Body = () => {
       // Use only the specified path for Top Restaurants
       let restaurants =
       json.data.cards[1].card.card.gridElements.infoWithStyle.restaurants;
-
-      setListOfRestaurants(restaurants || []);
-      setFilteredRestaurant(restaurants || []);
+      const sorted = (restaurants || [])
+        .filter((r) => r?.info?.avgRating)
+        .sort((a, b) => (parseFloat(b.info.avgRating) || 0) - (parseFloat(a.info.avgRating) || 0));
+      setListOfRestaurants(sorted);
+      setFilteredRestaurant(sorted);
     } catch (error) {
       setError("");
       setListOfRestaurants([]);
@@ -487,7 +539,7 @@ const Body = () => {
               All Restaurants Near Me
             </h2>
             <p className="text-gray-500 dark:text-gray-300 text-lg mb-3">
-              Discover amazing places to eat in your area
+              Discover amazing places to eat in {location.address ? location.address.split(',')[0] : 'your area'}
             </p>
             {/* Total count hidden as requested */}
           </div>
@@ -516,7 +568,7 @@ const Body = () => {
           {!allRestaurantsLoading && !allRestaurantsError && allRestaurants.length > 0 && (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                {allRestaurants.slice(0, 32).map((restaurant) => (
+                {allRestaurants.map((restaurant) => (
                   <Link to={`restaurants/${restaurant.info.id}`} key={restaurant.info.id}>
                   <div
                     className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden group cursor-pointer border border-transparent dark:border-gray-700"
@@ -590,8 +642,18 @@ const Body = () => {
                   </Link>
                 ))}
               </div>
-              
-              {/* Count message hidden as requested */}
+              {/* Infinite scroll loader/sentinel */}
+              <div ref={loadMoreRef} className="flex justify-center items-center py-8">
+                {isLoadingMore && (
+                  <div className="inline-flex items-center gap-3 text-gray-600 dark:text-gray-300">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
+                    <span className="text-lg">Loading more…</span>
+                  </div>
+                )}
+                {!isLoadingMore && (!hasMore || allRestaurants.length >= 100) && (
+                  <div className="text-gray-500 dark:text-gray-400 text-sm">{`Showing ${allRestaurants.length} restaurants`}</div>
+                )}
+              </div>
             </>
           )}
 

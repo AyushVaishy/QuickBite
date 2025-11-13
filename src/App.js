@@ -6,6 +6,7 @@ import Contact from "./components/Contact";
 import Error from "./components/Error";
 import Help from "./components/Help";
 import RestaurantMenu from './components/RestaurantMenu';
+import SearchResults from './components/SearchResults';
 import LandingPage from "./components/LandingPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
@@ -64,6 +65,10 @@ const appRouter = createBrowserRouter([
       {
         path: 'cart',
         element: <Cart />,
+      },
+      {
+        path: 'search',
+        element: <SearchResults />,
       },
     ],
     errorElement: <Error />,

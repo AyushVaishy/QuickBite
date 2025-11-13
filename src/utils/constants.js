@@ -18,6 +18,11 @@ export const SEARCH_API = (lat, lng, query) => {
     query
   )}&trackingId=&submitAction=SUGGESTION&queryUniqueId=${Date.now()}`;
 };
+export const SEARCH_SUGGEST_API = (lat, lng, query) => {
+  return `https://www.swiggy.com/dapi/restaurants/search/suggest?lat=${lat}&lng=${lng}&str=${encodeURIComponent(
+    query
+  )}&trackingId=null&includeIMItem=true`;
+};
 export const IMG_CDN_URL =
   "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/";
 

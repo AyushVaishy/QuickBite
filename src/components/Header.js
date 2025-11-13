@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt, FaUserCircle } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
+import { SEARCH_SUGGEST_API } from "../utils/constants";
 
 const GET_LOCATION_API_URL =
   "https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/";
@@ -97,7 +98,7 @@ const Header = ({ location, setLocation }) => {
     return () => clearTimeout(timeoutId);
   }, [searchAddress, debouncedSearch]);
 
-  // Global search suggestions using Swiggy search endpoint proxy when query changes
+  // Global search suggestions using Swiggy suggest endpoint when query changes
   useEffect(() => {
     const q = searchQuery.trim();
     if (!q) {
@@ -108,19 +109,19 @@ const Header = ({ location, setLocation }) => {
     const run = async () => {
       try {
         setSearchLoading(true);
-        const url = `https://www.swiggy.com/dapi/restaurants/search/v3?lat=${location.lat}&lng=${location.lng}&str=${encodeURIComponent(q)}&trackingId=&submitAction=SUGGESTION&queryUniqueId=${Date.now()}`;
+        const url = SEARCH_SUGGEST_API(location.lat, location.lng, q);
         const res = await fetch(url, { signal: controller.signal });
         const data = await res.json();
-        const cards = data?.data?.cards || [];
-        const suggestions = [];
-        cards.forEach((c) => {
-          const items = c?.groupedCard?.cardGroupMap?.DISH?.cards || c?.groupedCard?.cardGroupMap?.RESTAURANT?.cards || [];
-          items.forEach((it) => {
-            const i = it?.card?.card || it?.card || {};
-            if (i?.text || i?.title) suggestions.push({ text: i.text, title: i.title, subTitle: i.subTitle, type: i.type });
-          });
-        });
-        setSearchSuggest(suggestions.slice(0, 10));
+        const suggestions = data?.data?.suggestions || [];
+        // Normalize
+        const normalized = suggestions.map((s) => ({
+          text: s?.text,
+          type: s?.type, // e.g., "RESTAURANT" or "DISH"
+          subTitle: s?.subTitle,
+          cloudinaryId: s?.cloudinaryId,
+          cta: s?.cta,
+        }));
+        setSearchSuggest(normalized.slice(0, 12));
       } catch (e) {
         if (e.name !== 'AbortError') setSearchSuggest([]);
       } finally {
@@ -528,11 +529,52 @@ const Header = ({ location, setLocation }) => {
             {!searchLoading && searchSuggest.length > 0 && (
               <ul>
                 {searchSuggest.map((s, idx) => (
-                  <li key={idx} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
-                    <div className="w-10 h-10 rounded bg-orange-100 text-orange-600 flex items-center justify-center">{(s?.type || 'R')[0]}</div>
+                  <li
+                    key={idx}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const type = (s?.type || '').toUpperCase();
+                      if (type === 'RESTAURANT' && s?.cta?.link) {
+                        // Try to extract restaurant id from link if present
+                        let id = null;
+                        const match = s.cta.link.match(/restaurant_id=(\d+)/) || s.cta.link.match(/\/(\d+)(?:$|\?)/);
+                        if (match) id = match[1];
+                        if (id) {
+                          window.location.href = `/home/restaurants/${id}`;
+                          setIsSearchOpen(false);
+                          return;
+                        }
+                      }
+                      // For dishes or if no id could be parsed, fallback to query route
+                      const q = (s?.text || '').trim();
+                      if (q) {
+                        const next = `/home/search?q=${encodeURIComponent(q)}`;
+                        window.location.href = next;
+                      }
+                      setIsSearchOpen(false);
+                    }}
+                  >
+                    {s?.cloudinaryId ? (
+                      <img
+                        src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_56,h_56/${s.cloudinaryId}`}
+                        alt=""
+                        className="w-10 h-10 rounded object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded bg-orange-100 text-orange-600 flex items-center justify-center">
+                        {(s?.type === 'DISH' ? '🍽' : '🏬')}
+                      </div>
+                    )}
                     <div className="min-w-0">
-                      <div className="font-medium text-gray-800 dark:text-gray-100 truncate">{s?.text || s?.title || 'Result'}</div>
-                      {s?.subTitle && <div className="text-xs text-gray-500 truncate">{s.subTitle}</div>}
+                      <div className="font-medium text-gray-800 dark:text-gray-100 truncate">{s?.text || 'Result'}</div>
+                      {s?.subTitle && (
+                        <div className="text-xs text-gray-500 truncate">{s.subTitle}</div>
+                      )}
+                    </div>
+                    <div className="ml-auto text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+                      {(s?.type || '').toString().toLowerCase()}
                     </div>
                   </li>
                 ))}
