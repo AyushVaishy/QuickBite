@@ -1,0 +1,12 @@
+const router = require("express").Router();
+const { createOrder, getOrders, getOrder, updateOrderStatus, getRestaurantOrders } = require("../controllers/order.controller");
+const { authenticate, authorize } = require("../middleware/auth.middleware");
+
+router.use(authenticate);
+router.post("/", createOrder);
+router.get("/", getOrders);
+router.get("/restaurant/:restaurantId", authorize("RESTAURANT_OWNER", "ADMIN"), getRestaurantOrders);
+router.get("/:id", getOrder);
+router.patch("/:id/status", authorize("RESTAURANT_OWNER", "ADMIN"), updateOrderStatus);
+
+module.exports = router;

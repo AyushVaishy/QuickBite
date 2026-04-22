@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt, FaUserCircle } from "react-icons/fa";
+import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt, FaUserCircle, FaStore } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
 import { SEARCH_SUGGEST_API } from "../utils/constants";
 
@@ -693,9 +693,31 @@ const Header = ({ location, setLocation }) => {
 
                   {isUserMenuOpen && (
                     <div
-                      className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-50"
+                      className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-50"
                       role="menu"
                     >
+                   {(userData.role === 'RESTAURANT_OWNER' || userData.role === 'ADMIN') && (
+                        <Link
+                          to="/owner"
+                          className="flex items-center gap-2 px-4 py-2 text-left text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800"
+                          role="menuitem"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <FaStore className="text-base text-orange-500" />
+                          <span>Owner Dashboard</span>
+                        </Link>
+                      )}
+                      {userData.role === 'ADMIN' && (
+                        <Link
+                          to="/admin"
+                          className="flex items-center gap-2 px-4 py-2 text-left text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800"
+                          role="menuitem"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <span>🛡️</span>
+                          <span>Admin Panel</span>
+                        </Link>
+                      )}
                    <button
                         className="w-full flex items-center gap-2 px-4 py-2 text-left text-red-600 hover:bg-red-50 dark:hover:bg-gray-800"
                      onClick={handleLogout}
