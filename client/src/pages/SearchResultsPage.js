@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams, useOutletContext } from 'react-router-dom';
-import { FaSearch, FaFilter, FaStar } from 'react-icons/fa';
+import { FaSearch, FaFilter } from 'react-icons/fa';
 import { searchRestaurants } from '../services/restaurantService';
+import RestaurantCard from '../components/RestaurantCard';
+import Shimmer from '../components/Shimmer';
 
 const PLACEHOLDER_IMG =
   'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop';
@@ -86,18 +88,7 @@ const SearchResultsPage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-950 pt-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center py-12">
-            <div className="inline-flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
-              <span className="text-lg">Searching for "{query}"...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Shimmer />;
   }
 
   return (
@@ -122,95 +113,64 @@ const SearchResultsPage = () => {
         </div>
 
         {/* Filters and Sorting */}
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 mb-6">
-          <div className="flex flex-wrap gap-4 items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <FaFilter className="text-gray-500" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Filter:</span>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Sort by</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { value: 'relevance', label: 'Relevance' },
+                  { value: 'rating', label: 'Top Rated' },
+                  { value: 'deliveryTime', label: 'Fastest' },
+                  { value: 'costLowToHigh', label: 'Cost ↑' },
+                  { value: 'costHighToLow', label: 'Cost ↓' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleSortChange(opt.value)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
+                      sortBy === opt.value
+                        ? 'bg-orange-500 border-orange-500 text-white'
+                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-orange-400'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
-              <select
-                value={filterBy}
-                onChange={(e) => handleFilterChange(e.target.value)}
-                className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm"
-              >
-                <option value="all">All Restaurants</option>
-                <option value="rating">Rating 4.0+</option>
-                <option value="fast">Fast Delivery (≤30 min)</option>
-              </select>
             </div>
-
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Sort by:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => handleSortChange(e.target.value)}
-                className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm"
-              >
-                <option value="relevance">Relevance</option>
-                <option value="rating">Rating</option>
-                <option value="deliveryTime">Delivery Time</option>
-                <option value="costLowToHigh">Cost: Low to High</option>
-                <option value="costHighToLow">Cost: High to Low</option>
-              </select>
+            <div className="sm:border-l sm:border-gray-200 sm:dark:border-gray-700 sm:pl-4">
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Filter</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { value: 'all', label: 'All' },
+                  { value: 'rating', label: '⭐ 4.0+' },
+                  { value: 'fast', label: '🚀 Fast Delivery' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => handleFilterChange(opt.value)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
+                      filterBy === opt.value
+                        ? 'bg-gray-800 dark:bg-gray-200 border-gray-800 dark:border-gray-200 text-white dark:text-gray-900'
+                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-500'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Results */}
         {restaurants.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {restaurants.map((r) => (
-              <Link to={`/home/restaurants/${r.id}`} key={r.id}>
-                <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 overflow-hidden group cursor-pointer border border-transparent dark:border-gray-700">
-                  {/* Restaurant Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={r.imageUrl || PLACEHOLDER_IMG}
-                      alt={r.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      onError={(e) => {
-                        e.target.src = PLACEHOLDER_IMG;
-                      }}
-                    />
-                  </div>
-
-                  {/* Restaurant Details */}
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2 group-hover:text-orange-600 transition-colors duration-300 line-clamp-1">
-                      {r.name}
-                    </h3>
-
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="flex items-center gap-1 text-sm">
-                        <FaStar className="text-yellow-500" />
-                        <span className="text-gray-600 dark:text-gray-300">
-                          {r.avgRating || 'N/A'}
-                        </span>
-                      </div>
-                      <span className="text-gray-400 dark:text-gray-500">•</span>
-                      <span className="text-sm text-gray-600 dark:text-gray-300">
-                        {r.deliveryTime || 'N/A'} mins
-                      </span>
-                    </div>
-
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
-                      {Array.isArray(r.cuisines) ? r.cuisines.join(', ') : r.cuisines || 'Various cuisines'}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {r.city || r.address || 'Location'}
-                      </p>
-                      {r.costForTwo && (
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                          ₹{r.costForTwo} for two
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <div key={r.id}>
+                <RestaurantCard resData={r} />
+              </div>
             ))}
           </div>
         ) : (
