@@ -1,6 +1,6 @@
 import LOGO from "../assets/logo.png";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout as logoutAction } from "../store/authSlice";
 import { clearCart } from "../store/cartSlice";
@@ -37,6 +37,7 @@ const DEFAULT_ADDRESSES = [
 
 const Header = ({ location, setLocation }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const user = useSelector((s) => s.auth.user);
   const cartItems = useSelector((store) => store.cart.items);
@@ -642,21 +643,14 @@ const Header = ({ location, setLocation }) => {
                       e.stopPropagation();
                       const type = (s?.type || '').toUpperCase();
                       if (type === 'RESTAURANT' && s?.cta?.link) {
-                        // Try to extract restaurant id from link if present
-                        let id = null;
-                        const match = s.cta.link.match(/restaurant_id=(\d+)/) || s.cta.link.match(/\/(\d+)(?:$|\?)/);
-                        if (match) id = match[1];
-                        if (id) {
-                          window.location.href = `/home/restaurants/${id}`;
-                          setIsSearchOpen(false);
-                          return;
-                        }
+                        navigate(s.cta.link);
+                        setIsSearchOpen(false);
+                        return;
                       }
-                      // For dishes or if no id could be parsed, fallback to query route
+                      // For dishes, fallback to query route
                       const q = (s?.text || '').trim();
                       if (q) {
-                        const next = `/home/search?q=${encodeURIComponent(q)}`;
-                        window.location.href = next;
+                        navigate(`/home/search?q=${encodeURIComponent(q)}`);
                       }
                       setIsSearchOpen(false);
                     }}
@@ -780,7 +774,7 @@ const Header = ({ location, setLocation }) => {
                           <div
                             key={n.id}
                             className={`px-4 py-3 border-b border-gray-50 dark:border-gray-800 last:border-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${!n.read ? 'bg-orange-50/60 dark:bg-orange-900/10' : ''}`}
-                            onClick={() => n.orderId && (window.location.href = `/home/orders/${n.orderId}`)}
+                            onClick={() => { if (n.orderId) { setNotifOpen(false); navigate(`/home/orders/${n.orderId}`); } }}
                           >
                             <div className="flex items-start gap-2">
                               <div className="text-lg flex-shrink-0 mt-0.5">

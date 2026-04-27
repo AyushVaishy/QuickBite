@@ -563,6 +563,12 @@ const HomePage = () => {
               onRemove={() => dispatch(applyFilters({ costRange: null }))}
             />
           )}
+          {filters.deliveryTimeMax !== null && (
+            <FilterTag
+              label={`⏱ Under ${filters.deliveryTimeMax} mins`}
+              onRemove={() => dispatch(applyFilters({ deliveryTimeMax: null }))}
+            />
+          )}
 
           {/* Clear all (only when any active) */}
           {anyFilterActive && (
