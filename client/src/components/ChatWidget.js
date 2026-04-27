@@ -8,7 +8,7 @@ function getGreeting() {
   const h = new Date().getHours();
   if (h >= 5 && h < 12) return "Good morning";
   if (h >= 12 && h < 17) return "Good afternoon";
-  if (h >= 17 && h < 21) return "Good evening";
+  if (h >= 17 && h < 23) return "Good evening";
   return "Good night";
 }
 
@@ -683,7 +683,7 @@ export default function ChatWidget() {
     const greetMsg = {
       id: uid(),
       role: "ai",
-      content: `${greeting}${nameStr}! 😊 I'm Priya, your personal food assistant at QuickBite. How are you feeling today?`,
+      content: `${greeting}${nameStr}! 😊 What are you craving today?`,
     };
     setMsgs([greetMsg]);
     setThinking(false);
