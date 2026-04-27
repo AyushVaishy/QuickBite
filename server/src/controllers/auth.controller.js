@@ -21,7 +21,7 @@ const setRefreshCookie = (res, token) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
 
@@ -33,22 +33,20 @@ const signup = async (req, res, next) => {
     if (exists) return res.status(409).json({ message: "Email already registered" });
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const userRole = role === "RESTAURANT_OWNER" ? "RESTAURANT_OWNER" : "USER";
+
     const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        phone,
-        role: role === "RESTAURANT_OWNER" ? "RESTAURANT_OWNER" : "USER",
-      },
-      select: { id: true, name: true, email: true, role: true },
+      data: { name, email, password: hashedPassword, phone, role: userRole },
     });
 
     const { accessToken, refreshToken } = generateTokens(user);
     await prisma.user.update({ where: { id: user.id }, data: { refreshToken } });
     setRefreshCookie(res, refreshToken);
 
-    res.status(201).json({ accessToken, user });
+    res.status(201).json({
+      accessToken,
+      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    });
   } catch (err) {
     next(err);
   }
@@ -124,4 +122,52 @@ const getMe = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, login, logout, refreshToken, getMe };
+const updateMe = async (req, res, next) => {
+  try {
+    const { name, phone } = req.body;
+    const data = {};
+    if (name?.trim()) data.name = name.trim();
+    if (phone !== undefined) data.phone = phone;
+
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data,
+      select: { id: true, name: true, email: true, phone: true, role: true },
+    });
+    res.json({ user });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const changePassword = async (req, res, next) => {
+  try {
+    const { oldPassword, currentPassword, newPassword } = req.body;
+    const providedOld = oldPassword || currentPassword;
+    if (!providedOld || !newPassword) return res.status(400).json({ message: 'Both passwords required' });
+    if (newPassword.length < 8) return res.status(400).json({ message: 'New password must be at least 8 characters' });
+    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    const valid = await bcrypt.compare(providedOld, user.password);
+    if (!valid) return res.status(400).json({ message: 'Current password is incorrect' });
+    const hashed = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({ where: { id: req.user.id }, data: { password: hashed } });
+    res.json({ message: 'Password changed successfully' });
+  } catch (err) { next(err); }
+};
+
+const updateProfile = async (req, res, next) => {
+  try {
+    const { name, phone } = req.body;
+    const data = {};
+    if (name && name.trim()) data.name = name.trim();
+    if (phone !== undefined) data.phone = phone.trim() || null;
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data,
+      select: { id: true, name: true, email: true, phone: true, role: true },
+    });
+    res.json({ user });
+  } catch (err) { next(err); }
+};
+
+module.exports = { signup, login, logout, refreshToken, getMe, updateMe, changePassword, updateProfile };

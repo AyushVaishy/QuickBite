@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { createOrder, getOrders, getOrder, updateOrderStatus, getRestaurantOrders } = require("../controllers/order.controller");
+const { createOrder, getOrders, getOrder, updateOrderStatus, getRestaurantOrders, cancelOrder } = require("../controllers/order.controller");
 const { authenticate, authorize } = require("../middleware/auth.middleware");
 
 router.use(authenticate);
@@ -8,5 +8,6 @@ router.get("/", getOrders);
 router.get("/restaurant/:restaurantId", authorize("RESTAURANT_OWNER", "ADMIN"), getRestaurantOrders);
 router.get("/:id", getOrder);
 router.patch("/:id/status", authorize("RESTAURANT_OWNER", "ADMIN"), updateOrderStatus);
+router.patch("/:id/cancel", cancelOrder);  // user can cancel their own PLACED order
 
 module.exports = router;
