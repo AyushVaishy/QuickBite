@@ -5,6 +5,7 @@ import authReducer from './authSlice';
 import filtersReducer from './filtersSlice';
 import favoritesReducer from './favoritesSlice';
 import notificationsReducer from './notificationsSlice';
+import recentlyViewedReducer from './recentlyViewedSlice';
 
 const appStore = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const appStore = configureStore({
     filters: filtersReducer,
     favorites: favoritesReducer,
     notifications: notificationsReducer,
+    recentlyViewed: recentlyViewedReducer,
   },
 });
 

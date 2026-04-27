@@ -9,6 +9,7 @@ import useOnlineStatus from "../hooks/useOnlineStatus";
 import { FaChevronLeft, FaChevronRight, FaLeaf, FaSlidersH, FaClock } from "react-icons/fa";
 import { MdOutlineStarPurple500 } from "react-icons/md";
 import { getRestaurants } from "../services/restaurantService";
+import { selectRecentlyViewed } from "../store/recentlyViewedSlice";
 
 const RADIUS = 50;
 const LIMIT = 20;
@@ -145,6 +146,7 @@ const HomePage = () => {
   const { location }  = useOutletContext();
   const { user }      = useSelector((s) => s.auth);
   const filters       = useSelector((s) => s.filters);
+  const recentlyViewed = useSelector(selectRecentlyViewed);
   const dispatch      = useDispatch();
   const navigate      = useNavigate();
 
@@ -160,11 +162,13 @@ const HomePage = () => {
   const categoryCarousel     = useCarousel();
   const topBrandsCarousel    = useCarousel();
   const topRestaurantsCarousel = useCarousel();
+  const recentlyViewedCarousel = useCarousel();
 
   // Re-evaluate arrow visibility after data loads
   useEffect(() => {
     topBrandsCarousel.update();
     topRestaurantsCarousel.update();
+    recentlyViewedCarousel.update();
     // eslint-disable-next-line
   }, [fetchedRestaurants]);
 
@@ -449,6 +453,35 @@ const HomePage = () => {
 
       {/* ── DIVIDER ───────────────────────────────────────────── */}
       <div className="w-full h-2 bg-gray-100 dark:bg-gray-800" />
+
+      {/* ── 3.5. RECENTLY VIEWED ──────────────────────────────── */}
+      {recentlyViewed.length > 0 && (
+        <>
+          <Section bg="bg-white dark:bg-gray-900">
+            <SectionHeader
+              title="Your recently viewed"
+              subtitle="Pick up where you left off"
+              right={
+                <>
+                  {recentlyViewedCarousel.canLeft && <ArrowBtn direction="left" onClick={() => recentlyViewedCarousel.scroll("left")} />}
+                  {recentlyViewedCarousel.canRight && <ArrowBtn direction="right" onClick={() => recentlyViewedCarousel.scroll("right")} />}
+                </>
+              }
+            />
+            <div
+              ref={recentlyViewedCarousel.ref}
+              className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide pb-3"
+            >
+              {recentlyViewed.map((r) => (
+                <div key={r.id} className="min-w-[230px] sm:min-w-[260px]">
+                  <RestaurantCard resData={r} />
+                </div>
+              ))}
+            </div>
+          </Section>
+          <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
+        </>
+      )}
 
       {/* ── 4. ALL RESTAURANTS + FILTER BAR ──────────────────── */}
       <Section bg="bg-gray-50 dark:bg-gray-950">

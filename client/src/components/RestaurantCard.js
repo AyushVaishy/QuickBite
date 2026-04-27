@@ -25,15 +25,41 @@ const getOffer = (id = "") => {
   return OFFER_POOL[sum % OFFER_POOL.length];
 };
 
+const getClosingStatus = (openingTime, closingTime) => {
+  if (!openingTime || !closingTime) return { isOpen: true, closingIn: null };
+  const parseTime = (t) => {
+    if (!t) return null;
+    const s = t.toString().trim().toUpperCase();
+    const pm = s.includes('PM');
+    const am = s.includes('AM');
+    const cleaned = s.replace(/[APM\s]/g, '');
+    const [h, m = '0'] = cleaned.split(':');
+    let hour = parseInt(h, 10);
+    const min = parseInt(m, 10);
+    if (pm && hour !== 12) hour += 12;
+    if (am && hour === 12) hour = 0;
+    return hour * 60 + min;
+  };
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const open = parseTime(openingTime);
+  const close = parseTime(closingTime);
+  if (open === null || close === null) return { isOpen: true, closingIn: null };
+  const isOpen = nowMins >= open && nowMins < close;
+  const closingIn = isOpen ? close - nowMins : null;
+  return { isOpen, closingIn };
+};
+
 const RestaurantCard = ({ resData }) => {
   const dispatch = useDispatch();
   const isFav = useSelector(selectIsFavourite(resData.id));
-  const { id, name, cuisines, avgRating, costForTwo, deliveryTime, imageUrl, isOpen } = resData;
+  const { id, name, cuisines, avgRating, costForTwo, deliveryTime, imageUrl, isOpen, openingTime, closingTime } = resData;
 
   const cuisineList = Array.isArray(cuisines) ? cuisines : (cuisines || "").split(",").map((c) => c.trim());
   const displayCuisines = cuisineList.slice(0, 2);
   const extraCount = cuisineList.length - displayCuisines.length;
   const offer = getOffer(id);
+  const closingStatus = getClosingStatus(openingTime, closingTime);
 
   const handleFavClick = (e) => {
     e.preventDefault();
@@ -69,6 +95,12 @@ const RestaurantCard = ({ resData }) => {
           <span className="absolute bottom-2 left-2 bg-black/60 text-white text-xs font-medium px-2 py-0.5 rounded-md">
             🚀 {deliveryTime ?? "30"} min
           </span>
+          {/* Closes soon pill */}
+          {closingStatus.isOpen && closingStatus.closingIn !== null && closingStatus.closingIn < 60 && (
+            <span className="absolute bottom-2 right-2 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+              Closes in {closingStatus.closingIn}m
+            </span>
+          )}
           {/* Favourite heart button */}
           <button
             onClick={handleFavClick}

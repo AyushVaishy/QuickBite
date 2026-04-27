@@ -6,6 +6,8 @@ import { addItem, clearCart } from "../store/cartSlice";
 import { FaBoxOpen, FaUtensils } from "react-icons/fa";
 import toast from "react-hot-toast";
 
+const ORDERS_PER_PAGE = 5;
+
 const STATUS_COLORS = {
   PLACED:           "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   CONFIRMED:        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
@@ -29,6 +31,7 @@ const OrdersPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cancelling, setCancelling] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -98,13 +101,16 @@ const OrdersPage = () => {
       </div>
     );
 
+  const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
+  const paginatedOrders = orders.slice((currentPage - 1) * ORDERS_PER_PAGE, currentPage * ORDERS_PER_PAGE);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-4">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Your Orders</h1>
 
         <div className="space-y-4">
-          {orders.map((order) => (
+          {paginatedOrders.map((order) => (
             <div
               key={order.id}
               className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 overflow-hidden"
@@ -184,6 +190,29 @@ const OrdersPage = () => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {orders.length > ORDERS_PER_PAGE && (
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <button
+              onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 transition"
+            >
+              ← Previous
+            </button>
+            <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 transition"
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

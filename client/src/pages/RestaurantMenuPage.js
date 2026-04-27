@@ -5,9 +5,35 @@ import ShimmerMenu from "../components/ShimmerMenu";
 import RestaurantCategory from "../components/RestaurantCategory";
 import { FaStar, FaArrowLeft, FaMapMarkerAlt, FaClock, FaSearch, FaRegStar } from "react-icons/fa";
 import { MdTwoWheeler } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { viewRestaurant } from "../store/recentlyViewedSlice";
 import { Link } from "react-router-dom";
 import { MdShoppingCart } from "react-icons/md";
+
+const getClosingStatus = (openingTime, closingTime) => {
+  if (!openingTime || !closingTime) return { isOpen: true, closingIn: null };
+  const parseTime = (t) => {
+    if (!t) return null;
+    const s = t.toString().trim().toUpperCase();
+    const pm = s.includes('PM');
+    const am = s.includes('AM');
+    const cleaned = s.replace(/[APM\s]/g, '');
+    const [h, m = '0'] = cleaned.split(':');
+    let hour = parseInt(h, 10);
+    const min = parseInt(m, 10);
+    if (pm && hour !== 12) hour += 12;
+    if (am && hour === 12) hour = 0;
+    return hour * 60 + min;
+  };
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const open = parseTime(openingTime);
+  const close = parseTime(closingTime);
+  if (open === null || close === null) return { isOpen: true, closingIn: null };
+  const isOpen = nowMins >= open && nowMins < close;
+  const closingIn = isOpen ? close - nowMins : null;
+  return { isOpen, closingIn };
+};
 
 const RestaurantMenuPage = () => {
   const { resId } = useParams();
@@ -15,6 +41,7 @@ const RestaurantMenuPage = () => {
   const { restaurant, menu, loading, error } = useRestaurantMenu(resId);
   const cartItems = useSelector((s) => s.cart.items);
   const cartCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
+  const dispatch = useDispatch();
 
   const [scrolled, setScrolled] = useState(false);
   const [menuSearch, setMenuSearch] = useState('');
@@ -25,6 +52,10 @@ const RestaurantMenuPage = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (restaurant) dispatch(viewRestaurant(restaurant));
+  }, [restaurant]); // eslint-disable-line
 
   // ALL hooks must be called before any conditional returns
   const filteredCategories = useMemo(() => {
@@ -61,6 +92,7 @@ const RestaurantMenuPage = () => {
   const categories = menu ? Object.entries(menu) : [];
   const PLACEHOLDER =
     "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=400&fit=crop";
+  const closingStatus = getClosingStatus(restaurant.openingTime, restaurant.closingTime);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -135,6 +167,13 @@ const RestaurantMenuPage = () => {
           </div>
         </div>
       </div>
+
+      {/* ── Closes Soon Banner ── */}
+      {closingStatus.isOpen && closingStatus.closingIn !== null && closingStatus.closingIn < 60 && (
+        <div className="bg-orange-100 dark:bg-orange-900/30 border-l-4 border-orange-500 px-4 py-2.5 text-orange-800 dark:text-orange-300 text-sm font-semibold flex items-center gap-2">
+          ⚠️ Closes in {closingStatus.closingIn} mins — order quickly!
+        </div>
+      )}
 
       {/* ── Menu ── */}
       <div className="max-w-3xl mx-auto px-4 py-8">

@@ -5,6 +5,11 @@ import { addItem, removeItem, updateQuantity } from "../store/cartSlice";
 const PLACEHOLDER_IMG =
   "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop";
 
+const isBestseller = (id = "") => {
+  const sum = id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  return sum % 3 === 0;
+};
+
 const ItemList = ({ items, restaurantName }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((s) => s.cart.items);
@@ -55,6 +60,12 @@ const ItemList = ({ items, restaurantName }) => {
           >
             {/* Left: info */}
             <div className="flex-1 min-w-0">
+              {/* Bestseller badge */}
+              {isBestseller(item.id) && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 dark:bg-orange-900/20 px-2 py-0.5 rounded-full mb-1">
+                  🔥 Bestseller
+                </span>
+              )}
               {/* Veg/non-veg dot + name */}
               <div className="flex items-center gap-2 mb-0.5">
                 <span

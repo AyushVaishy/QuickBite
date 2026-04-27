@@ -6,8 +6,14 @@ import { clearCart, updateQuantity, removeItem } from "../store/cartSlice";
 import { createOrder } from "../services/orderService";
 import { addNotification } from "../store/notificationsSlice";
 import { getAddresses, addAddress as addAddressAPI } from "../services/addressService";
-import { FaShoppingCart, FaUtensils, FaMapMarkerAlt, FaCheckCircle, FaPlus } from "react-icons/fa";
+import { FaShoppingCart, FaUtensils, FaMapMarkerAlt, FaCheckCircle, FaPlus, FaTag } from "react-icons/fa";
 import { Link } from "react-router-dom";
+
+const COUPONS = {
+  WELCOME50: { type: "percent", label: "50% OFF", compute: (total) => Math.min(Math.round(total * 0.5), 100) },
+  QUICKBITE20: { type: "percent", label: "20% OFF", compute: (total) => Math.round(total * 0.2) },
+  FREEDEL: { type: "delivery", label: "Free Delivery", compute: () => 0 },
+};
 
 const CartPage = () => {
   const cartItems = useSelector((store) => store.cart.items);
@@ -22,6 +28,9 @@ const CartPage = () => {
   const [address, setAddress] = useState(""); // fallback plain text
   const [placing, setPlacing] = useState(false);
   const [suggestion, setSuggestion] = useState("");
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null); // coupon code string
+  const [couponError, setCouponError] = useState("");
 
   useEffect(() => {
     getAddresses()
@@ -66,10 +75,33 @@ const CartPage = () => {
 
   // Prices are stored in paise → divide by 100
   const itemTotal = cartItems.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0) / 100;
-  const deliveryFee = 29;
+  const baseDeliveryFee = 29;
+  const effectiveDeliveryFee = appliedCoupon === "FREEDEL" ? 0 : baseDeliveryFee;
   const gstRate = 0.05;
   const gst = Math.round(itemTotal * gstRate);
-  const toPay = itemTotal + deliveryFee + gst;
+  const couponDiscount = appliedCoupon && appliedCoupon !== "FREEDEL"
+    ? COUPONS[appliedCoupon].compute(itemTotal)
+    : 0;
+  const toPay = Math.max(0, itemTotal + effectiveDeliveryFee + gst - couponDiscount);
+
+  const handleApplyCoupon = () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+    if (COUPONS[code]) {
+      setAppliedCoupon(code);
+      setCouponError("");
+      setCouponInput("");
+    } else {
+      setCouponError("Invalid coupon code");
+      setAppliedCoupon(null);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError("");
+    setCouponInput("");
+  };
 
   const getDeliveryAddress = () => {
     if (selectedAddressId) {
@@ -256,6 +288,44 @@ const CartPage = () => {
             />
           </div>
 
+          {/* Coupon */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-5">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 text-sm flex items-center gap-2">
+              <FaTag className="text-orange-500" size={13} /> Apply Coupon
+            </h3>
+            {!appliedCoupon ? (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter coupon code"
+                  value={couponInput}
+                  onChange={(e) => { setCouponInput(e.target.value); setCouponError(""); }}
+                  onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
+                  className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400 uppercase"
+                />
+                <button
+                  onClick={handleApplyCoupon}
+                  className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition"
+                >
+                  Apply
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg px-3 py-2.5">
+                <div className="flex items-center gap-2 text-green-700 dark:text-green-400 text-sm font-semibold">
+                  <FaCheckCircle size={14} />
+                  {appliedCoupon === "FREEDEL"
+                    ? "✓ Coupon applied! Free delivery"
+                    : `✓ Coupon applied! You save ₹${couponDiscount}`}
+                </div>
+                <button onClick={handleRemoveCoupon} className="text-gray-400 hover:text-red-500 text-lg leading-none transition">×</button>
+              </div>
+            )}
+            {couponError && (
+              <p className="mt-2 text-red-500 text-xs font-medium">{couponError}</p>
+            )}
+          </div>
+
           {/* Payment */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-5">
             <h2 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-4">Payment</h2>
@@ -270,7 +340,7 @@ const CartPage = () => {
               onClick={handlePlaceOrder}
               disabled={placing || (!selectedAddressId && !address.trim())}
             >
-              {placing ? "Placing Order…" : `Place Order · ₹${toPay}`}
+              {placing ? "Placing Order…" : `Place Order · ₹${Math.round(toPay)}`}
             </button>
           </div>
         </div>
@@ -323,13 +393,23 @@ const CartPage = () => {
                 <span>Item total</span><span>₹{itemTotal.toFixed(0)}</span>
               </div>
               <div className="flex justify-between text-gray-600 dark:text-gray-300">
-                <span>Delivery fee</span><span>₹{deliveryFee}</span>
+                <span>Delivery fee</span><span>₹{effectiveDeliveryFee}</span>
               </div>
               <div className="flex justify-between text-gray-600 dark:text-gray-300">
                 <span>GST (5%)</span><span>₹{gst}</span>
               </div>
+              {appliedCoupon && appliedCoupon !== "FREEDEL" && (
+                <div className="flex justify-between text-red-500 font-medium">
+                  <span>Discount ({appliedCoupon})</span><span>-₹{couponDiscount}</span>
+                </div>
+              )}
+              {appliedCoupon === "FREEDEL" && (
+                <div className="flex justify-between text-red-500 font-medium">
+                  <span>Discount (FREEDEL)</span><span>-₹{baseDeliveryFee}</span>
+                </div>
+              )}
               <div className="flex justify-between font-bold text-base text-gray-800 dark:text-gray-100 pt-2 border-t border-gray-100 dark:border-gray-700">
-                <span>To Pay</span><span>₹{toPay}</span>
+                <span>To Pay</span><span>₹{Math.round(toPay)}</span>
               </div>
             </div>
 
