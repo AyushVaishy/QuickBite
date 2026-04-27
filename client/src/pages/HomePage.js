@@ -169,15 +169,13 @@ const HomePage = () => {
     topBrandsCarousel.update();
     topRestaurantsCarousel.update();
     recentlyViewedCarousel.update();
-    // eslint-disable-next-line
-  }, [fetchedRestaurants]);
+  }, [fetchedRestaurants]); // eslint-disable-line
 
   useEffect(() => {
     setPage(1);
     setFetchedRestaurants([]);
     fetchPage(1, true);
-    // eslint-disable-next-line
-  }, [location]);
+  }, [location]); // eslint-disable-line
 
   const fetchPage = async (pageNum, reset = false) => {
     if (pageNum === 1) setLoading(true);

@@ -23,8 +23,7 @@ const SearchResultsPage = () => {
     if (query) {
       performSearch(query);
     }
-    // eslint-disable-next-line
-  }, [query, location?.lat, location?.lng]);
+  }, [query, location?.lat, location?.lng]); // eslint-disable-line
 
   const performSearch = async (searchQuery) => {
     setLoading(true);

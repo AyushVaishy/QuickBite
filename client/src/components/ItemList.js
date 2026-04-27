@@ -147,8 +147,31 @@ const ItemList = ({ items, restaurantName }) => {
         item={customizingItem}
         restaurantName={restaurantName}
         onClose={() => setCustomizingItem(null)}
-        onConfirm={(item, qty, customizations) => {
-          for (let i = 0; i < qty; i++) handleAdd(item);
+        onConfirm={(item, qty) => {
+          const willClear = cartItems.length > 0 && cartItems[0].restaurantId !== item.restaurantId;
+          const existing = !willClear ? cartItems.find((i) => i.id === item.id) : null;
+          // Dispatch once — handles cross-restaurant clear in the reducer
+          dispatch(
+            addItem({
+              id: item.id,
+              name: item.name,
+              price: item.price,
+              isVeg: item.isVeg,
+              restaurantId: item.restaurantId,
+              restaurantName: restaurantName || "",
+              imageUrl: item.imageUrl,
+            })
+          );
+          // After addItem: new item has qty=1 (or existing+1). Adjust to the desired total qty.
+          const targetQty = willClear || !existing ? qty : existing.quantity + qty;
+          if (targetQty > 1) {
+            dispatch(updateQuantity({ id: item.id, quantity: targetQty }));
+          }
+          if (willClear) {
+            toast("🔄 Cart cleared — items from previous restaurant removed", { icon: "⚠️" });
+          } else {
+            toast.success(`${item.name}${qty > 1 ? ` × ${qty}` : ""} added to cart 🛒`, { duration: 1500 });
+          }
           setCustomizingItem(null);
         }}
       />
