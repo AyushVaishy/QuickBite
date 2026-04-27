@@ -83,9 +83,11 @@ const Header = ({ location, setLocation }) => {
       setError("");
       try {
         const isSixDigitPincode = /^\d{6}$/.test(trimmed);
+        // India bounding box for viewbox bias; countrycodes=in is the hard filter
+        const indiaViewbox = "&viewbox=68.7,8.4,97.25,37.6&bounded=0";
         const url = isSixDigitPincode
-          ? `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(trimmed)}&countrycodes=in&format=json&addressdetails=1&limit=8`
-          : `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(trimmed)}&countrycodes=in&format=json&addressdetails=1&limit=8`;
+          ? `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(trimmed)}&countrycodes=in&format=json&addressdetails=1&limit=8${indiaViewbox}`
+          : `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(trimmed)}&countrycodes=in&format=json&addressdetails=1&limit=8${indiaViewbox}`;
 
         const response = await fetch(url, {
           headers: {
@@ -93,11 +95,15 @@ const Header = ({ location, setLocation }) => {
           },
         });
         const data = await response.json();
-        if (!data || data.length === 0) {
-          setError("No results found for this location.");
+        // Client-side safety filter: only show Indian results
+        const indiaOnly = (data || []).filter(
+          (r) => !r.address?.country_code || r.address.country_code === "in"
+        );
+        if (indiaOnly.length === 0) {
+          setError("No results found. Try a city or area name within India.");
           setSearchResults([]);
         } else {
-          setSearchResults(data);
+          setSearchResults(indiaOnly);
           setError("");
         }
       } catch (err) {
