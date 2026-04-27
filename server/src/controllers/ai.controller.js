@@ -1,6 +1,6 @@
 const { parseIntent, getRecommendations } = require('../services/recommendationService');
 const { buildMessage } = require('../services/promptBuilder');
-const { generateFoodResponse } = require('../services/geminiService');
+const { extractIntent, generateFoodResponse } = require('../services/geminiService');
 
 const chat = async (req, res) => {
   try {
@@ -11,15 +11,26 @@ const chat = async (req, res) => {
     }
 
     const trimmed = message.trim().slice(0, 500);
-    const intent = parseIntent(trimmed);
+
+    // Step 1: Extract intent — try Gemini first (understands emotions/context),
+    // fall back to regex parseIntent if Gemini is unavailable
+    let intent;
+    try {
+      intent = await extractIntent(trimmed);
+    } catch (intentErr) {
+      console.warn('Gemini intent extraction failed, using regex fallback:', intentErr.message);
+      intent = parseIntent(trimmed);
+    }
+
+    // Step 2: Query DB using structured intent
     const restaurants = await getRecommendations(intent, lat || null, lng || null);
 
-    // Try Gemini first; fall back to template message if unavailable/quota exceeded
+    // Step 3: Generate response — try Gemini, fall back to template
     let responseMessage;
     try {
       responseMessage = await generateFoodResponse(trimmed, intent, restaurants);
-    } catch (geminiErr) {
-      console.warn('Gemini unavailable, using fallback:', geminiErr.message);
+    } catch (responseErr) {
+      console.warn('Gemini response generation failed, using fallback:', responseErr.message);
       responseMessage = null;
     }
     if (!responseMessage) {
@@ -32,6 +43,7 @@ const chat = async (req, res) => {
       intent: {
         cuisines: intent.cuisines,
         mood: intent.mood,
+        keywords: intent.keywords,
         isVeg: intent.isVeg,
         maxCost: intent.maxCost ? Math.round(intent.maxCost / 100) : null,
       },

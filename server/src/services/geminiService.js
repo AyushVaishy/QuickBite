@@ -14,15 +14,72 @@ function getModel() {
 }
 
 /**
- * Generate a conversational AI response for the food assistant.
- * Receives the user message + structured restaurant results from the DB.
- * Returns a friendly, personalized message string.
+ * Use Gemini to extract structured food ordering intent from a natural language message.
+ * Returns an intent object — gracefully handles malformed JSON.
+ */
+async function extractIntent(userMessage) {
+  const m = getModel();
+
+  const prompt = `Extract food ordering intent from the user message below and return ONLY a valid JSON object (no markdown, no explanation, no code blocks).
+
+User message: "${userMessage.replace(/"/g, "'")}"
+
+Return EXACTLY this JSON structure:
+{
+  "cuisines": [],
+  "maxCost": null,
+  "minRating": null,
+  "isVeg": null,
+  "mood": null,
+  "keywords": []
+}
+
+Rules:
+- cuisines: array of specific food types or cuisines mentioned (e.g. ["biryani", "pizza", "spicy food", "chinese"])
+- maxCost: number in RUPEES if a budget/price limit is mentioned (e.g. "under 300" → 300, "below 200" → 200), else null
+- minRating: minimum rating number if quality is mentioned (e.g. "best" → 4.0, "highly rated" → 4.2), else null
+- isVeg: true if user says veg/vegetarian, false if non-veg/chicken/mutton/fish, null if unspecified
+- mood: one of ["comfort","healthy","party","quick","sweet","spicy","romantic","celebration","light","hangover"] based on context — emotional cues count:
+    breakup/sad/upset/lonely → "comfort"
+    healthy/diet/light/low-cal/fit → "healthy"  
+    party/birthday/celebration → "celebration"
+    date/romantic → "romantic"
+    spicy/hot/fiery → "spicy"
+    sweet/dessert/chocolate → "sweet"
+    quick/hungry/fast → "quick"
+  null if none applies
+- keywords: array of food characteristic words mentioned (e.g. ["spicy", "light", "crispy", "grilled", "cheese"])`;
+
+  const result = await m.generateContent(prompt);
+  const raw = result.response.text().trim();
+
+  // Strip markdown code fences if present
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('Gemini returned no JSON for intent extraction');
+
+  const parsed = JSON.parse(jsonMatch[0]);
+
+  // Normalise: maxCost should be in paise (multiply rupees × 100) for internal use
+  return {
+    cuisines:   Array.isArray(parsed.cuisines)  ? parsed.cuisines  : [],
+    maxCost:    parsed.maxCost   ? Math.round(parsed.maxCost) * 100 : null, // → paise
+    minRating:  parsed.minRating ? Number(parsed.minRating)         : null,
+    isVeg:      parsed.isVeg !== undefined ? parsed.isVeg           : null,
+    mood:       parsed.mood      || null,
+    keywords:   Array.isArray(parsed.keywords)  ? parsed.keywords  : [],
+  };
+}
+
+/**
+ * Generate a warm, conversational AI response.
+ * Receives the original message + resolved intent + restaurant results.
  */
 async function generateFoodResponse(userMessage, intent, restaurants) {
   const m = getModel();
 
   const restaurantSummary = restaurants.length === 0
-    ? 'No restaurants matched the filters.'
+    ? 'No matching restaurants found.'
     : restaurants.map((r, i) =>
         `${i + 1}. ${r.name} (Rating: ${r.rating?.toFixed(1) ?? 'N/A'}, ` +
         `Delivery: ${r.deliveryTime ?? '?'} min, ` +
@@ -31,34 +88,35 @@ async function generateFoodResponse(userMessage, intent, restaurants) {
       ).join('\n');
 
   const intentSummary = [
-    intent.mood     ? `Mood: ${intent.mood}`               : null,
-    intent.cuisines?.length ? `Craving: ${intent.cuisines.join(', ')}` : null,
-    intent.maxCost  ? `Budget: under ₹${intent.maxCost}`   : null,
-    intent.isVeg === true  ? 'Dietary: vegetarian'         : null,
-    intent.isVeg === false ? 'Dietary: non-vegetarian'     : null,
-  ].filter(Boolean).join(', ');
+    intent.mood                    ? `Mood/context: ${intent.mood}`            : null,
+    intent.cuisines?.length        ? `Craving: ${intent.cuisines.join(', ')}`  : null,
+    intent.keywords?.length        ? `Preferences: ${intent.keywords.join(', ')}` : null,
+    intent.maxCost                 ? `Budget: ₹${Math.round(intent.maxCost / 100)}` : null,
+    intent.isVeg === true          ? 'Vegetarian'                              : null,
+    intent.isVeg === false         ? 'Non-vegetarian'                          : null,
+  ].filter(Boolean).join(' | ');
 
-  const prompt = `You are QuickBite's friendly AI food assistant. A user sent this message:
+  const prompt = `You are QuickBite's empathetic AI food assistant. A user sent this message:
 "${userMessage}"
 
-Detected intent: ${intentSummary || 'general food query'}
+Understood intent: ${intentSummary || 'general food query'}
 
-Restaurants found from our database:
+Matching restaurants from our database:
 ${restaurantSummary}
 
-Write a short, warm, conversational reply (2-3 sentences max) that:
-- Acknowledges their mood/craving naturally
-- Mentions 1-2 of the top restaurant names from the list
-- Ends with a light encouraging note
-- Uses 1-2 relevant emojis
-- Does NOT make up details — only use what's in the restaurant list above
-- If no restaurants found, suggest they try browsing all restaurants or adjusting filters
+Write a short, warm reply (2-3 sentences MAX) that:
+- Acknowledges their emotional state or craving naturally and empathetically
+- Highlights 1-2 restaurants from the list by name
+- Ends with a small encouraging note
+- Uses 1-2 fitting emojis
+- NEVER makes up restaurant names or dishes — only use what's in the list
+- If no restaurants found, suggest browsing all restaurants or relaxing filters
 
-Keep it under 80 words. Be friendly, not corporate.`;
+Keep it under 80 words. Tone: friendly, caring, like a food-loving friend.`;
 
   const result = await m.generateContent(prompt);
   const text = result.response.text();
   return text?.trim() || null;
 }
 
-module.exports = { generateFoodResponse };
+module.exports = { extractIntent, generateFoodResponse };

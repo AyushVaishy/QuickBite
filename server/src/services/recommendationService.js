@@ -38,11 +38,16 @@ function parseIntent(message) {
 }
 
 const MOOD_CUISINES = {
-  comfort: ['biryani','dal','paratha','thali','rice','paneer'],
-  healthy: ['salad','juice','grilled','soup','idli','dosa'],
-  party: ['pizza','burger','momos','rolls','pasta','nachos'],
-  quick: ['burger','sandwich','wrap','roll','momos'],
-  sweet: ['cake','dessert','ice cream','waffle','shake','chocolate'],
+  comfort:     ['biryani','dal','paratha','thali','rice','paneer','khichdi','rajma'],
+  healthy:     ['salad','juice','grilled','soup','idli','dosa','oats','fruit'],
+  celebration: ['pizza','burger','momos','pasta','nachos','wings','combo'],
+  party:       ['pizza','burger','momos','pasta','nachos','wings','combo'],
+  quick:       ['burger','sandwich','wrap','roll','momos','frankie'],
+  sweet:       ['cake','dessert','ice cream','waffle','shake','chocolate','kulfi'],
+  spicy:       ['spicy','chilli','tandoori','pepper','schezwan','vindaloo','hot'],
+  romantic:    ['pasta','italian','sushi','dessert','chocolate','cake'],
+  light:       ['salad','soup','idli','dosa','sandwich','grilled','fruit'],
+  hangover:    ['burger','pizza','fries','biryani','momos','maggi'],
 };
 
 async function getRecommendations(intent) {
@@ -52,7 +57,11 @@ async function getRecommendations(intent) {
   // costForTwo is stored in rupees; intent.maxCost is in paise, so divide by 100 for comparison
   if (intent.maxCost) where.costForTwo = { lte: Math.round(intent.maxCost / 100) * 2 };
 
-  const keywordsToSearch = [...intent.cuisines];
+  // Merge cuisines + keywords + mood hints into one search pool
+  const keywordsToSearch = [
+    ...intent.cuisines,
+    ...(intent.keywords || []),
+  ];
   if (intent.mood && MOOD_CUISINES[intent.mood]) {
     keywordsToSearch.push(...MOOD_CUISINES[intent.mood]);
   }
