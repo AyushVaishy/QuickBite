@@ -8,7 +8,7 @@ function getModel() {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
     genAI = new GoogleGenerativeAI(apiKey);
-    model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   }
   return model;
 }
@@ -37,8 +37,8 @@ Return EXACTLY this JSON structure:
 Rules:
 - cuisines: array of specific food types or cuisines mentioned (e.g. ["biryani", "pizza", "spicy food", "chinese"])
 - maxCost: number in RUPEES if a budget/price limit is mentioned (e.g. "under 300" → 300, "below 200" → 200), else null
-- minRating: minimum rating number if quality is mentioned (e.g. "best" → 4.0, "highly rated" → 4.2), else null
-- isVeg: true if user says veg/vegetarian, false if non-veg/chicken/mutton/fish, null if unspecified
+- minRating: minimum rating number if quality is mentioned (e.g. "best" → 4.0, "highly rated" → 4.2, "high rated" → 4.0, "top rated" → 4.2, "top restaurants" → 4.0, "popular" → 4.0), else null
+  - isVeg: true if user says veg/vegetarian, false if non-veg/chicken/mutton/fish, null if unspecified
 - mood: one of ["comfort","healthy","party","quick","sweet","spicy","romantic","celebration","light","hangover"] based on context — emotional cues count:
     breakup/sad/upset/lonely → "comfort"
     healthy/diet/light/low-cal/fit → "healthy"  
@@ -47,8 +47,10 @@ Rules:
     spicy/hot/fiery → "spicy"
     sweet/dessert/chocolate → "sweet"
     quick/hungry/fast → "quick"
+    late night/midnight/night snack → "hangover"
   null if none applies
-- keywords: array of food characteristic words mentioned (e.g. ["spicy", "light", "crispy", "grilled", "cheese"])`;
+- keywords: array of food characteristic words mentioned (e.g. ["spicy", "light", "crispy", "grilled", "cheese"])
+  IMPORTANT: Always include taste/texture descriptors in keywords even if mood is set (e.g. "breakup spicy" → mood:"comfort", keywords:["spicy"])`;
 
   const result = await m.generateContent(prompt);
   const raw = result.response.text().trim();

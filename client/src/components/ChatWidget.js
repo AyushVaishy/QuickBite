@@ -4,14 +4,30 @@ import api from "../services/api";
 
 const QUICK_PROMPTS = [
   "I'm feeling hungry 🍽️",
+  "Had a breakup, comfort food 💔",
   "Cheap food under ₹200",
   "Suggest healthy options 🥗",
   "Best biryani near me",
+  "Spicy food 🌶️",
   "Something sweet 🍰",
   "Quick meal for party 🎉",
 ];
 
 const formatPrice = (paise) => `₹${Math.round(paise / 100)}`;
+
+// Read user's saved location from localStorage (set by AppLayout)
+function getSavedLocation() {
+  try {
+    const saved = localStorage.getItem('quickbite_location');
+    if (saved) {
+      const loc = JSON.parse(saved);
+      if (loc && !isNaN(Number(loc.lat)) && !isNaN(Number(loc.lng))) {
+        return { lat: Number(loc.lat), lng: Number(loc.lng) };
+      }
+    }
+  } catch {}
+  return { lat: null, lng: null };
+}
 
 const TypingIndicator = () => (
   <div className="flex items-end gap-2 mb-3">
@@ -43,6 +59,9 @@ const RestaurantCard = ({ restaurant, onNavigate }) => (
           )}
           {restaurant.costForTwo && (
             <span className="text-xs text-gray-500 dark:text-gray-400">{formatPrice(restaurant.costForTwo)} for 2</span>
+          )}
+          {restaurant.distance != null && (
+            <span className="text-xs text-blue-500 dark:text-blue-400">📍 {restaurant.distance} km</span>
           )}
         </div>
       </div>
@@ -128,10 +147,11 @@ const ChatWidget = () => {
     setIsLoading(true);
 
     try {
+      const { lat, lng } = getSavedLocation();
       const { data } = await api.post("/ai/chat", {
         message: trimmed,
-        lat: null,
-        lng: null,
+        lat,
+        lng,
       });
       setMessages((prev) => [
         ...prev,
