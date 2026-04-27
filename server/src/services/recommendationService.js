@@ -203,6 +203,7 @@ async function getRecommendations(intent, lat, lng) {
       distance: null,
       isFallback: true,
       dishes: (r.menuItems || []).slice(0, 3).map(i => ({
+        id: i.id,
         name: i.name,
         price: i.price, // already in paise
         isVeg: i.isVeg,
@@ -220,6 +221,7 @@ async function getRecommendations(intent, lat, lng) {
     imageUrl: r.imageUrl,
     distance: distance !== null ? Math.round(distance * 10) / 10 : null,
     dishes: matchingItems.map(i => ({
+      id: i.id,
       name: i.name,
       price: i.price, // already in paise
       isVeg: i.isVeg,
