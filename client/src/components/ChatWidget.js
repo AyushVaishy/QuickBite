@@ -391,35 +391,68 @@ export default function ChatWidget() {
     recRef.current = rec;
     finalTransRef.current = "";
 
-    rec.continuous = false;
+    // continuous = true so Chrome doesn't cut off mid-sentence.
+    // We manage the "done speaking" detection ourselves via a silence timer.
+    rec.continuous = true;
     rec.interimResults = true;
-    // Use detected user language — hi-IN for Devanagari Hindi, en-IN for English/Hinglish
     rec.lang = userLangRef.current === "hi" ? "hi-IN" : "en-IN";
     rec.maxAlternatives = 1;
 
-    rec.onstart = () => { if (mountedRef.current) setListening(true); };
+    let silenceTimer = null;
+    let committed = false; // prevent double-submit if onend fires after commit
 
-    rec.onresult = (e) => {
-      let interim = "", final = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) final += e.results[i][0].transcript;
-        else interim += e.results[i][0].transcript;
-      }
-      if (final) finalTransRef.current = final;
-      if (mountedRef.current) setInputText(final || interim);
-    };
-
-    rec.onend = () => {
-      if (mountedRef.current) { setListening(false); setInputText(""); }
+    const commit = () => {
+      if (committed) return;
+      committed = true;
+      clearTimeout(silenceTimer);
+      try { rec.stop(); } catch {}
       const transcript = finalTransRef.current.trim();
       finalTransRef.current = "";
+      if (mountedRef.current) { setListening(false); setInputText(""); }
       if (transcript && mountedRef.current) {
-        // Use ref to call sendMessage — avoids stale closure
         sendRef.current?.(transcript, true);
       }
     };
 
-    rec.onerror = () => {
+    const resetSilenceTimer = () => {
+      clearTimeout(silenceTimer);
+      // 3.5 s of silence → commit whatever was said
+      silenceTimer = setTimeout(commit, 3500);
+    };
+
+    rec.onstart = () => { if (mountedRef.current) setListening(true); };
+
+    rec.onresult = (e) => {
+      let interim = "";
+      let newFinal = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) newFinal += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      if (newFinal) finalTransRef.current += " " + newFinal;
+      if (mountedRef.current) setInputText((finalTransRef.current + " " + interim).trim());
+      // Any new speech resets the silence countdown
+      resetSilenceTimer();
+    };
+
+    rec.onspeechend = () => {
+      // Browser detected speech ended — start the silence countdown if not already running
+      resetSilenceTimer();
+    };
+
+    rec.onend = () => {
+      clearTimeout(silenceTimer);
+      if (!committed) commit();
+    };
+
+    rec.onerror = (e) => {
+      clearTimeout(silenceTimer);
+      if (e.error === "no-speech") {
+        // Timed out with nothing said — just stop quietly
+        if (mountedRef.current) { setListening(false); setInputText(""); }
+        committed = true;
+        return;
+      }
       if (mountedRef.current) { setListening(false); setInputText(""); }
     };
 
