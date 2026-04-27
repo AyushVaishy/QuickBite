@@ -165,7 +165,7 @@ async function getRecommendations(intent, lat, lng) {
       score += Math.max(0, 1.5 - distance / (NEARBY_RADIUS_KM / 1.5));
     }
 
-    return { restaurant: r, score, matchingItems: matchingItems.slice(0, 3), distance };
+    return { restaurant: r, score, matchingItems: matchingItems.slice(0, 8), distance };
   });
 
   // Prefer restaurants that got at least one keyword bonus (score > raw avgRating)
@@ -187,7 +187,7 @@ async function getRecommendations(intent, lat, lng) {
     const fallback = await prisma.restaurant.findMany({
       where: { isOpen: true, isApproved: true, costForTwo: { gte: 5000 }, avgRating: { gt: 0 } },
       include: {
-        menuItems: { where: { isAvailable: true }, take: 3 },
+        menuItems: { where: { isAvailable: true }, take: 8 },
       },
       orderBy: [{ avgRating: 'desc' }],
       take: 5,
@@ -202,7 +202,7 @@ async function getRecommendations(intent, lat, lng) {
       imageUrl: r.imageUrl,
       distance: null,
       isFallback: true,
-      dishes: (r.menuItems || []).slice(0, 3).map(i => ({
+      dishes: (r.menuItems || []).slice(0, 8).map(i => ({
         id: i.id,
         name: i.name,
         price: i.price, // already in paise

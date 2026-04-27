@@ -259,11 +259,13 @@ export default function ChatWidget() {
   const [speaking, setSpeaking] = useState(false);
   const [voiceOk, setVoiceOk] = useState(false);
   const [cart, setCart] = useState([]);
+  const [lastRestaurants, setLastRestaurants] = useState([]);
 
   // ── Refs (avoid stale closures across async/voice callbacks) ──────────────
   const mountedRef = useRef(true);
   const msgsRef = useRef([]);
   const cartRef = useRef([]);
+  const lastRestaurantsRef = useRef([]);
   const recRef = useRef(null);
   const finalTransRef = useRef("");
   const voiceRef = useRef(null);
@@ -279,6 +281,7 @@ export default function ChatWidget() {
   // ── Sync refs with state ──────────────────────────────────────────────────
   useEffect(() => { msgsRef.current = msgs; }, [msgs]);
   useEffect(() => { cartRef.current = cart; }, [cart]);
+  useEffect(() => { lastRestaurantsRef.current = lastRestaurants; }, [lastRestaurants]);
 
   // ── One-time setup ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -441,7 +444,7 @@ export default function ChatWidget() {
     if (!items.length) {
       const m = {
         id: uid(), role: "ai",
-        content: "Please tap '+ Add' on the dishes you'd like, then say 'place the order'! 🍽️",
+        content: "There's nothing in the cart yet! Tell me what dishes you'd like and I'll add them for you. 🍽️",
       };
       setMsgs((p) => [...p, m]);
       speak(m.content, () => scheduleListenRef.current?.());
@@ -507,6 +510,18 @@ export default function ChatWidget() {
       const firstName = (authUser?.name || authUser?.username || "").split(" ")[0] || "";
       const savedAddress = localStorage.getItem("quickbite_address") || "";
 
+      // Compact restaurant context — gives Gemini full menu awareness
+      const shownRestaurants = (lastRestaurantsRef.current || []).map((r) => ({
+        id: r.id,
+        name: r.name,
+        dishes: (r.dishes || []).map((d) => ({
+          id: d.id,
+          name: d.name,
+          price: d.price,
+          isVeg: d.isVeg,
+        })),
+      }));
+
       try {
         const res = await api.post("/ai/converse", {
           messages: history,
@@ -514,6 +529,7 @@ export default function ChatWidget() {
           savedAddress,
           lat,
           lng,
+          shownRestaurants,
         });
         if (!mountedRef.current) return;
 
@@ -528,23 +544,62 @@ export default function ChatWidget() {
         setMsgs((prev) => [...prev, aiMsg]);
         setThinking(false);
 
-        // Execute order if Priya confirmed it
+        // ── Handle actions ─────────────────────────────────────────────────
+
+        // PLACE_ORDER: execute the cart
         if (d.action === "PLACE_ORDER") {
           await placeOrderRef.current?.();
           return;
         }
 
-        // Build what to speak: if restaurants returned, briefly mention them
-        let toSpeak = aiMsg.content;
-        if (aiMsg.restaurants?.length > 0) {
-          const names = aiMsg.restaurants.slice(0, 3).map((r) => r.name).join(", ");
-          toSpeak = `${aiMsg.content} I found ${aiMsg.restaurants.length} great options including ${names}. Tap any card to see the dishes!`;
+        // ADD_TO_CART: Gemini identified the exact dish(es) — auto-add them
+        if (d.action === "ADD_TO_CART" && Array.isArray(d.items) && d.items.length > 0) {
+          const rMap = {};
+          (lastRestaurantsRef.current || []).forEach((r) => { rMap[r.id] = r; });
+          d.items.forEach((item) => {
+            const r = rMap[item.restaurantId];
+            if (!r) return;
+            const dish = (r.dishes || []).find((di) => di.id === item.dishId);
+            if (!dish) return;
+            setCart((prev) => {
+              if (prev.some((c) => c.dishId === dish.id)) return prev;
+              return [
+                ...prev,
+                {
+                  restaurantId: r.id,
+                  restaurantName: r.name,
+                  dishId: dish.id,
+                  dishName: dish.name,
+                  price: dish.price,
+                },
+              ];
+            });
+          });
         }
 
-        // Auto-listen after speaking (longer delay when cards are shown)
+        // RECOMMEND: save the restaurant list so Gemini has context next turn
+        if (d.action === "RECOMMEND" && Array.isArray(d.restaurants)) {
+          setLastRestaurants(d.restaurants);
+        }
+
+        // ── Build TTS speech ───────────────────────────────────────────────
+        let toSpeak = aiMsg.content;
+        if (aiMsg.restaurants?.length > 0) {
+          // Read out top 2 restaurants with their first dish so user knows what's there
+          const top = aiMsg.restaurants.slice(0, 2);
+          const spoken = top
+            .map((r) => {
+              const dish = r.dishes?.[0]?.name;
+              return dish ? `${r.name}, serving ${dish}` : r.name;
+            })
+            .join("; and ");
+          toSpeak = `${aiMsg.content} I found ${aiMsg.restaurants.length} great spots — ${spoken}. Tap any card to see the full menu!`;
+        }
+
+        // Auto-listen after speaking
         speak(toSpeak, () => {
           if (mountedRef.current) {
-            scheduleListenRef.current?.(aiMsg.restaurants?.length > 0 ? 2800 : 900);
+            scheduleListenRef.current?.(aiMsg.restaurants?.length > 0 ? 2500 : 900);
           }
         });
       } catch {
@@ -622,6 +677,7 @@ export default function ChatWidget() {
     greeted.current = false;
     setMsgs([]);
     setCart([]);
+    setLastRestaurants([]);
   }, []);
 
   // ── Cleanup on unmount ────────────────────────────────────────────────────

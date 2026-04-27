@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { chat } = require('../controllers/ai.controller');
+const { chat, converse } = require('../controllers/ai.controller');
 const rateLimit = require('express-rate-limit');
 
 // Stricter limit on the AI endpoint — each request may call Gemini (external API)
@@ -13,5 +13,6 @@ const aiLimiter = rateLimit({
 });
 
 router.post('/chat', aiLimiter, chat);
+router.post('/converse', aiLimiter, converse);
 
 module.exports = router;
