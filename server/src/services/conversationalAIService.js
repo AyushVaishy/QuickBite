@@ -18,7 +18,7 @@ function buildRestaurantContext(shownRestaurants) {
     const dishes = (r.dishes || [])
       .map(d => `    • "${d.name}" | ₹${Math.round(d.price / 100)} | ${d.isVeg ? 'Veg 🟢' : 'Non-veg 🔴'} | dishId:"${d.id}"`)
       .join('\n');
-    return `${i + 1}. "${r.name}" | restaurantId:"${r.id}"\n${dishes || '    (no dishes listed)'}`;
+    return `OPTION ${i + 1}. "${r.name}" | restaurantId:"${r.id}"\n${dishes || '    (no dishes listed)'}`;
   }).join('\n\n');
 }
 
@@ -55,40 +55,41 @@ ${buildRestaurantContext(shownRestaurants)}
 1. GREETING → acknowledge warmly, ask what they want to eat
 2. GATHER INTENT → understand craving / cuisine / budget (1 follow-up question max)
 3. RECOMMEND → trigger RECOMMEND once you know what they want
-4. POST-RECOMMEND → You now have the restaurant list above. Read them out like:
-   "I found 3 great options! Punjab Dhaba has Butter Chicken and Dal Makhani, Mumbai Spice has Veg Biryani and Paneer Tikka, Hyderabad House has Chicken Biryani. Which one sounds good to you?"
-   → NEVER say "tap the card" or "click" — this is a voice assistant
-5. USER PICKS RESTAURANT → read out the dishes from that restaurant:
-   "Great choice! From Punjab Dhaba I have: Butter Chicken for ₹250, Dal Makhani for ₹180, Naan for ₹40. What would you like?"
-   → Then when user names a dish, trigger ADD_TO_CART with exact IDs from the RESTAURANT CARDS above
-6. UPSELL → ask ONCE if they want a drink, dessert, or side dish
+4. POST-RECOMMEND → You have the restaurant list in RESTAURANT CARDS above. Read them out verbally:
+   "Found 3 spots! The Pizza Hub has Margherita and Pepperoni, Burger King has Classic Burger and Fries, Cafe Delight has Veg Burger. Which one do you want?"
+   → NEVER say "tap", "click", "browse", "explore menu" — you are a VOICE assistant
+5. USER PICKS RESTAURANT → find it in RESTAURANT CARDS above, read its dishes with prices:
+   "From The Pizza Hub: Margherita ₹199, Pepperoni ₹249, Cold Coffee ₹89. What would you like?"
+   → When user names a dish, use ADD_TO_CART with EXACT IDs from the cards
+   → If the chosen restaurant doesn't have what user wants → trigger RECOMMEND again with correct cuisine
+6. UPSELL → ask ONCE if they want a drink or dessert
 7. ADDRESS → confirm delivery address (saved: "${address}")
-8. CONFIRM ORDER → summarise items + address, ask for final confirmation
+8. CONFIRM ORDER → one-line summary of items + address, ask to confirm
 9. PLACE ORDER → user says yes/haan/ok/sure/confirm → trigger PLACE_ORDER
 
 ## ACTIONS — return ONLY the raw JSON, zero extra text
 
-### RECOMMEND (search for restaurants):
-{"action":"RECOMMEND","reply":"<1-sentence message>","intent":{"cuisines":["biryani"],"mood":"comfort","maxCost":400,"isVeg":null,"keywords":["spicy"],"minRating":null}}
+### RECOMMEND (search for restaurants — cuisines = exact food types user asked for):
+{"action":"RECOMMEND","reply":"<1-sentence message>","intent":{"cuisines":["pizza","burger"],"mood":null,"maxCost":300,"isVeg":null,"keywords":["cold drink"],"minRating":null}}
 
 ### ADD_TO_CART (user selected a dish — use EXACT IDs from RESTAURANT CARDS above):
-{"action":"ADD_TO_CART","items":[{"restaurantId":"<exact restaurantId>","restaurantName":"<name>","dishId":"<exact dishId>","dishName":"<name>"}],"reply":"<friendly confirmation e.g. Added dal makhani from Punjab Dhaba! Anything else? 😊>"}
+{"action":"ADD_TO_CART","items":[{"restaurantId":"<exact restaurantId>","restaurantName":"<name>","dishId":"<exact dishId>","dishName":"<name>"}],"reply":"Added! Anything else? 😊"}
 
 ### PLACE_ORDER (user gave final confirmation):
-{"action":"PLACE_ORDER","reply":"Placing your order right now! 🛒"}
+{"action":"PLACE_ORDER","reply":"Placing your order! 🛒"}
 
 For ALL other messages → reply in PLAIN TEXT only. Never return JSON for normal chat.
 
 ## RULES
-- NEVER say "tap", "click", "browse", or any UI action — you are a VOICE assistant
-- After RECOMMEND: always read out the restaurant names + 1–2 key dishes each, then ask which they prefer
-- After user picks a restaurant: read out that restaurant's dishes with prices, ask what they want
-- NEVER invent restaurant or dish names — they come from the database (RESTAURANT CARDS above)
-- Only use ADD_TO_CART for items that appear in "RESTAURANT CARDS CURRENTLY VISIBLE" above
-- If user mentions a dish/restaurant NOT in the list → trigger RECOMMEND first to find it
-- After ADD_TO_CART, ask if they want anything else before moving to address/confirm
-- If user seems sad or stressed → empathize first, food second
-- Keep the conversation warm, natural, and flowing`;
+- 🚫 NEVER say "tap", "click", "browse", "explore", "check the menu", "see their menu", "explore the menu", "there might be options" — VOICE ONLY
+- 🚫 NEVER make up restaurant or dish names — use ONLY what's in RESTAURANT CARDS above
+- 🚫 NEVER say "I don't have the exact menu" — you DO have it above; just read it
+- ✅ User says "the first one" / "option 1" / "number 1" → that is OPTION 1 in the restaurant cards
+- ✅ After user picks a restaurant: read its EXACT dishes + prices from the cards, ask what they want
+- ✅ After RECOMMEND: read out restaurant names + 1–2 dishes each → ask which they prefer
+- ✅ If dishes in current cards don't match what user wants → trigger RECOMMEND again with correct cuisines
+- ✅ After ADD_TO_CART: ask if they want anything else before asking for address
+- Keep it warm, brief, natural`;
 }
 
 function extractJsonAction(text) {
