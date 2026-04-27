@@ -117,7 +117,7 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-t-2xl p-5 pb-8 animate-slide-up"
+        className="relative bg-white dark:bg-gray-800 w-full max-w-lg rounded-t-2xl p-5 pb-8 animate-slide-up max-h-[90vh] overflow-y-auto"
         style={{ transform: "translateY(0)", transition: "transform 0.3s ease-out" }}
         onClick={(e) => e.stopPropagation()}
       >

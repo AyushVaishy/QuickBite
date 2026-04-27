@@ -434,7 +434,7 @@ const OrderDetailPage = () => {
           </div>
 
           {/* Bill */}
-          <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-3 bg-gray-50 dark:bg-gray-750 space-y-1.5">
+          <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 space-y-1.5">
             <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
               <span>Item total</span><span>₹{itemTotal.toFixed(0)}</span>
             </div>

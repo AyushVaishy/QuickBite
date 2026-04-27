@@ -159,7 +159,7 @@ const OrdersPage = () => {
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-750">
+              <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-700/50">
                 <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                   ₹{Math.round(order.totalAmount / 100)}
                 </span>

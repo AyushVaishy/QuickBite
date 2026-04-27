@@ -301,11 +301,11 @@ const CartPage = () => {
                   value={couponInput}
                   onChange={(e) => { setCouponInput(e.target.value); setCouponError(""); }}
                   onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
-                  className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400 uppercase"
+                  className="flex-1 min-w-0 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400 uppercase"
                 />
                 <button
                   onClick={handleApplyCoupon}
-                  className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition"
+                  className="flex-shrink-0 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition"
                 >
                   Apply
                 </button>

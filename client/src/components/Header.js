@@ -704,15 +704,15 @@ const Header = ({ location, setLocation }) => {
 
               {/* Simple & Beautiful Address Selector */}
               <button
-                className="flex items-center gap-3 bg-orange-50 dark:bg-gray-800 hover:bg-orange-100 dark:hover:bg-gray-700 text-orange-700 px-4 py-3 rounded-lg border border-orange-200 dark:border-gray-700 hover:border-orange-300 transition-all duration-300 min-w-[280px] max-w-[350px]"
+                className="flex items-center gap-3 bg-orange-50 dark:bg-gray-800 hover:bg-orange-100 dark:hover:bg-gray-700 text-orange-700 dark:text-orange-400 px-4 py-3 rounded-lg border border-orange-200 dark:border-gray-700 hover:border-orange-300 transition-all duration-300 min-w-0 sm:min-w-[240px] max-w-[350px]"
                 onClick={() => setSidebarOpen(true)}
               >
                 <FaMapMarkerAlt className="text-orange-500 text-lg flex-shrink-0" />
                 <div className="text-left flex-1 min-w-0">
-                  <div className="font-semibold text-orange-700 truncate">
+                  <div className="font-semibold text-orange-700 dark:text-orange-400 truncate">
                     {location.address ? location.address.split(",")[0] : "Select Location"}
                   </div>
-                  <div className="text-xs text-orange-600 truncate">
+                  <div className="text-xs text-orange-600 dark:text-orange-300 truncate">
                     {location.address || "Choose your delivery address"}
                   </div>
                 </div>

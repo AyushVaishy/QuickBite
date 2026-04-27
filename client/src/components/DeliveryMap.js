@@ -57,10 +57,11 @@ const DeliveryMap = ({ order, status }) => {
 
   return (
     <div className="mb-4">
+      <div className="h-48 sm:h-56 rounded-xl overflow-hidden">
       <MapContainer
         center={restaurantPos}
         zoom={14}
-        style={{ height: "220px", borderRadius: "12px" }}
+        style={{ height: "100%" }}
         className="z-0"
         scrollWheelZoom={false}
       >
@@ -76,6 +77,7 @@ const DeliveryMap = ({ order, status }) => {
           pathOptions={{ color: "#9ca3af", weight: 2, dashArray: "6 6" }}
         />
       </MapContainer>
+      </div>
       <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-2">
         🍴 Restaurant · 🛵 Delivery Partner · 📍 Your location
       </p>

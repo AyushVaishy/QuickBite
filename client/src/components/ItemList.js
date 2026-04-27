@@ -66,7 +66,7 @@ const ItemList = ({ items, restaurantName }) => {
             <div className="flex-1 min-w-0">
               {/* Bestseller badge */}
               {isBestseller(item.id) && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-orange-600 bg-orange-100 dark:bg-orange-900/20 px-2 py-0.5 rounded-full mb-1">
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20 px-2 py-0.5 rounded-full mb-1">
                   🔥 Bestseller
                 </span>
               )}

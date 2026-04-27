@@ -28,12 +28,12 @@ const TABS = [
 ];
 
 const STATUS_COLORS = {
-  PLACED:           "bg-blue-100 text-blue-700",
-  CONFIRMED:        "bg-indigo-100 text-indigo-700",
-  PREPARING:        "bg-yellow-100 text-yellow-700",
-  OUT_FOR_DELIVERY: "bg-orange-100 text-orange-700",
-  DELIVERED:        "bg-green-100 text-green-700",
-  CANCELLED:        "bg-red-100 text-red-700",
+  PLACED:           "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  CONFIRMED:        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
+  PREPARING:        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+  OUT_FOR_DELIVERY: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+  DELIVERED:        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  CANCELLED:        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
 const STATUS_LABELS = {
   PLACED: "Order Placed", CONFIRMED: "Confirmed", PREPARING: "Preparing",
@@ -73,7 +73,7 @@ const ProfileTab = ({ user, onUpdated }) => {
         <div>
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{user?.name}</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
-          <span className="inline-block mt-1 text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">
+          <span className="inline-block mt-1 text-xs bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded-full font-medium">
             {user?.role === "USER" ? "Customer" : user?.role?.replace("_", " ")}
           </span>
         </div>
