@@ -267,6 +267,13 @@ const HomePage = () => {
       });
     }
 
+    if (filters.deliveryTimeMax !== null) {
+      list = list.filter((r) => {
+        const dt = parseInt(r.deliveryTime || 45, 10);
+        return dt <= filters.deliveryTimeMax;
+      });
+    }
+
     // Sort — always on a copy (list is already a copy via [...fetchedRestaurants])
     if (filters.sortBy === "rating_desc") {
       list.sort((a, b) => parseFloat(b.avgRating || 0) - parseFloat(a.avgRating || 0));
@@ -285,6 +292,7 @@ const HomePage = () => {
     filters.cuisines.length > 0 ? 1 : 0,
     filters.rating !== null ? 1 : 0,
     filters.costRange !== null ? 1 : 0,
+    filters.deliveryTimeMax !== null ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
   const anyFilterActive = filters.vegOnly || modalFilterCount > 0;

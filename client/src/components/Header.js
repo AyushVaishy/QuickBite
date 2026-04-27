@@ -1,9 +1,10 @@
-﻿import LOGO from "../assets/logo.png";
+import LOGO from "../assets/logo.png";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout as logoutAction } from "../store/authSlice";
 import { clearCart } from "../store/cartSlice";
+import { selectUnreadCount, selectNotifications, markAllRead, clearNotifications } from "../store/notificationsSlice";
 import toast from "react-hot-toast";
 import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt, FaUserCircle, FaStore } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
@@ -61,6 +62,11 @@ const Header = ({ location, setLocation }) => {
   const searchInputRef = useRef(null);
   const userMenuRef = useRef(null);
   const searchPanelRef = useRef(null);
+  const notifRef = useRef(null);
+
+  const unreadCount = useSelector(selectUnreadCount);
+  const notifications = useSelector(selectNotifications);
+  const [notifOpen, setNotifOpen] = useState(false);
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -202,6 +208,17 @@ const Header = ({ location, setLocation }) => {
     if (isSearchOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isSearchOpen]);
+
+  // Close notification panel on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setNotifOpen(false);
+      }
+    };
+    if (notifOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [notifOpen]);
 
   // Listen for global event to open the address sidebar (from other components)
   useEffect(() => {
@@ -722,6 +739,70 @@ const Header = ({ location, setLocation }) => {
               >
                 {isDark ? <FiSun className="text-yellow-400 text-xl" /> : <FiMoon className="text-gray-600 dark:text-gray-300 text-xl" />}
               </button>
+
+              {/* Notification Bell */}
+              <div ref={notifRef} className="relative">
+                <button
+                  onClick={() => { setNotifOpen(v => !v); if (!notifOpen) dispatch(markAllRead()); }}
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  aria-label="Notifications"
+                >
+                  <span className="text-lg">🔔</span>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notification Dropdown */}
+                {notifOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-[9999] overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                      <h3 className="font-bold text-gray-800 dark:text-gray-100 text-sm">Notifications</h3>
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={() => dispatch(clearNotifications())}
+                          className="text-xs text-orange-500 hover:underline"
+                        >
+                          Clear all
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-72 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="px-4 py-8 text-center text-gray-400">
+                          <div className="text-3xl mb-2">🔔</div>
+                          <p className="text-sm">No notifications yet</p>
+                        </div>
+                      ) : (
+                        notifications.map((n) => (
+                          <div
+                            key={n.id}
+                            className={`px-4 py-3 border-b border-gray-50 dark:border-gray-800 last:border-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${!n.read ? 'bg-orange-50/60 dark:bg-orange-900/10' : ''}`}
+                            onClick={() => n.orderId && (window.location.href = `/home/orders/${n.orderId}`)}
+                          >
+                            <div className="flex items-start gap-2">
+                              <div className="text-lg flex-shrink-0 mt-0.5">
+                                {n.type === 'PLACED' ? '📋' : n.type === 'CONFIRMED' ? '✅' : n.type === 'PREPARING' ? '🍳' : n.type === 'OUT_FOR_DELIVERY' ? '🚚' : n.type === 'DELIVERED' ? '🎉' : n.type === 'CANCELLED' ? '❌' : '🔔'}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-gray-800 dark:text-gray-100 text-xs leading-tight">{n.title}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{n.message}</p>
+                                <p className="text-[10px] text-gray-400 mt-1">
+                                  {new Date(n.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                                </p>
+                              </div>
+                              {!n.read && <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0 mt-1" />}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Navigation Links */}
                              <nav className="hidden lg:flex items-center gap-4">
                  <Link

@@ -6,6 +6,25 @@ import { toggleFavourite, selectIsFavourite } from "../store/favoritesSlice";
 const PLACEHOLDER_IMG =
   "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop";
 
+// Deterministically assign offers based on restaurant id string
+const OFFER_POOL = [
+  null,
+  null,
+  "20% OFF up to ₹100",
+  "Free Delivery",
+  "50% OFF up to ₹80",
+  null,
+  "30% OFF on first order",
+  null,
+  "Flat ₹50 OFF",
+  null,
+];
+
+const getOffer = (id = "") => {
+  const sum = id.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  return OFFER_POOL[sum % OFFER_POOL.length];
+};
+
 const RestaurantCard = ({ resData }) => {
   const dispatch = useDispatch();
   const isFav = useSelector(selectIsFavourite(resData.id));
@@ -14,6 +33,7 @@ const RestaurantCard = ({ resData }) => {
   const cuisineList = Array.isArray(cuisines) ? cuisines : (cuisines || "").split(",").map((c) => c.trim());
   const displayCuisines = cuisineList.slice(0, 2);
   const extraCount = cuisineList.length - displayCuisines.length;
+  const offer = getOffer(id);
 
   const handleFavClick = (e) => {
     e.preventDefault();
@@ -37,6 +57,12 @@ const RestaurantCard = ({ resData }) => {
           {isOpen === false && (
             <span className="absolute top-2 left-2 bg-black/70 text-white text-xs font-semibold px-2 py-0.5 rounded-md">
               CLOSED
+            </span>
+          )}
+          {/* Offer badge */}
+          {isOpen !== false && offer && (
+            <span className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+              🏷 {offer}
             </span>
           )}
           {/* Delivery time pill on image */}

@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { getOrder, cancelOrder, createReview as createReviewService } from "../services/orderService";
 import { addItem, clearCart } from "../store/cartSlice";
+import { addNotification } from "../store/notificationsSlice";
 import { FaArrowLeft, FaStar, FaMapMarkerAlt, FaBoxOpen, FaMotorcycle, FaPhoneAlt } from "react-icons/fa";
 import { MdDeliveryDining } from "react-icons/md";
 
@@ -233,21 +234,45 @@ const LiveTrackingCard = ({ order }) => {
   );
 };
 
+// ─── Notification messages for status changes ─────────────────────────────────
+const STATUS_NOTIF_MESSAGES = {
+  CONFIRMED:        { title: "Order Confirmed! 🎉", message: "The restaurant has confirmed your order." },
+  PREPARING:        { title: "Being Prepared 🍳",   message: "Your food is being freshly prepared." },
+  OUT_FOR_DELIVERY: { title: "Out for Delivery! 🚚", message: "Your order is on the way." },
+  DELIVERED:        { title: "Order Delivered! 🎉",  message: "Enjoy your meal! Don't forget to rate." },
+  CANCELLED:        { title: "Order Cancelled",      message: "Your order has been cancelled." },
+};
+
 // ─── OrderDetailPage ─────────────────────────────────────────────────────────
 const OrderDetailPage = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const prevStatusRef = useRef(null);
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
 
   const fetchOrder = useCallback(() => {
     return getOrder(orderId)
-      .then((res) => setOrder(res.data.order))
+      .then((res) => {
+        const newOrder = res.data.order;
+        setOrder(newOrder);
+        if (prevStatusRef.current && newOrder.status !== prevStatusRef.current) {
+          const msg = STATUS_NOTIF_MESSAGES[newOrder.status];
+          if (msg) {
+            dispatch(addNotification({
+              ...msg,
+              type: newOrder.status,
+              orderId: newOrder.id,
+            }));
+          }
+        }
+        prevStatusRef.current = newOrder.status;
+      })
       .catch(() => toast.error("Failed to load order"));
-  }, [orderId]);
+  }, [orderId, dispatch]);
 
   useEffect(() => {
     fetchOrder().finally(() => setLoading(false));

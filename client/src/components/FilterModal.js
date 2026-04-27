@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaTimes, FaSearch, FaLeaf } from 'react-icons/fa';
-import { SORT_OPTIONS, RATING_OPTIONS, COST_OPTIONS } from '../store/filtersSlice';
+import { SORT_OPTIONS, RATING_OPTIONS, COST_OPTIONS, DELIVERY_TIME_OPTIONS } from '../store/filtersSlice';
 
 const LEFT_PANELS = [
-  { id: 'sort',     label: 'Sort by' },
-  { id: 'cuisines', label: 'Cuisines' },
-  { id: 'rating',   label: 'Rating' },
-  { id: 'cost',     label: 'Cost for two' },
+  { id: 'sort',         label: 'Sort by' },
+  { id: 'cuisines',     label: 'Cuisines' },
+  { id: 'rating',       label: 'Rating' },
+  { id: 'cost',         label: 'Cost for two' },
+  { id: 'deliveryTime', label: 'Delivery Time' },
 ];
 
 const panelHasValue = (id, pending) => {
-  if (id === 'sort')     return pending.sortBy !== 'popularity';
-  if (id === 'cuisines') return pending.cuisines.length > 0;
-  if (id === 'rating')   return pending.rating !== null;
-  if (id === 'cost')     return pending.costRange !== null;
+  if (id === 'sort')         return pending.sortBy !== 'popularity';
+  if (id === 'cuisines')     return pending.cuisines.length > 0;
+  if (id === 'rating')       return pending.rating !== null;
+  if (id === 'cost')         return pending.costRange !== null;
+  if (id === 'deliveryTime') return pending.deliveryTimeMax !== null;
   return false;
 };
 
@@ -44,7 +46,7 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
   }, [isOpen]); // deliberately exclude `current` — only sync on open
 
   const handleClear = useCallback(() => {
-    setPending({ sortBy: 'popularity', cuisines: [], rating: null, costRange: null, vegOnly: false });
+    setPending({ sortBy: 'popularity', cuisines: [], rating: null, costRange: null, vegOnly: false, deliveryTimeMax: null });
   }, []);
 
   const handleApply = useCallback(() => {
@@ -262,6 +264,35 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                         </div>
                       )}
                     </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* ── Delivery Time ── */}
+            {activePanel === 'deliveryTime' && (
+              <div className="space-y-4">
+                {DELIVERY_TIME_OPTIONS.map((opt) => {
+                  const selected = pending.deliveryTimeMax === opt.value;
+                  return (
+                    <label
+                      key={String(opt.value)}
+                      className="flex items-center gap-3 cursor-pointer group"
+                      onClick={() => setPending((p) => ({ ...p, deliveryTimeMax: opt.value }))}
+                    >
+                      <div
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                          selected
+                            ? 'border-orange-500 bg-orange-500'
+                            : 'border-gray-300 dark:border-gray-600 group-hover:border-orange-300'
+                        }`}
+                      >
+                        {selected && <div className="w-2 h-2 rounded-full bg-white" />}
+                      </div>
+                      <span className={`text-sm ${selected ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}>
+                        {opt.label}
+                      </span>
+                    </label>
                   );
                 })}
               </div>

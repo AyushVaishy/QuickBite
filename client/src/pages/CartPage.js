@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { clearCart, updateQuantity, removeItem } from "../store/cartSlice";
 import { createOrder } from "../services/orderService";
+import { addNotification } from "../store/notificationsSlice";
 import { getAddresses, addAddress as addAddressAPI } from "../services/addressService";
 import { FaShoppingCart, FaUtensils, FaMapMarkerAlt, FaCheckCircle, FaPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -90,12 +91,18 @@ const CartPage = () => {
     try {
       const restaurantId = cartItems[0].restaurantId;
       const items = cartItems.map((i) => ({ menuItemId: i.id, quantity: i.quantity }));
-      await createOrder({
+      const res = await createOrder({
         items,
         restaurantId,
         deliveryAddress: deliveryAddr + (suggestion.trim() ? ` | Note: ${suggestion.trim()}` : ""),
       });
       dispatch(clearCart());
+      dispatch(addNotification({
+        title: "Order Placed! 🎉",
+        message: "Your order has been placed successfully.",
+        type: "PLACED",
+        orderId: res.data.order.id,
+      }));
       toast.success("🎉 Order placed successfully!");
       navigate("/home/orders");
     } catch (err) {

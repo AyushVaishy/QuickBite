@@ -23,12 +23,20 @@ export const COST_OPTIONS = [
   { value: 'high', label: '₹₹₹ (Above ₹500 for two)' },
 ];
 
+export const DELIVERY_TIME_OPTIONS = [
+  { value: null, label: 'Any' },
+  { value: 30,   label: 'Under 30 mins' },
+  { value: 45,   label: 'Under 45 mins' },
+  { value: 60,   label: 'Under 60 mins' },
+];
+
 const initialState = {
   sortBy: 'popularity',
-  cuisines: [],    // array of exact cuisine strings (from restaurant data)
-  rating: null,    // null | 3.5 | 4.0 | 4.5 | 5.0
-  costRange: null, // null | 'low' | 'mid' | 'high'
+  cuisines: [],        // array of exact cuisine strings (from restaurant data)
+  rating: null,        // null | 3.5 | 4.0 | 4.5 | 5.0
+  costRange: null,     // null | 'low' | 'mid' | 'high'
   vegOnly: false,
+  deliveryTimeMax: null, // null | 30 | 45 | 60
 };
 
 const filtersSlice = createSlice({

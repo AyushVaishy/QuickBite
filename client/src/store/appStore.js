@@ -4,6 +4,7 @@ import searchReducer from './searchSlice';
 import authReducer from './authSlice';
 import filtersReducer from './filtersSlice';
 import favoritesReducer from './favoritesSlice';
+import notificationsReducer from './notificationsSlice';
 
 const appStore = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const appStore = configureStore({
     auth: authReducer,
     filters: filtersReducer,
     favorites: favoritesReducer,
+    notifications: notificationsReducer,
   },
 });
 
