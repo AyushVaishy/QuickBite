@@ -1,4 +1,4 @@
-﻿﻿import LOGO from "../assets/logo.png";
+﻿import LOGO from "../assets/logo.png";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +14,9 @@ import { getAddresses, deleteAddress as deleteAddressAPI } from '../services/add
 const GET_LOCATION_API_URL =
   "https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/";
 const apiKey = process.env.REACT_APP_RAPIDAPI_KEY || "";
+
+// Since all location results are from India (countrycodes=in), strip ", India" suffix
+const cleanDisplayName = (name = "") => name.replace(/,\s*India\s*$/, "").trim();
 
 const DEFAULT_ADDRESSES = [
   {
@@ -314,10 +317,49 @@ const Header = ({ location, setLocation }) => {
     setLocation({
       lat: parseFloat(result.lat),
       lng: parseFloat(result.lon),
-      address: result.display_name,
+      address: cleanDisplayName(result.display_name),
     });
     addToRecentSearches(result);
     setLoading(false);
+  };
+
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation not supported by your browser");
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1`,
+            { headers: { 'Accept-Language': 'en' } }
+          );
+          const data = await res.json();
+          if (data?.display_name) {
+            setLocation({
+              lat: latitude,
+              lng: longitude,
+              address: cleanDisplayName(data.display_name),
+            });
+            setSidebarOpen(false);
+            toast.success("📍 Location detected!");
+          } else {
+            toast.error("Could not determine your location name");
+          }
+        } catch {
+          toast.error("Failed to reverse geocode location");
+        }
+        setLoading(false);
+      },
+      () => {
+        setLoading(false);
+        toast.error("Location access denied. Please search manually.");
+      },
+      { timeout: 10000 }
+    );
   };
 
   // Sidebar for address selection (inlined to avoid remount + focus loss)
@@ -343,6 +385,18 @@ const Header = ({ location, setLocation }) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
+          {/* GPS detect */}
+          <button
+            onClick={handleDetectLocation}
+            className="w-full flex items-center gap-3 px-4 py-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-xl text-orange-600 dark:text-orange-400 font-semibold text-sm hover:bg-orange-100 dark:hover:bg-orange-900/30 transition mb-4"
+          >
+            <span className="text-lg">📍</span>
+            <div className="text-left">
+              <div className="font-semibold">Use my current location</div>
+              <div className="text-xs font-normal text-orange-500 dark:text-orange-400">Using GPS</div>
+            </div>
+          </button>
+
           {/* Search Input */}
           <div className="mb-6">
             <div className="relative">
@@ -393,7 +447,7 @@ const Header = ({ location, setLocation }) => {
                           {result.display_name.split(",")[0]}
                         </div>
                         <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
-                          {result.display_name}
+                          {cleanDisplayName(result.display_name)}
                         </div>
                       </div>
                     </div>
@@ -509,7 +563,7 @@ const Header = ({ location, setLocation }) => {
                           {result.display_name.split(",")[0]}
                         </div>
                         <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
-                          {result.display_name}
+                          {cleanDisplayName(result.display_name)}
                         </div>
                       </div>
                     </div>

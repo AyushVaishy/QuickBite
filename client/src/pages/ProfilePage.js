@@ -12,12 +12,19 @@ import {
   FaBoxOpen, FaMoon, FaSun, FaSignOutAlt,
 } from "react-icons/fa";
 import { FiEdit2, FiSave, FiX } from "react-icons/fi";
+import { getAddresses, addAddress, deleteAddress } from "../services/addressService";
+import { selectFavourites } from "../store/favoritesSlice";
+import RestaurantCard from "../components/RestaurantCard";
+import { FaHeart, FaMapMarkerAlt, FaHome, FaBriefcase, FaMapPin, FaTrash, FaPlus } from "react-icons/fa";
+import api from "../services/api";
 
 const TABS = [
-  { id: "profile",  label: "My Profile",  icon: "👤" },
-  { id: "orders",   label: "My Orders",   icon: "📦" },
-  { id: "reviews",  label: "My Reviews",  icon: "⭐" },
-  { id: "settings", label: "Settings",    icon: "⚙️" },
+  { id: "profile",    label: "My Profile",    icon: "👤" },
+  { id: "orders",     label: "My Orders",     icon: "📦" },
+  { id: "favourites", label: "Favourites",    icon: "❤️" },
+  { id: "reviews",    label: "My Reviews",    icon: "⭐" },
+  { id: "addresses",  label: "Addresses",     icon: "📍" },
+  { id: "settings",   label: "Settings",      icon: "⚙️" },
 ];
 
 const STATUS_COLORS = {
@@ -204,15 +211,246 @@ const OrdersTab = () => {
   );
 };
 
+// ─── Favourites Tab ───────────────────────────────────────────────────────────
+const FavouritesTab = () => {
+  const favs = useSelector(selectFavourites);
+
+  if (favs.length === 0)
+    return (
+      <div className="flex flex-col items-center py-16 text-gray-400">
+        <FaHeart size={48} className="mb-4 text-gray-300" />
+        <p className="font-medium">No favourites yet</p>
+        <p className="text-sm mt-1">Tap the ❤️ on any restaurant to save it here.</p>
+        <Link to="/home" className="mt-4 text-orange-500 hover:underline text-sm">Explore restaurants →</Link>
+      </div>
+    );
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {favs.map((r) => (
+        <RestaurantCard key={r.id} resData={r} />
+      ))}
+    </div>
+  );
+};
+
 // ─── Reviews Tab ──────────────────────────────────────────────────────────────
-const ReviewsTab = () => (
-  <div className="flex flex-col items-center py-16 text-gray-400">
-    <FaStar size={48} className="mb-4 text-gray-300" />
-    <p className="font-medium text-gray-500">No reviews yet</p>
-    <p className="text-sm mt-1">After ordering, you can rate restaurants from the Order Details page.</p>
-    <Link to="/home/orders" className="mt-4 text-orange-500 hover:underline text-sm">View my orders →</Link>
-  </div>
-);
+const ReviewsTab = () => {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get("/restaurants/reviews/me")
+      .then((res) => setReviews(res.data.reviews || []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="text-gray-400 animate-pulse py-8">Loading reviews…</div>;
+
+  if (reviews.length === 0)
+    return (
+      <div className="flex flex-col items-center py-16 text-gray-400">
+        <FaStar size={48} className="mb-4 text-gray-300" />
+        <p className="font-medium">No reviews yet</p>
+        <p className="text-sm mt-1">After ordering, you can rate restaurants from the Order Details page.</p>
+        <Link to="/home/orders" className="mt-4 text-orange-500 hover:underline text-sm">View my orders →</Link>
+      </div>
+    );
+
+  return (
+    <div className="space-y-4 max-w-2xl">
+      {reviews.map((review) => (
+        <div key={review.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            {review.restaurant?.imageUrl && (
+              <img
+                src={review.restaurant.imageUrl}
+                alt={review.restaurant.name}
+                className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+            )}
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-1">
+                <Link
+                  to={`/home/restaurants/${review.restaurant?.id}`}
+                  className="font-semibold text-gray-800 dark:text-gray-100 hover:text-orange-500 transition-colors text-sm"
+                >
+                  {review.restaurant?.name || "Restaurant"}
+                </Link>
+                <span className="text-xs text-gray-400">
+                  {new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                </span>
+              </div>
+              {/* Stars */}
+              <div className="flex items-center gap-0.5 mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar
+                    key={star}
+                    size={13}
+                    className={star <= review.rating ? "text-yellow-400" : "text-gray-200 dark:text-gray-600"}
+                  />
+                ))}
+                <span className="ml-1 text-xs font-semibold text-gray-600 dark:text-gray-300">{review.rating}/5</span>
+              </div>
+              {review.comment && (
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{review.comment}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// ─── Addresses Tab ────────────────────────────────────────────────────────────
+const LABEL_ICONS = { Home: <FaHome />, Work: <FaBriefcase />, Other: <FaMapPin /> };
+
+const AddressesTab = () => {
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ label: "Home", street: "", city: "", state: "", pincode: "" });
+
+  const load = useCallback(() => {
+    setLoading(true);
+    getAddresses()
+      .then((res) => setAddresses(res.data.addresses || []))
+      .catch(() => toast.error("Failed to load addresses"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (!form.street.trim() || !form.city.trim() || !form.state.trim() || !form.pincode.trim()) {
+      toast.error("All fields are required"); return;
+    }
+    setSaving(true);
+    try {
+      await addAddress(form);
+      toast.success("Address added!");
+      setShowForm(false);
+      setForm({ label: "Home", street: "", city: "", state: "", pincode: "" });
+      load();
+    } catch {
+      toast.error("Failed to add address");
+    }
+    setSaving(false);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteAddress(id);
+      toast.success("Address removed");
+      setAddresses((prev) => prev.filter((a) => a.id !== id));
+    } catch {
+      toast.error("Failed to delete address");
+    }
+  };
+
+  if (loading) return <div className="text-gray-400 animate-pulse py-8">Loading addresses…</div>;
+
+  return (
+    <div className="max-w-lg space-y-4">
+      {/* Address cards */}
+      {addresses.length === 0 && !showForm && (
+        <div className="flex flex-col items-center py-12 text-gray-400">
+          <FaMapMarkerAlt size={40} className="mb-3 text-gray-300" />
+          <p className="font-medium">No saved addresses</p>
+        </div>
+      )}
+      {addresses.map((addr) => (
+        <div key={addr.id} className="flex items-start justify-between bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-500 flex-shrink-0">
+              {LABEL_ICONS[addr.label] || <FaMapPin />}
+            </div>
+            <div>
+              <p className="font-semibold text-sm text-gray-800 dark:text-gray-100">{addr.label}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
+                {[addr.street, addr.city, addr.state, addr.pincode].filter(Boolean).join(", ")}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => handleDelete(addr.id)}
+            className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+            aria-label="Delete address"
+          >
+            <FaTrash size={13} />
+          </button>
+        </div>
+      ))}
+
+      {/* Add Address Form */}
+      {showForm ? (
+        <form onSubmit={handleAdd} className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-800 rounded-xl p-4 space-y-3 shadow-sm">
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm mb-2">Add New Address</h3>
+          {/* Label selector */}
+          <div className="flex gap-2">
+            {["Home", "Work", "Other"].map((lbl) => (
+              <button
+                key={lbl}
+                type="button"
+                onClick={() => setForm((p) => ({ ...p, label: lbl }))}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                  form.label === lbl
+                    ? "bg-orange-500 text-white border-orange-500"
+                    : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-orange-300"
+                }`}
+              >
+                {lbl}
+              </button>
+            ))}
+          </div>
+          {[
+            { field: "street",  placeholder: "Street / Area" },
+            { field: "city",    placeholder: "City" },
+            { field: "state",   placeholder: "State" },
+            { field: "pincode", placeholder: "Pincode" },
+          ].map(({ field, placeholder }) => (
+            <input
+              key={field}
+              type="text"
+              placeholder={placeholder}
+              value={form[field]}
+              onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))}
+              className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-orange-400 outline-none"
+            />
+          ))}
+          <div className="flex gap-2 pt-1">
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white py-2 rounded-lg font-semibold text-sm transition"
+            >
+              {saving ? "Saving…" : "Save Address"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <button
+          onClick={() => setShowForm(true)}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-orange-300 dark:border-orange-700 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/10 font-semibold text-sm transition"
+        >
+          <FaPlus size={12} /> Add New Address
+        </button>
+      )}
+    </div>
+  );
+};
 
 // ─── Settings Tab ─────────────────────────────────────────────────────────────
 const SettingsTab = ({ onLogout }) => {
@@ -384,10 +622,12 @@ const ProfilePage = () => {
             {TABS.find((t) => t.id === activeTab)?.label}
           </h1>
 
-          {activeTab === "profile"  && <ProfileTab user={user} onUpdated={handleUpdated} />}
-          {activeTab === "orders"   && <OrdersTab />}
-          {activeTab === "reviews"  && <ReviewsTab />}
-          {activeTab === "settings" && <SettingsTab onLogout={handleLogout} />}
+          {activeTab === "profile"    && <ProfileTab user={user} onUpdated={handleUpdated} />}
+          {activeTab === "orders"     && <OrdersTab />}
+          {activeTab === "favourites" && <FavouritesTab />}
+          {activeTab === "reviews"    && <ReviewsTab />}
+          {activeTab === "addresses"  && <AddressesTab />}
+          {activeTab === "settings"   && <SettingsTab onLogout={handleLogout} />}
         </main>
       </div>
     </div>

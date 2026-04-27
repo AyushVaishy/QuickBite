@@ -3,6 +3,7 @@ import cartReducer from './cartSlice';
 import searchReducer from './searchSlice';
 import authReducer from './authSlice';
 import filtersReducer from './filtersSlice';
+import favoritesReducer from './favoritesSlice';
 
 const appStore = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const appStore = configureStore({
     search: searchReducer,
     auth: authReducer,
     filters: filtersReducer,
+    favorites: favoritesReducer,
   },
 });
 

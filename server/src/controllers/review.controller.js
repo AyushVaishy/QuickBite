@@ -63,4 +63,17 @@ const deleteReview = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { getReviews, createReview, deleteReview };
+const getMyReviews = async (req, res, next) => {
+  try {
+    const reviews = await prisma.review.findMany({
+      where: { userId: req.user.id },
+      include: {
+        restaurant: { select: { id: true, name: true, imageUrl: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json({ reviews });
+  } catch (err) { next(err); }
+};
+
+module.exports = { getReviews, createReview, deleteReview, getMyReviews };

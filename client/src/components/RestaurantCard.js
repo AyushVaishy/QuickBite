@@ -1,15 +1,25 @@
 import { Link } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
+import { toggleFavourite, selectIsFavourite } from "../store/favoritesSlice";
 
 const PLACEHOLDER_IMG =
   "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop";
 
 const RestaurantCard = ({ resData }) => {
+  const dispatch = useDispatch();
+  const isFav = useSelector(selectIsFavourite(resData.id));
   const { id, name, cuisines, avgRating, costForTwo, deliveryTime, imageUrl, isOpen } = resData;
 
   const cuisineList = Array.isArray(cuisines) ? cuisines : (cuisines || "").split(",").map((c) => c.trim());
   const displayCuisines = cuisineList.slice(0, 2);
   const extraCount = cuisineList.length - displayCuisines.length;
+
+  const handleFavClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(toggleFavourite(resData));
+  };
 
   return (
     <Link to={`/home/restaurants/${id}`} className="block">
@@ -33,6 +43,17 @@ const RestaurantCard = ({ resData }) => {
           <span className="absolute bottom-2 left-2 bg-black/60 text-white text-xs font-medium px-2 py-0.5 rounded-md">
             🚀 {deliveryTime ?? "30"} min
           </span>
+          {/* Favourite heart button */}
+          <button
+            onClick={handleFavClick}
+            className="absolute top-2 right-2 w-8 h-8 bg-white/90 dark:bg-gray-800/90 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform z-10"
+            aria-label={isFav ? "Remove from favourites" : "Add to favourites"}
+          >
+            {isFav
+              ? <FaHeart className="text-red-500" size={14} />
+              : <FaRegHeart className="text-gray-500" size={14} />
+            }
+          </button>
         </div>
 
         {/* Info */}

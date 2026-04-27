@@ -39,11 +39,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// Rate limiting
+// Rate limiting — skipped in development to avoid blocks during testing
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  windowMs: 15 * 60 * 1000,
+  max: 200,
   message: "Too many requests from this IP, please try again later.",
+  skip: () => process.env.NODE_ENV !== "production",
 });
 app.use("/api", limiter);
 

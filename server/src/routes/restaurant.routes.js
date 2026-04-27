@@ -9,12 +9,13 @@ const {
   toggleRestaurantOpen,
   createReview,
 } = require("../controllers/restaurant.controller");
-const { getReviews, deleteReview } = require("../controllers/review.controller");
+const { getReviews, deleteReview, getMyReviews } = require("../controllers/review.controller");
 const { authenticate, authorize } = require("../middleware/auth.middleware");
 
 router.get("/", getRestaurants);
 router.get("/search", searchRestaurants);
 router.get("/my", authenticate, authorize("RESTAURANT_OWNER", "ADMIN"), getMyRestaurants);
+router.get("/reviews/me", authenticate, getMyReviews);
 router.get("/:id", getRestaurant);
 router.post("/", authenticate, authorize("RESTAURANT_OWNER", "ADMIN"), createRestaurant);
 router.put("/:id", authenticate, authorize("RESTAURANT_OWNER", "ADMIN"), updateRestaurant);
