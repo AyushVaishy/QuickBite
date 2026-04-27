@@ -52,6 +52,25 @@ const createOrder = async (req, res, next) => {
     });
 
     res.status(201).json({ order });
+
+    // Auto-progress order through statuses (demo: 2-min delivery)
+    const AUTO_TIMELINE = [
+      { status: "CONFIRMED",        delay: 20000  },
+      { status: "PREPARING",        delay: 50000  },
+      { status: "OUT_FOR_DELIVERY", delay: 80000  },
+      { status: "DELIVERED",        delay: 120000 },
+    ];
+    AUTO_TIMELINE.forEach(({ status, delay }) => {
+      setTimeout(async () => {
+        try {
+          const current = await prisma.order.findUnique({ where: { id: order.id } });
+          if (current && current.status !== "CANCELLED") {
+            await prisma.order.update({ where: { id: order.id }, data: { status } });
+          }
+        } catch (_) { /* ignore */ }
+      }, delay);
+    });
+
   } catch (err) {
     next(err);
   }

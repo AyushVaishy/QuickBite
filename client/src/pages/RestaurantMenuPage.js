@@ -19,11 +19,31 @@ const RestaurantMenuPage = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuSearch, setMenuSearch] = useState('');
   const [vegOnly, setVegOnly] = useState(false);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 180);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // ALL hooks must be called before any conditional returns
+  const filteredCategories = useMemo(() => {
+    if (!menu) return [];
+    return Object.entries(menu)
+      .map(([title, items]) => {
+        let filtered = items;
+        if (vegOnly) filtered = filtered.filter(i => i.isVeg);
+        if (menuSearch.trim()) {
+          const q = menuSearch.toLowerCase();
+          filtered = filtered.filter(i =>
+            i.name.toLowerCase().includes(q) ||
+            (i.description || '').toLowerCase().includes(q)
+          );
+        }
+        return [title, filtered];
+      })
+      .filter(([, items]) => items.length > 0);
+  }, [menu, menuSearch, vegOnly]);
 
   if (loading) return <ShimmerMenu />;
   if (error)
@@ -39,23 +59,6 @@ const RestaurantMenuPage = () => {
   if (!restaurant) return <ShimmerMenu />;
 
   const categories = menu ? Object.entries(menu) : [];
-
-  const filteredCategories = useMemo(() => {
-    return categories
-      .map(([title, items]) => {
-        let filtered = items;
-        if (vegOnly) filtered = filtered.filter(i => i.isVeg);
-        if (menuSearch.trim()) {
-          const q = menuSearch.toLowerCase();
-          filtered = filtered.filter(i =>
-            i.name.toLowerCase().includes(q) ||
-            (i.description || '').toLowerCase().includes(q)
-          );
-        }
-        return [title, filtered];
-      })
-      .filter(([, items]) => items.length > 0);
-  }, [categories, menuSearch, vegOnly]);
   const PLACEHOLDER =
     "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=400&fit=crop";
 

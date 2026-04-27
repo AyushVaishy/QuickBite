@@ -4,14 +4,15 @@ import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { getOrder, cancelOrder, createReview as createReviewService } from "../services/orderService";
 import { addItem, clearCart } from "../store/cartSlice";
-import { FaArrowLeft, FaStar, FaMapMarkerAlt, FaBoxOpen, FaMotorcycle } from "react-icons/fa";
+import { FaArrowLeft, FaStar, FaMapMarkerAlt, FaBoxOpen, FaMotorcycle, FaPhoneAlt } from "react-icons/fa";
+import { MdDeliveryDining } from "react-icons/md";
 
 const STEPS = [
-  { key: "PLACED",           label: "Order Placed",     icon: "📋" },
-  { key: "CONFIRMED",        label: "Confirmed",         icon: "✅" },
-  { key: "PREPARING",        label: "Preparing",         icon: "👨‍🍳" },
-  { key: "OUT_FOR_DELIVERY", label: "On the Way",        icon: "🛵" },
-  { key: "DELIVERED",        label: "Delivered",         icon: "🎉" },
+  { key: "PLACED",           label: "Order Placed",  icon: "📋" },
+  { key: "CONFIRMED",        label: "Confirmed",      icon: "✅" },
+  { key: "PREPARING",        label: "Preparing",      icon: "👨‍🍳" },
+  { key: "OUT_FOR_DELIVERY", label: "On the Way",     icon: "🛵" },
+  { key: "DELIVERED",        label: "Delivered",      icon: "🎉" },
 ];
 
 const STATUS_COLORS = {
@@ -26,6 +27,16 @@ const STATUS_LABELS = {
   PLACED: "Order Placed", CONFIRMED: "Confirmed", PREPARING: "Preparing",
   OUT_FOR_DELIVERY: "Out for Delivery", DELIVERED: "Delivered", CANCELLED: "Cancelled",
 };
+
+const STATUS_MESSAGES = {
+  PLACED:           "Waiting for restaurant to confirm your order…",
+  CONFIRMED:        "Great! Restaurant accepted your order 🎉",
+  PREPARING:        "Your food is being freshly prepared 👨‍🍳",
+  OUT_FOR_DELIVERY: "Your delivery partner is on the way! 🛵",
+  DELIVERED:        "Enjoy your meal! 😋",
+};
+
+const DELIVERY_DURATION_MS = 120000; // 2 minutes
 
 // ─── Star Rating Picker ───────────────────────────────────────────────────────
 const StarPicker = ({ value, onChange }) => (
@@ -42,11 +53,11 @@ const StarPicker = ({ value, onChange }) => (
 );
 
 // ─── Review Form ─────────────────────────────────────────────────────────────
-const ReviewForm = ({ restaurantId, restaurantName, existingReview, onReviewed }) => {
-  const [rating, setRating] = useState(existingReview?.rating || 0);
-  const [comment, setComment] = useState(existingReview?.comment || "");
+const ReviewForm = ({ restaurantId, restaurantName, onReviewed }) => {
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(!!existingReview);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,29 +109,17 @@ const ReviewForm = ({ restaurantId, restaurantName, existingReview, onReviewed }
 
 // ─── Progress Tracker ─────────────────────────────────────────────────────────
 const ProgressTracker = ({ status }) => {
-  if (status === "CANCELLED") {
-    return (
-      <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
-        <span className="text-2xl">❌</span>
-        <div>
-          <p className="font-semibold text-red-700 dark:text-red-400">Order Cancelled</p>
-          <p className="text-xs text-red-500">This order has been cancelled.</p>
-        </div>
-      </div>
-    );
-  }
-
   const currentIdx = STEPS.findIndex((s) => s.key === status);
 
   return (
-    <div className="relative">
-      {/* Connecting line */}
-      <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200 dark:bg-gray-700" />
+    <div className="relative px-2">
+      {/* Connecting line background */}
+      <div className="absolute top-5 left-7 right-7 h-0.5 bg-gray-200 dark:bg-gray-700" />
+      {/* Connecting line fill */}
       <div
-        className="absolute top-5 left-5 h-0.5 bg-orange-500 transition-all duration-700"
-        style={{ width: currentIdx >= 0 ? `${(currentIdx / (STEPS.length - 1)) * 100}%` : "0%" }}
+        className="absolute top-5 left-7 h-0.5 bg-orange-500 transition-all duration-700"
+        style={{ width: currentIdx >= 0 ? `calc(${(currentIdx / (STEPS.length - 1)) * 100}% - 14px)` : "0%" }}
       />
-
       <div className="relative flex justify-between">
         {STEPS.map((step, idx) => {
           const done = idx <= currentIdx;
@@ -129,9 +128,9 @@ const ProgressTracker = ({ status }) => {
             <div key={step.key} className="flex flex-col items-center gap-1.5 flex-1">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 z-10 transition-all ${
                 done
-                  ? "bg-orange-500 border-orange-500 shadow-md shadow-orange-200"
+                  ? "bg-orange-500 border-orange-500 shadow-md shadow-orange-200 dark:shadow-orange-900"
                   : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600"
-              } ${active ? "scale-110" : ""}`}
+              } ${active ? "scale-110 ring-4 ring-orange-200 dark:ring-orange-900/50" : ""}`}
               >
                 {step.icon}
               </div>
@@ -148,6 +147,92 @@ const ProgressTracker = ({ status }) => {
   );
 };
 
+// ─── Live Tracking Card ───────────────────────────────────────────────────────
+const LiveTrackingCard = ({ order }) => {
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  useEffect(() => {
+    if (!order || ["DELIVERED", "CANCELLED"].includes(order.status)) return;
+    const createdAt = new Date(order.createdAt).getTime();
+    const eta = createdAt + DELIVERY_DURATION_MS;
+    const tick = () => setTimeLeft(Math.max(0, eta - Date.now()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [order]);
+
+  if (!order || order.status === "CANCELLED") {
+    return (
+      <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+        <span className="text-2xl">❌</span>
+        <div>
+          <p className="font-semibold text-red-700 dark:text-red-400">Order Cancelled</p>
+          <p className="text-xs text-red-500">This order has been cancelled.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (order.status === "DELIVERED") {
+    return (
+      <div className="text-center py-6 px-4">
+        <div className="text-5xl mb-3">🎉</div>
+        <p className="text-xl font-bold text-green-600 dark:text-green-400">Order Delivered!</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Hope you enjoyed your meal 😋</p>
+      </div>
+    );
+  }
+
+  const mins = Math.floor(timeLeft / 60000);
+  const secs = Math.floor((timeLeft % 60000) / 1000);
+  const isArriving = order.status === "OUT_FOR_DELIVERY";
+
+  return (
+    <div className="space-y-5">
+      {/* ETA Banner */}
+      <div className={`rounded-xl p-4 text-center ${isArriving ? "bg-orange-50 dark:bg-orange-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}>
+        {timeLeft > 0 ? (
+          <>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+              {isArriving ? "Arriving in" : "Estimated Delivery"}
+            </p>
+            <p className={`text-4xl font-extrabold tabular-nums ${isArriving ? "text-orange-500" : "text-blue-600 dark:text-blue-400"}`}>
+              {mins}:{secs.toString().padStart(2, "0")}
+            </p>
+            <p className="text-xs text-gray-400 mt-1">minutes</p>
+          </>
+        ) : (
+          <p className="text-sm font-medium text-gray-500">Delivery imminent…</p>
+        )}
+      </div>
+
+      {/* Status message */}
+      <p className="text-center text-sm text-gray-600 dark:text-gray-300 font-medium">
+        {STATUS_MESSAGES[order.status]}
+      </p>
+
+      {/* Progress steps */}
+      <ProgressTracker status={order.status} />
+
+      {/* Dummy delivery partner (only when out for delivery) */}
+      {order.status === "OUT_FOR_DELIVERY" && (
+        <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700">
+          <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+            <MdDeliveryDining size={22} className="text-orange-500" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Raju Kumar</p>
+            <p className="text-xs text-gray-400">Delivery Partner · ⭐ 4.8</p>
+          </div>
+          <button className="p-2 rounded-full bg-green-500 hover:bg-green-600 text-white transition">
+            <FaPhoneAlt size={12} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ─── OrderDetailPage ─────────────────────────────────────────────────────────
 const OrderDetailPage = () => {
   const { orderId } = useParams();
@@ -158,12 +243,26 @@ const OrderDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
 
-  useEffect(() => {
-    getOrder(orderId)
+  const fetchOrder = useCallback(() => {
+    return getOrder(orderId)
       .then((res) => setOrder(res.data.order))
-      .catch(() => toast.error("Failed to load order"))
-      .finally(() => setLoading(false));
+      .catch(() => toast.error("Failed to load order"));
   }, [orderId]);
+
+  useEffect(() => {
+    fetchOrder().finally(() => setLoading(false));
+  }, [fetchOrder]);
+
+  // Poll every 8s while order is active
+  useEffect(() => {
+    if (!order || ["DELIVERED", "CANCELLED"].includes(order.status)) return;
+    const interval = setInterval(() => {
+      getOrder(orderId)
+        .then((res) => setOrder(res.data.order))
+        .catch(() => {});
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [orderId, order?.status]);
 
   const handleCancel = async () => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
@@ -218,6 +317,7 @@ const OrderDetailPage = () => {
   const itemTotal = order.items.reduce((s, i) => s + (i.priceAtTime || 0) * (i.quantity || 1), 0) / 100;
   const deliveryFee = 29;
   const gst = Math.round(itemTotal * 0.05);
+  const deliveryAddress = order.notes || order.deliveryAddress || "";
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16 px-4">
@@ -256,29 +356,22 @@ const OrderDetailPage = () => {
           </Link>
         </div>
 
-        {/* Progress Tracker */}
-        {order.status !== "CANCELLED" && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
-            <h2 className="font-bold text-gray-800 dark:text-gray-100 mb-5 flex items-center gap-2">
-              <FaMotorcycle className="text-orange-500" /> Order Progress
-            </h2>
-            <ProgressTracker status={order.status} />
-          </div>
-        )}
-        {order.status === "CANCELLED" && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
-            <ProgressTracker status="CANCELLED" />
-          </div>
-        )}
+        {/* Live Tracking Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
+          <h2 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <FaMotorcycle className="text-orange-500" /> Live Tracking
+          </h2>
+          <LiveTrackingCard order={order} />
+        </div>
 
         {/* Delivery Address */}
-        {order.deliveryAddress && (
+        {deliveryAddress && (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-4">
             <div className="flex items-start gap-3">
               <FaMapMarkerAlt className="text-orange-500 flex-shrink-0 mt-0.5" size={14} />
               <div>
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Delivery Address</p>
-                <p className="text-sm text-gray-800 dark:text-gray-200">{order.deliveryAddress}</p>
+                <p className="text-sm text-gray-800 dark:text-gray-200">{deliveryAddress}</p>
               </div>
             </div>
           </div>
@@ -329,7 +422,7 @@ const OrderDetailPage = () => {
 
         {/* Actions */}
         <div className="flex gap-3">
-          {order.status === "PLACED" && (
+          {["PLACED", "CONFIRMED"].includes(order.status) && (
             <button
               onClick={handleCancel}
               disabled={cancelling}
