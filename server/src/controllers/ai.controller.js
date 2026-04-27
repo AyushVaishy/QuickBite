@@ -58,7 +58,7 @@ const chat = async (req, res) => {
 
 const converse = async (req, res) => {
   try {
-    const { messages, userName, savedAddress, lat, lng, shownRestaurants } = req.body;
+    const { messages, userName, savedAddress, lat, lng, shownRestaurants, userLanguage } = req.body;
 
     if (!Array.isArray(messages) || messages.length === 0) {
       return res.status(400).json({ error: 'messages array is required' });
@@ -100,6 +100,7 @@ const converse = async (req, res) => {
         userName: typeof userName === 'string' ? userName.slice(0, 50) : '',
         savedAddress: typeof savedAddress === 'string' ? savedAddress.slice(0, 200) : '',
         shownRestaurants: cleanRestaurants,
+        userLanguage: userLanguage === 'hi' ? 'hi' : 'en',
       });
     } catch (geminiErr) {
       console.warn('Conversational AI error, using fallback:', geminiErr.message);

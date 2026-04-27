@@ -266,6 +266,8 @@ export default function ChatWidget() {
   const msgsRef = useRef([]);
   const cartRef = useRef([]);
   const lastRestaurantsRef = useRef([]);
+  // 'en' = English/Hinglish (Roman)  |  'hi' = Hindi (Devanagari)
+  const userLangRef = useRef("en");
   const recRef = useRef(null);
   const finalTransRef = useRef("");
   const voiceRef = useRef(null);
@@ -335,10 +337,10 @@ export default function ChatWidget() {
       const clean = cleanForSpeech(text);
       if (!clean) { onDone?.(); return; }
 
-      const isHindiScript = /[\u0900-\u097F]/.test(text);
+      const isHindi = userLangRef.current === "hi" && /[\u0900-\u097F]/.test(text);
       const utter = new SpeechSynthesisUtterance(clean);
 
-      if (isHindiScript) {
+      if (isHindi) {
         const hiVoice = (window.speechSynthesis.getVoices() || []).find((v) =>
           v.lang.startsWith("hi-IN")
         );
@@ -391,8 +393,8 @@ export default function ChatWidget() {
 
     rec.continuous = false;
     rec.interimResults = true;
-    // hi-IN recognises Hindi AND English speech in Chrome — perfect for Hinglish
-    rec.lang = "hi-IN";
+    // Use detected user language — hi-IN for Devanagari Hindi, en-IN for English/Hinglish
+    rec.lang = userLangRef.current === "hi" ? "hi-IN" : "en-IN";
     rec.maxAlternatives = 1;
 
     rec.onstart = () => { if (mountedRef.current) setListening(true); };
@@ -488,6 +490,10 @@ export default function ChatWidget() {
       const content = text.trim();
       clearTimeout(autoListenTimer.current);
 
+      // Detect user language from message text and update ref for STT + TTS
+      const hasDevanagari = /[\u0900-\u097F]/.test(content);
+      userLangRef.current = hasDevanagari ? "hi" : "en";
+
       // Add user message
       const userMsg = { id: uid(), role: "user", content, isVoice };
       const allMsgs = [...msgsRef.current, userMsg];
@@ -530,6 +536,7 @@ export default function ChatWidget() {
           lat,
           lng,
           shownRestaurants,
+          userLanguage: userLangRef.current, // 'en' or 'hi'
         });
         if (!mountedRef.current) return;
 

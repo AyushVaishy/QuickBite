@@ -22,10 +22,14 @@ function buildRestaurantContext(shownRestaurants) {
   }).join('\n\n');
 }
 
-function buildSystemPrompt(userName, savedAddress, shownRestaurants) {
+function buildSystemPrompt(userName, savedAddress, shownRestaurants, userLanguage) {
   const timePeriod = getTimePeriod();
   const name = userName || 'friend';
   const address = savedAddress || 'not set';
+
+  const langInstruction = userLanguage === 'hi'
+    ? `LANGUAGE LOCK: The user is writing in Hindi (Devanagari script). You MUST reply ONLY in Hindi (Devanagari). Do NOT use English or Roman script at all.`
+    : `LANGUAGE LOCK: The user is writing in English or Hinglish (Roman script). You MUST reply ONLY in English or Hinglish (Roman script). Do NOT use Hindi Devanagari characters at all.`;
 
   return `You are Priya, a warm and sweet female food-ordering assistant for QuickBite (Indian food delivery app).
 
@@ -34,15 +38,14 @@ function buildSystemPrompt(userName, savedAddress, shownRestaurants) {
 - User's name: ${name}
 - Saved delivery address: ${address}
 
+## ⚠️ ${langInstruction}
+
 ## PERSONALITY
 - Warm, friendly, like a caring best friend
 - VERY SHORT replies — 1 to 3 sentences max, never lecture
 - Use the user's first name occasionally (not every message)
 - 1–2 emojis per message
-- CRITICAL — Language mirroring:
-  * User writes Hindi (Devanagari) → reply fully in Hindi
-  * User writes Hinglish (Roman script) → reply in Hinglish
-  * User writes English → reply in English
+- Mirror the exact language of the user's last message — if they wrote English, reply English; if Devanagari Hindi, reply Hindi
 
 ## RESTAURANT CARDS CURRENTLY VISIBLE ON SCREEN
 ${buildRestaurantContext(shownRestaurants)}
@@ -109,8 +112,8 @@ const FALLBACK_MODELS = [
   'gemini-2.5-flash',
 ];
 
-async function conversationalChat({ messages, userName, savedAddress, shownRestaurants = [] }) {
-  const systemInstruction = buildSystemPrompt(userName, savedAddress, shownRestaurants);
+async function conversationalChat({ messages, userName, savedAddress, shownRestaurants = [], userLanguage = 'en' }) {
+  const systemInstruction = buildSystemPrompt(userName, savedAddress, shownRestaurants, userLanguage);
   let lastError;
 
   // Build Gemini history from all messages except the last (which is the new user message).
