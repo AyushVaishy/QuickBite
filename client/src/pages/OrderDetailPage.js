@@ -1,7 +1,18 @@
-import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getOrder } from "../services/orderService";
-import { FaArrowLeft, FaBoxOpen } from "react-icons/fa";
+import { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import { getOrder, cancelOrder, createReview as createReviewService } from "../services/orderService";
+import { addItem, clearCart } from "../store/cartSlice";
+import { FaArrowLeft, FaStar, FaMapMarkerAlt, FaBoxOpen, FaMotorcycle } from "react-icons/fa";
+
+const STEPS = [
+  { key: "PLACED",           label: "Order Placed",     icon: "📋" },
+  { key: "CONFIRMED",        label: "Confirmed",         icon: "✅" },
+  { key: "PREPARING",        label: "Preparing",         icon: "👨‍🍳" },
+  { key: "OUT_FOR_DELIVERY", label: "On the Way",        icon: "🛵" },
+  { key: "DELIVERED",        label: "Delivered",         icon: "🎉" },
+];
 
 const STATUS_COLORS = {
   PLACED:           "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
@@ -11,105 +22,341 @@ const STATUS_COLORS = {
   DELIVERED:        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
   CANCELLED:        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
-
 const STATUS_LABELS = {
-  PLACED:           "Order Placed",
-  CONFIRMED:        "Confirmed",
-  PREPARING:        "Preparing",
-  OUT_FOR_DELIVERY: "Out for Delivery",
-  DELIVERED:        "Delivered",
-  CANCELLED:        "Cancelled",
+  PLACED: "Order Placed", CONFIRMED: "Confirmed", PREPARING: "Preparing",
+  OUT_FOR_DELIVERY: "Out for Delivery", DELIVERED: "Delivered", CANCELLED: "Cancelled",
 };
 
-const OrderDetailPage = () => {
-  const { orderId } = useParams();
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+// ─── Star Rating Picker ───────────────────────────────────────────────────────
+const StarPicker = ({ value, onChange }) => (
+  <div className="flex gap-1">
+    {[1, 2, 3, 4, 5].map((n) => (
+      <button key={n} type="button" onClick={() => onChange(n)} className="focus:outline-none">
+        <FaStar
+          size={24}
+          className={`transition-colors ${n <= value ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}`}
+        />
+      </button>
+    ))}
+  </div>
+);
 
-  useEffect(() => {
-    getOrder(orderId)
-      .then((res) => setOrder(res.data.order || res.data))
-      .catch(() => setError("Failed to load order details"))
-      .finally(() => setLoading(false));
-  }, [orderId]);
+// ─── Review Form ─────────────────────────────────────────────────────────────
+const ReviewForm = ({ restaurantId, restaurantName, existingReview, onReviewed }) => {
+  const [rating, setRating] = useState(existingReview?.rating || 0);
+  const [comment, setComment] = useState(existingReview?.comment || "");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(!!existingReview);
 
-  if (loading)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (rating === 0) { toast.error("Please select a rating"); return; }
+    setSubmitting(true);
+    try {
+      await createReviewService(restaurantId, { rating, comment });
+      toast.success("Review submitted! Thank you 🙏");
+      setSubmitted(true);
+      if (onReviewed) onReviewed({ rating, comment });
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to submit review");
+    }
+    setSubmitting(false);
+  };
+
+  if (submitted)
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-gray-500 dark:text-gray-400 text-lg animate-pulse">Loading order…</div>
-      </div>
-    );
-
-  if (error || !order)
-    return (
-      <div className="min-h-screen pt-24 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 gap-4">
-        <FaBoxOpen className="text-5xl text-gray-300 dark:text-gray-600" />
-        <p className="text-red-500">{error || "Order not found"}</p>
-        <Link to="/home/orders" className="text-orange-500 hover:underline text-sm">← Back to Orders</Link>
+      <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+        <span className="text-2xl">✅</span>
+        <div>
+          <p className="font-semibold text-green-700 dark:text-green-400 text-sm">Review submitted!</p>
+          <p className="text-xs text-green-600 dark:text-green-500">You rated {restaurantName} {rating}★</p>
+        </div>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <Link to="/home/orders" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-sm mb-6">
-          <FaArrowLeft size={12} /> Back to Orders
-        </Link>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Order Details</h1>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h3 className="font-bold text-gray-800 dark:text-gray-100">Rate your experience at {restaurantName}</h3>
+      <StarPicker value={rating} onChange={setRating} />
+      <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Share what you loved (optional)…"
+        rows={3}
+        className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-orange-400 outline-none resize-none"
+      />
+      <button
+        type="submit"
+        disabled={submitting || rating === 0}
+        className="px-5 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white rounded-lg font-semibold text-sm transition"
+      >
+        {submitting ? "Submitting…" : "Submit Review"}
+      </button>
+    </form>
+  );
+};
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <div className="flex items-center gap-3">
-              <img
-                src={order.restaurant?.imageUrl || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=80&h=80&fit=crop"}
-                alt={order.restaurant?.name}
-                className="w-12 h-12 rounded-lg object-cover"
-              />
+// ─── Progress Tracker ─────────────────────────────────────────────────────────
+const ProgressTracker = ({ status }) => {
+  if (status === "CANCELLED") {
+    return (
+      <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+        <span className="text-2xl">❌</span>
+        <div>
+          <p className="font-semibold text-red-700 dark:text-red-400">Order Cancelled</p>
+          <p className="text-xs text-red-500">This order has been cancelled.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentIdx = STEPS.findIndex((s) => s.key === status);
+
+  return (
+    <div className="relative">
+      {/* Connecting line */}
+      <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200 dark:bg-gray-700" />
+      <div
+        className="absolute top-5 left-5 h-0.5 bg-orange-500 transition-all duration-700"
+        style={{ width: currentIdx >= 0 ? `${(currentIdx / (STEPS.length - 1)) * 100}%` : "0%" }}
+      />
+
+      <div className="relative flex justify-between">
+        {STEPS.map((step, idx) => {
+          const done = idx <= currentIdx;
+          const active = idx === currentIdx;
+          return (
+            <div key={step.key} className="flex flex-col items-center gap-1.5 flex-1">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 z-10 transition-all ${
+                done
+                  ? "bg-orange-500 border-orange-500 shadow-md shadow-orange-200"
+                  : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600"
+              } ${active ? "scale-110" : ""}`}
+              >
+                {step.icon}
+              </div>
+              <span className={`text-[10px] text-center font-medium leading-tight ${
+                done ? "text-orange-600 dark:text-orange-400" : "text-gray-400"
+              }`}>
+                {step.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ─── OrderDetailPage ─────────────────────────────────────────────────────────
+const OrderDetailPage = () => {
+  const { orderId } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [cancelling, setCancelling] = useState(false);
+
+  useEffect(() => {
+    getOrder(orderId)
+      .then((res) => setOrder(res.data.order))
+      .catch(() => toast.error("Failed to load order"))
+      .finally(() => setLoading(false));
+  }, [orderId]);
+
+  const handleCancel = async () => {
+    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+    setCancelling(true);
+    try {
+      await cancelOrder(orderId);
+      setOrder((o) => ({ ...o, status: "CANCELLED" }));
+      toast.success("Order cancelled successfully");
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Cannot cancel this order");
+    }
+    setCancelling(false);
+  };
+
+  const handleReorder = () => {
+    if (!order) return;
+    dispatch(clearCart());
+    order.items.forEach((item) => {
+      if (item.menuItem) {
+        dispatch(addItem({
+          id: item.menuItemId,
+          name: item.menuItem.name,
+          price: item.menuItem.price || item.priceAtTime,
+          isVeg: item.menuItem.isVeg ?? true,
+          restaurantId: order.restaurantId,
+          restaurantName: order.restaurant?.name || "",
+          imageUrl: item.menuItem.imageUrl || "",
+          quantity: item.quantity,
+        }));
+      }
+    });
+    toast.success("Items added to cart!");
+    navigate("/home/cart");
+  };
+
+  if (loading)
+    return (
+      <div className="min-h-screen pt-24 flex items-center justify-center dark:bg-gray-900">
+        <div className="animate-pulse text-gray-400">Loading order…</div>
+      </div>
+    );
+
+  if (!order)
+    return (
+      <div className="min-h-screen pt-24 flex flex-col items-center justify-center gap-4 dark:bg-gray-900">
+        <FaBoxOpen size={48} className="text-gray-300" />
+        <p className="text-gray-500">Order not found.</p>
+        <Link to="/home/orders" className="text-orange-500 hover:underline text-sm">← Back to Orders</Link>
+      </div>
+    );
+
+  const itemTotal = order.items.reduce((s, i) => s + (i.priceAtTime || 0) * (i.quantity || 1), 0) / 100;
+  const deliveryFee = 29;
+  const gst = Math.round(itemTotal * 0.05);
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16 px-4">
+      <div className="max-w-2xl mx-auto space-y-5">
+
+        {/* Back + Header */}
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition">
+            <FaArrowLeft />
+          </button>
+          <div className="flex-1">
+            <h1 className="font-bold text-xl text-gray-800 dark:text-gray-100">Order Details</h1>
+            <p className="text-xs text-gray-400">#{order.id.slice(0, 8).toUpperCase()}</p>
+          </div>
+          <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${STATUS_COLORS[order.status]}`}>
+            {STATUS_LABELS[order.status] || order.status}
+          </span>
+        </div>
+
+        {/* Restaurant */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-4">
+          <Link to={`/home/restaurants/${order.restaurantId}`} className="flex items-center gap-3 hover:opacity-80 transition">
+            <img
+              src={order.restaurant?.imageUrl || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=80&h=80&fit=crop"}
+              alt="" className="w-12 h-12 rounded-xl object-cover"
+            />
+            <div>
+              <p className="font-bold text-gray-800 dark:text-gray-100">{order.restaurant?.name}</p>
+              <p className="text-xs text-gray-400">
+                {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                  day: "numeric", month: "long", year: "numeric",
+                  hour: "2-digit", minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </Link>
+        </div>
+
+        {/* Progress Tracker */}
+        {order.status !== "CANCELLED" && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
+            <h2 className="font-bold text-gray-800 dark:text-gray-100 mb-5 flex items-center gap-2">
+              <FaMotorcycle className="text-orange-500" /> Order Progress
+            </h2>
+            <ProgressTracker status={order.status} />
+          </div>
+        )}
+        {order.status === "CANCELLED" && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
+            <ProgressTracker status="CANCELLED" />
+          </div>
+        )}
+
+        {/* Delivery Address */}
+        {order.deliveryAddress && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-start gap-3">
+              <FaMapMarkerAlt className="text-orange-500 flex-shrink-0 mt-0.5" size={14} />
               <div>
-                <p className="font-semibold text-gray-800 dark:text-gray-100">{order.restaurant?.name || "Restaurant"}</p>
-                <p className="text-xs text-gray-400">
-                  {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                    day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
-                  })}
-                </p>
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Delivery Address</p>
+                <p className="text-sm text-gray-800 dark:text-gray-200">{order.deliveryAddress}</p>
               </div>
             </div>
-            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_COLORS[order.status] || "bg-gray-100 text-gray-600"}`}>
-              {STATUS_LABELS[order.status] || order.status}
-            </span>
           </div>
+        )}
 
-          {/* Items */}
-          <div className="px-4 py-4">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Items Ordered</h3>
-            <div className="space-y-2">
-              {order.items?.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 w-5">{item.quantity}×</span>
-                    <span className="text-sm text-gray-700 dark:text-gray-200">{item.menuItem?.name || "Item"}</span>
+        {/* Items */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+            <h2 className="font-bold text-gray-800 dark:text-gray-100">Order Items</h2>
+          </div>
+          <div className="divide-y divide-gray-50 dark:divide-gray-700">
+            {order.items.map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  {item.menuItem?.imageUrl && (
+                    <img src={item.menuItem.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-100 line-clamp-1">
+                      {item.menuItem?.name || "Item"}
+                    </p>
+                    <p className="text-xs text-gray-400">×{item.quantity}</p>
                   </div>
-                  <span className="text-sm text-gray-600 dark:text-gray-300">
-                    ₹{Math.round((item.menuItem?.price || item.priceAtTime || 0) * item.quantity / 100)}
-                  </span>
                 </div>
-              ))}
-            </div>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 flex-shrink-0 ml-4">
+                  ₹{Math.round((item.priceAtTime * item.quantity) / 100)}
+                </span>
+              </div>
+            ))}
           </div>
 
-          {/* Footer */}
-          <div className="px-4 py-3 bg-gray-50 dark:bg-gray-750 border-t border-gray-100 dark:border-gray-700">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-gray-800 dark:text-gray-100">Total</span>
-              <span className="font-bold text-lg text-gray-800 dark:text-gray-100">₹{Math.round(order.totalAmount / 100)}</span>
+          {/* Bill */}
+          <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-3 bg-gray-50 dark:bg-gray-750 space-y-1.5">
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+              <span>Item total</span><span>₹{itemTotal.toFixed(0)}</span>
             </div>
-            {order.notes && (
-              <p className="text-xs text-gray-400 mt-2">📍 {order.notes}</p>
-            )}
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+              <span>Delivery fee</span><span>₹{deliveryFee}</span>
+            </div>
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+              <span>GST (5%)</span><span>₹{gst}</span>
+            </div>
+            <div className="flex justify-between text-base font-bold text-gray-800 dark:text-gray-100 pt-2 border-t border-gray-200 dark:border-gray-700">
+              <span>Total Paid</span><span>₹{Math.round(order.totalAmount / 100)}</span>
+            </div>
           </div>
         </div>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          {order.status === "PLACED" && (
+            <button
+              onClick={handleCancel}
+              disabled={cancelling}
+              className="flex-1 py-2.5 border border-red-300 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl font-semibold text-sm transition disabled:opacity-60"
+            >
+              {cancelling ? "Cancelling…" : "Cancel Order"}
+            </button>
+          )}
+          {["DELIVERED", "CANCELLED"].includes(order.status) && (
+            <button
+              onClick={handleReorder}
+              className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold text-sm transition shadow"
+            >
+              🔄 Reorder
+            </button>
+          )}
+        </div>
+
+        {/* Review (only after delivery) */}
+        {order.status === "DELIVERED" && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
+            <ReviewForm
+              restaurantId={order.restaurantId}
+              restaurantName={order.restaurant?.name}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

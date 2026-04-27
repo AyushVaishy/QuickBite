@@ -5,3 +5,5 @@ export const login = (data) => api.post("/auth/login", data);
 export const logout = () => api.post("/auth/logout");
 export const refreshToken = () => api.post("/auth/refresh");
 export const getProfile = () => api.get("/auth/me");
+export const updateProfile = (data) => api.put("/auth/me", data);
+export const changePassword = (data) => api.put("/auth/password", data);

@@ -1,25 +1,31 @@
-import { useState } from 'react';
-import ItemList from './ItemList';
+import { useState } from "react";
+import ItemList from "./ItemList";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const RestaurantCategory = ({ title, items, restaurantName }) => {
-  const [showItems, setShowItems] = useState(true);
+  const [open, setOpen] = useState(true);
 
   return (
-    <div>
-      {/* Accordion Header */}
-      <div className="w-6/12 mx-auto my-4 bg-gray-50 dark:bg-gray-800 shadow-lg p-4">
-        <div
-          className="flex justify-between cursor-pointer"
-          onClick={() => setShowItems(!showItems)}
-        >
-          <span className="font-bold text-lg dark:text-gray-100">
-            {title} ({items.length})
-          </span>
-          <span>{showItems ? "🔼" : "🔽"}</span>
+    <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
+      <button
+        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-750 transition"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-100">
+          {title}
+          <span className="ml-2 text-sm font-normal text-gray-400">({items.length})</span>
+        </span>
+        {open ? (
+          <FaChevronUp className="text-gray-400 flex-shrink-0" size={14} />
+        ) : (
+          <FaChevronDown className="text-gray-400 flex-shrink-0" size={14} />
+        )}
+      </button>
+      {open && (
+        <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-2">
+          <ItemList items={items} restaurantName={restaurantName} />
         </div>
-        {/* Accordion Body */}
-        {showItems && <ItemList items={items} restaurantName={restaurantName} />}
-      </div>
+      )}
     </div>
   );
 };

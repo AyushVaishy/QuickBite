@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap');
+
 /* Custom scrollbar hiding styles */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
@@ -12,12 +14,112 @@
   scrollbar-width: none;
 }
 
+/* Hide viewport scrollbar UI but keep scrolling functional */
+html,
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
 /* Light/Dark base colors */
 @layer base {
   :root {
+    --app-bg: #f8fafc;
+    --app-surface: #ffffff;
+    --app-text-primary: #0f172a;
+    --app-text-secondary: #475569;
+    --app-border: #dbe5f0;
+    --brand: #f15a24;
+    --brand-dark: #d1481b;
+    --brand-soft: #ffece4;
+    --shadow-soft: rgba(15, 23, 42, 0.08);
     color-scheme: light;
   }
+
+  :root {
+    font-family: "Manrope", system-ui, sans-serif;
+  }
+
   .dark {
+    --app-bg: #0f1318;
+    --app-surface: #181f27;
+    --app-text-primary: #f8fafc;
+    --app-text-secondary: #9fb0c7;
+    --app-border: #293241;
+    --brand: #f9733f;
+    --brand-dark: #e36430;
+    --brand-soft: rgba(249, 115, 63, 0.14);
+    --shadow-soft: rgba(2, 6, 23, 0.45);
     color-scheme: dark;
+  }
+
+  body {
+    background: var(--app-bg);
+    color: var(--app-text-primary);
+    transition: background-color 240ms ease, color 240ms ease;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Sora", "Manrope", system-ui, sans-serif;
+  }
+
+  .transition-theme {
+    transition: all 240ms ease;
+  }
+
+  .landing-glass {
+    background: color-mix(in srgb, var(--app-surface) 78%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .bg-app {
+    background-color: var(--app-bg);
+  }
+
+  .bg-app-surface {
+    background-color: var(--app-surface);
+  }
+
+  .bg-brand {
+    background-color: var(--brand);
+  }
+
+  .bg-brand-soft {
+    background-color: var(--brand-soft);
+  }
+
+  .text-app-primary {
+    color: var(--app-text-primary);
+  }
+
+  .text-app-secondary {
+    color: var(--app-text-secondary);
+  }
+
+  .text-brand {
+    color: var(--brand);
+  }
+
+  .border-app-border {
+    border-color: var(--app-border);
+  }
+
+  .border-brand {
+    border-color: var(--brand);
+  }
+
+  .hover\:bg-brand-dark:hover {
+    background-color: var(--brand-dark);
+  }
+
+  .shadow-soft {
+    box-shadow: 0 16px 45px -16px var(--shadow-soft);
   }
 }

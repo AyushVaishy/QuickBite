@@ -1,0 +1,2028 @@
+[
+  {
+    "name": "Jalsa",
+    "address": "942, 21st Main Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Mughlai",
+      "Chinese"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 80000,
+    "phone": "080 42297555",
+    "lat": 12.922595807042308,
+    "lng": 77.54506599205976,
+    "dishLiked": [
+      "Pasta",
+      "Lunch Buffet",
+      "Masala Papad",
+      "Paneer Lajawab",
+      "Tomato Shorba",
+      "Dum Biryani",
+      "Sweet Corn Soup"
+    ]
+  },
+  {
+    "name": "Spice Elephant",
+    "address": "2nd Floor, 80 Feet Road, Near Big Bazaar, 6th Block, Kathriguppe, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Chinese",
+      "North Indian",
+      "Thai"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 80000,
+    "phone": "080 41714161",
+    "lat": 12.923868909401161,
+    "lng": 77.54945703058227,
+    "dishLiked": [
+      "Momos",
+      "Lunch Buffet",
+      "Chocolate Nirvana",
+      "Thai Green Curry",
+      "Paneer Tikka",
+      "Dum Biryani",
+      "Chicken Biryani"
+    ]
+  },
+  {
+    "name": "San Churro Cafe",
+    "address": "1112, Next to KIMS Medical College, 17th Cross, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Mexican",
+      "Italian"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 80000,
+    "phone": "+91 9663487993",
+    "lat": 12.92292618882761,
+    "lng": 77.55048383449244,
+    "dishLiked": [
+      "Churros",
+      "Cannelloni",
+      "Minestrone Soup",
+      "Hot Chocolate",
+      "Pink Sauce Pasta",
+      "Salsa",
+      "Veg Supreme Pizza"
+    ]
+  },
+  {
+    "name": "Addhuri Udupi Bhojana",
+    "address": "1st Floor, Annakuteera, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian",
+      "North Indian"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 30000,
+    "phone": "+91 9620009302",
+    "lat": 12.92828010267897,
+    "lng": 77.54949817214035,
+    "dishLiked": [
+      "Masala Dosa"
+    ]
+  },
+  {
+    "name": "Grand Village",
+    "address": "10, 3rd Floor, Lakshmi Associates, Gandhi Bazaar Main Road, Above Reliance Trends, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "North Indian",
+      "Rajasthani"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 60000,
+    "phone": "+91 8026612447",
+    "lat": 12.945905110343709,
+    "lng": 77.5774300298392,
+    "dishLiked": [
+      "Panipuri",
+      "Gol Gappe"
+    ]
+  },
+  {
+    "name": "Timepass Dinner",
+    "address": "37, 5-1, 4th Floor, Bosco Court, Gandhi Bazaar Main Road, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "North Indian"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 60000,
+    "phone": "+91 9980040002",
+    "lat": 12.940308254624007,
+    "lng": 77.57666352089126,
+    "dishLiked": [
+      "Onion Rings",
+      "Pasta",
+      "Kadhai Paneer",
+      "Salads",
+      "Salad",
+      "Roti",
+      "Jeera Rice"
+    ]
+  },
+  {
+    "name": "Rosewood International Hotel - Bar & Restaurant",
+    "address": "19/1, New Timberyard Layout, Beside Satellite Bus Stop, Mysore Road, Bangalore",
+    "city": "Bangalore",
+    "location": "Mysore Road",
+    "cuisines": [
+      "North Indian",
+      "South Indian",
+      "Andhra",
+      "Chinese"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 80000,
+    "phone": "+91 9731716688",
+    "lat": 12.967441941697782,
+    "lng": 77.59478039966186,
+    "dishLiked": []
+  },
+  {
+    "name": "Onesta",
+    "address": "2469, 3rd Floor, 24th Cross, Opposite BDA Complex, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Pizza",
+      "Cafe",
+      "Italian"
+    ],
+    "avgRating": 4.6,
+    "costForTwo": 60000,
+    "phone": "080 48653961",
+    "lat": 12.921795172639069,
+    "lng": 77.54460156242372,
+    "dishLiked": [
+      "Farmhouse Pizza",
+      "Chocolate Banana",
+      "Virgin Mojito",
+      "Pasta",
+      "Paneer Tikka",
+      "Lime Soda",
+      "Prawn Pizza"
+    ]
+  },
+  {
+    "name": "Penthouse Cafe",
+    "address": "1, 30th Main Road, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Italian",
+      "Continental"
+    ],
+    "avgRating": 4,
+    "costForTwo": 70000,
+    "phone": "+91 8884135549",
+    "lat": 12.929190808235818,
+    "lng": 77.54699684210959,
+    "dishLiked": [
+      "Pizza",
+      "Mocktails",
+      "Coffee",
+      "Nachos",
+      "Salad",
+      "Pasta",
+      "Sandwiches"
+    ]
+  },
+  {
+    "name": "Smacznego",
+    "address": "2470, 21 Main Road, 25th Cross, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Mexican",
+      "Italian",
+      "Momos",
+      "Beverages"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 55000,
+    "phone": "+91 9945230807",
+    "lat": 12.921100755559161,
+    "lng": 77.5511531435636,
+    "dishLiked": [
+      "Waffles",
+      "Pasta",
+      "Coleslaw Sandwich",
+      "Choco Waffle",
+      "Tacos",
+      "Momos",
+      "Cheese Nachos"
+    ]
+  },
+  {
+    "name": "CafÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ© Down The Alley",
+    "address": "12,29 Near PES University Back Gate, D'Souza Nagar, Hosakerehalli, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 50000,
+    "phone": "080 26724489",
+    "lat": 12.926809885031997,
+    "lng": 77.54927105713276,
+    "dishLiked": [
+      "Waffles",
+      "Pasta",
+      "Crispy Chicken",
+      "Honey Chilli Chicken",
+      "Sandwich",
+      "Coffee",
+      "Crepe"
+    ]
+  },
+  {
+    "name": "Cafe Shuffle",
+    "address": "941, 3rd FLOOR, 21st Main, 22nd Cross, Banashankari 2nd stage, Opposite to BDA complex, Banashankari",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Italian",
+      "Continental"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 60000,
+    "phone": "+91 9742166777",
+    "lat": 12.926375901400444,
+    "lng": 77.5469684017504,
+    "dishLiked": [
+      "Mocktails",
+      "Peri Fries",
+      "Lasagne",
+      "Pizza",
+      "Chicken Bbq Wings",
+      "Virgin Mojito",
+      "Nachos"
+    ]
+  },
+  {
+    "name": "The Coffee Shack",
+    "address": "6th Block, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Chinese",
+      "Continental",
+      "Italian"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 50000,
+    "phone": "+91 9731644212",
+    "lat": 12.925642434155764,
+    "lng": 77.5457148991215,
+    "dishLiked": [
+      "Coffee",
+      "Spaghetti",
+      "Pancakes",
+      "Nachos",
+      "Pasta",
+      "Sandwich",
+      "Garlic Bread"
+    ]
+  },
+  {
+    "name": "Caf-Eleven",
+    "address": "111, Sapphire Toys Building, 100 Feet Ring Road, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Continental"
+    ],
+    "avgRating": 4,
+    "costForTwo": 45000,
+    "phone": "080 49577715",
+    "lat": 12.929951397596746,
+    "lng": 77.54412479770043,
+    "dishLiked": [
+      "Sandwich",
+      "Omelette",
+      "Ice Tea",
+      "Virgin Mojito",
+      "Hot Chocolate",
+      "Pasta Arrabiata",
+      "Hazelnut Cappuccino"
+    ]
+  },
+  {
+    "name": "Cafe Vivacity",
+    "address": "2303, 21st Cross, K R Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 65000,
+    "phone": "080 26768182",
+    "lat": 12.922205844194606,
+    "lng": 77.55132435251608,
+    "dishLiked": [
+      "Garlic Bread",
+      "Burgers",
+      "Sandwiches",
+      "Pizza",
+      "Hot Chocolate Fudge",
+      "Waffles",
+      "Potato Wedges"
+    ]
+  },
+  {
+    "name": "Catch-up-ino",
+    "address": "241, 4th Floor, 100 Feet Ring Road, Opposite Kamakya Theatre, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Fast Food",
+      "Continental",
+      "Chinese",
+      "Momos"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 80000,
+    "phone": "+91 9972988038",
+    "lat": 12.92603126830919,
+    "lng": 77.54227522238108,
+    "dishLiked": [
+      "Momos",
+      "Mushroom Bruschettas",
+      "Jalapeno Cheeseballs",
+      "Pasta",
+      "Red Velvet Shake",
+      "Red Velvet Milkshake",
+      "Maggi"
+    ]
+  },
+  {
+    "name": "Kirthi's Biryani",
+    "address": "405, 24th Cross, 9th Main, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Chinese",
+      "Cafe",
+      "Italian"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 70000,
+    "phone": "080 26711554",
+    "lat": 12.928717327748204,
+    "lng": 77.54343856500127,
+    "dishLiked": [
+      "Pasta",
+      "Gelato",
+      "Garlic Bread",
+      "Mojito",
+      "Nachos",
+      "Paneer Pizza",
+      "Mocktails"
+    ]
+  },
+  {
+    "name": "T3H Cafe",
+    "address": "504, CJ Venkata Das Road, Padmanabhangar, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Italian",
+      "American"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 30000,
+    "phone": "+91 8884726600",
+    "lat": 12.928642151842206,
+    "lng": 77.54296751895109,
+    "dishLiked": [
+      "Cheese Maggi",
+      "Peri Peri Fries",
+      "Pasta Arrabiata"
+    ]
+  },
+  {
+    "name": "360 Atoms Restaurant And Cafe",
+    "address": "47, 48 &49, 3Rd Floor, 21st Main Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Chinese",
+      "Continental",
+      "Italian"
+    ],
+    "avgRating": 3.1,
+    "costForTwo": 40000,
+    "phone": "+91 9880594520",
+    "lat": 12.92682275971413,
+    "lng": 77.55140538185663,
+    "dishLiked": []
+  },
+  {
+    "name": "The Vintage Cafe",
+    "address": "146, 50 ft Road, 3rd Phase, 3rd Stage, Near Katriguppe Water Tank Circle, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "French",
+      "North Indian"
+    ],
+    "avgRating": 3,
+    "costForTwo": 40000,
+    "phone": "+91 9880016665",
+    "lat": 12.92149460618841,
+    "lng": 77.54325314670288,
+    "dishLiked": [
+      "Burgers",
+      "Caramel Milkshake",
+      "Iced Coffee",
+      "Iced Tea"
+    ]
+  },
+  {
+    "name": "Woodee Pizza",
+    "address": "3353, 2nd Cross, Opposite Auden School, Hoskerehalli Cross, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Pizza",
+      "Fast Food",
+      "Beverages"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 50000,
+    "phone": "+91 7406822844",
+    "lat": 12.921942252289114,
+    "lng": 77.55056719705429,
+    "dishLiked": [
+      "Pizza",
+      "Garlic Bread"
+    ]
+  },
+  {
+    "name": "Cafe Coffee Day",
+    "address": "SRF Complex, Near BDA Complex, Kathreguppe Main Road, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Fast Food"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 90000,
+    "phone": "080 32486296",
+    "lat": 12.921005340916556,
+    "lng": 77.55085917773759,
+    "dishLiked": []
+  },
+  {
+    "name": "My Tea House",
+    "address": "224/Y, 4th Phase, 7th Block, 100 Feet Ring Road, Near Kamakya Theatre, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Italian",
+      "Fast Food",
+      "Cafe",
+      "European"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 60000,
+    "phone": "080 65975430",
+    "lat": 12.929641942196545,
+    "lng": 77.55169985818806,
+    "dishLiked": [
+      "Pasta",
+      "Iced Tea"
+    ]
+  },
+  {
+    "name": "Hide Out Cafe",
+    "address": "775/1, Opposite Gupta Collage, 7th Block, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 30000,
+    "phone": "+91 9901481185",
+    "lat": 12.929906351739,
+    "lng": 77.54797932628236,
+    "dishLiked": []
+  },
+  {
+    "name": "CAFE NOVA",
+    "address": "101, Water Tank Road, 2nd Block, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Bakery"
+    ],
+    "avgRating": 3.2,
+    "costForTwo": 60000,
+    "phone": "+91 8971090261",
+    "lat": 12.929509421277594,
+    "lng": 77.54851219571566,
+    "dishLiked": []
+  },
+  {
+    "name": "Coffee Tindi",
+    "address": "27th Cross Rd, Banashankari Stage II, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "South Indian"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 20000,
+    "phone": "+91 9945758046",
+    "lat": 12.926799726653336,
+    "lng": 77.54990191245214,
+    "dishLiked": []
+  },
+  {
+    "name": "Sea Green Cafe",
+    "address": "1036, Srinidhi Plaza, 3rd floor, Above Nilgiris, Stage 2, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Fast Food",
+      "Beverages"
+    ],
+    "avgRating": 3.3,
+    "costForTwo": 50000,
+    "phone": "+91 9008628448",
+    "lat": 12.927400561693263,
+    "lng": 77.55068586235154,
+    "dishLiked": []
+  },
+  {
+    "name": "Cuppa",
+    "address": "940, Shantha Complex, 20th Main, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Cafe",
+      "Fast Food"
+    ],
+    "avgRating": 3.3,
+    "costForTwo": 55000,
+    "phone": "+91 9591111123",
+    "lat": 12.925944867151246,
+    "lng": 77.54220956672988,
+    "dishLiked": []
+  },
+  {
+    "name": "Srinathji's Cafe",
+    "address": "112, Bull Temple Road,next to more Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "North Indian",
+      "Cafe",
+      "Chinese",
+      "Fast Food"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 55000,
+    "phone": "080 26600704",
+    "lat": 12.937967970645305,
+    "lng": 77.57310176550882,
+    "dishLiked": [
+      "Paratha",
+      "Sandwich",
+      "Chilli Idli",
+      "Noodles",
+      "Sandwiches",
+      "Lime Soda"
+    ]
+  },
+  {
+    "name": "Redberrys",
+    "address": "30, Surveyor Street, DVG Road, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "Cafe",
+      "Italian"
+    ],
+    "avgRating": 4,
+    "costForTwo": 60000,
+    "phone": "+91 9148421256",
+    "lat": 12.941604897813935,
+    "lng": 77.57930769321116,
+    "dishLiked": [
+      "Pizza",
+      "Fries",
+      "Anjeer Ice Cream",
+      "Sandwiches",
+      "Gelato",
+      "Burgers",
+      "Kesar Badam"
+    ]
+  },
+  {
+    "name": "Foodiction",
+    "address": "2/1, 7th Main, Dwarakangar, Hosakeregalli, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Fast Food",
+      "Chinese",
+      "Burger"
+    ],
+    "avgRating": 2.8,
+    "costForTwo": 50000,
+    "phone": "+91 9916107070",
+    "lat": 12.920378523869045,
+    "lng": 77.54247567465083,
+    "dishLiked": [
+      "Burgers",
+      "Lassi",
+      "Chicken Grill",
+      "Naan",
+      "Momos",
+      "Chicken Burger",
+      "Biryani"
+    ]
+  },
+  {
+    "name": "Sweet Truth",
+    "address": "101 Ground Floor, Manjunatha Complex, 22nd Main Road, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Bakery",
+      "Desserts"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 50000,
+    "phone": "+91 7710055553",
+    "lat": 12.923059091062171,
+    "lng": 77.5438397870422,
+    "dishLiked": []
+  },
+  {
+    "name": "Ovenstory Pizza",
+    "address": "101, Ground Floor, Manjunatha Complex, 22nd Main Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Pizza"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 75000,
+    "phone": "+91 7738383000",
+    "lat": 12.921550435303152,
+    "lng": 77.55096076764093,
+    "dishLiked": [
+      "Paneer Tikka",
+      "Garlic Bread",
+      "Thin Crust Pizza",
+      "Falafel",
+      "Veggie Pizza"
+    ]
+  },
+  {
+    "name": "Faasos",
+    "address": "80, BDA Complex, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Biryani",
+      "Fast Food"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 50000,
+    "phone": "+91 7700020020",
+    "lat": 12.92683712323807,
+    "lng": 77.5497093021511,
+    "dishLiked": [
+      "Rolls",
+      "Veggie Wrap",
+      "Chocolate Fantasy",
+      "Rice Bowls",
+      "Chicken Rice",
+      "Paneer Makhanwala",
+      "Chicken Tikka Wrap"
+    ]
+  },
+  {
+    "name": "Behrouz Biryani",
+    "address": "101, Ground Floor, Manjunatha Complex, 22nd Main Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Biryani"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 65000,
+    "phone": "+91 7022260661",
+    "lat": 12.921768323807735,
+    "lng": 77.54891757701752,
+    "dishLiked": [
+      "Raita",
+      "Gulab Jamun",
+      "Paneer Biryani",
+      "Vegetable Biryani",
+      "Gosht Dum Biryani",
+      "Chicken Biryani",
+      "Murgh Biryani"
+    ]
+  },
+  {
+    "name": "Fast And Fresh",
+    "address": "32, 7th Main Road, Dwaraka Nagar,Near PES College, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Chinese",
+      "Fast Food"
+    ],
+    "avgRating": 2.8,
+    "costForTwo": 40000,
+    "phone": "+91 9742974232",
+    "lat": 12.922293556770827,
+    "lng": 77.54760610045057,
+    "dishLiked": []
+  },
+  {
+    "name": "Szechuan Dragon",
+    "address": "8, 2nd Floor, 1st Main, Arush Trapeze, Mount Joy Road, Behind BMS College of Engineering, Hanumanthnagar, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Chinese",
+      "Thai",
+      "Momos"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 60000,
+    "phone": "00 919663567711",
+    "lat": 12.925841963774989,
+    "lng": 77.55116653252091,
+    "dishLiked": [
+      "Noodles",
+      "Momos",
+      "Veg Manchow Soup",
+      "Kung Pao Chicken",
+      "Chicken Lollipop",
+      "Chop Suey",
+      "Dragon Chicken"
+    ]
+  },
+  {
+    "name": "Empire Restaurant",
+    "address": "4, Opposite NMKRV College, 21st C Cross Road, 3rd Block, Jayanagar, Bangalore",
+    "city": "Bangalore",
+    "location": "Jayanagar",
+    "cuisines": [
+      "North Indian",
+      "Mughlai",
+      "South Indian",
+      "Chinese"
+    ],
+    "avgRating": 4.4,
+    "costForTwo": 75000,
+    "phone": "080 49653266",
+    "lat": 12.928771012437625,
+    "lng": 77.59626342502683,
+    "dishLiked": [
+      "Chicken Tikka Masala",
+      "Mutton Keema Dosa",
+      "Mutton Biryani",
+      "Raan Biryani",
+      "Brain Fry",
+      "Chicken Grill",
+      "Ghee Rice"
+    ]
+  },
+  {
+    "name": "Maruthi Davangere Benne Dosa",
+    "address": "556/A, Water Tank Road, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": 4,
+    "costForTwo": 15000,
+    "phone": "+91 9019563485",
+    "lat": 12.923523164142592,
+    "lng": 77.54467274437073,
+    "dishLiked": []
+  },
+  {
+    "name": "Chaatimes",
+    "address": "39, 3rd Main,4th Cross, Hanumanth Nagar, Near, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "Street Food",
+      "Fast Food"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 20000,
+    "phone": "+91 8884232233",
+    "lat": 12.939612873836637,
+    "lng": 77.5711188319666,
+    "dishLiked": [
+      "Dabeli",
+      "Faluda",
+      "Masala Poori",
+      "Sandwiches",
+      "Tokri Chaat",
+      "Pav Bhaji",
+      "Dahipuri"
+    ]
+  },
+  {
+    "name": "Havyaka Mess",
+    "address": "Opp Vinayaka hospital, Near Seetha Circle , 80 Feet Road, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 30000,
+    "phone": "+91 9243195843",
+    "lat": 12.921565757641352,
+    "lng": 77.55062540683286,
+    "dishLiked": []
+  },
+  {
+    "name": "McDonald's",
+    "address": "2466, Bhaskar Grand Tower, 24th Cross, Opposite BDA Complex, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Burger",
+      "Fast Food"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 50000,
+    "phone": "080 66000666",
+    "lat": 12.926030114370707,
+    "lng": 77.5493745352484,
+    "dishLiked": [
+      "Burgers",
+      "Fries",
+      "Hot Chocolate"
+    ]
+  },
+  {
+    "name": "Domino's Pizza",
+    "address": "645, 1st Floor, 24th Cross, 24th Main, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Pizza",
+      "Fast Food"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 80000,
+    "phone": "080 26710070",
+    "lat": 12.924815922222113,
+    "lng": 77.54870489651024,
+    "dishLiked": [
+      "Pane Pizza",
+      "Lava Cake",
+      "Pasta",
+      "Stuffed Garlic Bread",
+      "Chocolava Cake",
+      "Tacos"
+    ]
+  },
+  {
+    "name": "Hotboxit",
+    "address": "2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Continental",
+      "Italian"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 40000,
+    "phone": "+91 7026677677",
+    "lat": 12.923682826548799,
+    "lng": 77.54431173931216,
+    "dishLiked": [
+      "Prompt Service"
+    ]
+  },
+  {
+    "name": "Kitchen Garden",
+    "address": "1750, 14th Main, Police Station Road, Kumaraswamy Layout, Bangalore",
+    "city": "Bangalore",
+    "location": "Kumaraswamy Layout",
+    "cuisines": [
+      "North Indian",
+      "Chinese"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 30000,
+    "phone": "080 49652867",
+    "lat": 12.96741600071031,
+    "lng": 77.59212672323957,
+    "dishLiked": [
+      "Biryani"
+    ]
+  },
+  {
+    "name": "Recipe",
+    "address": "1621, 1st Floor, 50 Feet Main Road, Kumaraswamy Layout, Bangalore",
+    "city": "Bangalore",
+    "location": "Kumaraswamy Layout",
+    "cuisines": [
+      "North Indian",
+      "Chinese",
+      "Biryani",
+      "Rolls"
+    ],
+    "avgRating": 4,
+    "costForTwo": 45000,
+    "phone": "+91 8043755256",
+    "lat": 12.96838373751182,
+    "lng": 77.59700109659937,
+    "dishLiked": [
+      "Butter Chicken",
+      "Noodles",
+      "Thali",
+      "Biryani"
+    ]
+  },
+  {
+    "name": "Beijing Bites",
+    "address": "179, 1st Floor, Jawarlalnehru Road, BEML Layout, Rajarajeshwari Nagar, Bangalore",
+    "city": "Bangalore",
+    "location": "Rajarajeshwari Nagar",
+    "cuisines": [
+      "Chinese",
+      "Thai"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 85000,
+    "phone": "080 28606888",
+    "lat": 12.974390595701337,
+    "lng": 77.59820259252714,
+    "dishLiked": [
+      "Momos",
+      "Dragon Chicken",
+      "Hakka Noodles",
+      "Chowmein",
+      "Chop Suey",
+      "Chilli Garlic Noodles",
+      "Garlic Rice"
+    ]
+  },
+  {
+    "name": "Tasty Bytes",
+    "address": "1607, Sagar Hospital Road, Near Dayanandasagar College, Kumaraswamy Layout, Bangalore",
+    "city": "Bangalore",
+    "location": "Kumaraswamy Layout",
+    "cuisines": [
+      "North Indian",
+      "Chinese",
+      "Momos",
+      "Rolls"
+    ],
+    "avgRating": 3.1,
+    "costForTwo": 30000,
+    "phone": "+91 8553317408",
+    "lat": 12.970820132190976,
+    "lng": 77.59258759577932,
+    "dishLiked": [
+      "Paratha",
+      "Pasta"
+    ]
+  },
+  {
+    "name": "Petoo",
+    "address": "276, Ground Floor, 100 Feet Outer Ring Road, Banashankari 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 45000,
+    "phone": "+91 8026893211",
+    "lat": 12.923218667098372,
+    "lng": 77.54856793535964,
+    "dishLiked": []
+  },
+  {
+    "name": "Shree Cool Point",
+    "address": "1514, 4th Cross, 7th Main, RPC layout, 2nd Stage, Vijay Nagar, Bangalore",
+    "city": "Bangalore",
+    "location": "Vijay Nagar",
+    "cuisines": [
+      "Fast Food",
+      "Street Food",
+      "Beverages"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 15000,
+    "phone": "+91 9900617124",
+    "lat": 12.973410831174636,
+    "lng": 77.59788152756718,
+    "dishLiked": []
+  },
+  {
+    "name": "Corner House Ice Cream",
+    "address": "808/6-1, 24th A Cross, K.R Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Ice Cream",
+      "Desserts"
+    ],
+    "avgRating": 4.3,
+    "costForTwo": 40000,
+    "phone": "080 26713965",
+    "lat": 12.92344739962473,
+    "lng": 77.54717003046794,
+    "dishLiked": [
+      "Hot Chocolate Fudge",
+      "Vanilla Ice Cream",
+      "Fudge Cake",
+      "Chocolate Mousse"
+    ]
+  },
+  {
+    "name": "Biryanis And More",
+    "address": "178, Next To Old KEB Office, 8th F Main Road, 24b Cross, 3rd Block, Jayanagar, Bangalore",
+    "city": "Bangalore",
+    "location": "Jayanagar",
+    "cuisines": [
+      "Biryani",
+      "North Indian",
+      "Chinese",
+      "Andhra",
+      "South Indian"
+    ],
+    "avgRating": 4,
+    "costForTwo": 75000,
+    "phone": "080 48542442",
+    "lat": 12.927962597693478,
+    "lng": 77.59687078665213,
+    "dishLiked": [
+      "Prawn Biryani",
+      "Dragon Chicken",
+      "Chicken Boneless Biryani",
+      "Afghani Biryani",
+      "Mughlai Biryani",
+      "Paneer Tikka Biryani",
+      "Gongura Biryani"
+    ]
+  },
+  {
+    "name": "Roving Feast",
+    "address": "78, 21st Main Road, Near BDA Complex, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Italian",
+      "Continental",
+      "Fast Food",
+      "Chinese",
+      "Momos"
+    ],
+    "avgRating": 4,
+    "costForTwo": 45000,
+    "phone": "080 42024092",
+    "lat": 12.927516921735304,
+    "lng": 77.55134992712546,
+    "dishLiked": [
+      "Pasta",
+      "Momos",
+      "Rolls",
+      "Chicken Roll",
+      "Chilli Chicken",
+      "Paneer Roll",
+      "Spaghetti"
+    ]
+  },
+  {
+    "name": "FreshMenu",
+    "address": "10, Stavyah Arcade, 3rd Floor 9th Main, Yarab Nagar Main Road, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Healthy Food",
+      "Chinese",
+      "Biryani",
+      "North Indian",
+      "Continental"
+    ],
+    "avgRating": 3.9,
+    "costForTwo": 45000,
+    "phone": "080 40424242",
+    "lat": 12.925684242261875,
+    "lng": 77.54532068561852,
+    "dishLiked": [
+      "Salads",
+      "Sandwiches",
+      "Salad",
+      "Thai Rice",
+      "Pasta",
+      "Noodles",
+      "Pizza"
+    ]
+  },
+  {
+    "name": "Banashankari Donne Biriyani",
+    "address": "218/1,11th Main, 50 Feet Road, Hanumanthnagar, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Biryani",
+      "Fast Food"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 30000,
+    "phone": "+91 9845632456",
+    "lat": 12.927038532183058,
+    "lng": 77.54649801373263,
+    "dishLiked": []
+  },
+  {
+    "name": "Wamama",
+    "address": "2466, Bhaskar Grand Tower, 24th Cross, Opposite BDA Complex, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Asian",
+      "Korean",
+      "Indonesian",
+      "Japanese",
+      "Chinese"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 80000,
+    "phone": "+91 8042111599",
+    "lat": 12.926490650811152,
+    "lng": 77.54699918607153,
+    "dishLiked": [
+      "Sushi",
+      "Noodles",
+      "Wine",
+      "Khau Suey",
+      "Mocktails",
+      "Yakisoba",
+      "Spring Roll"
+    ]
+  },
+  {
+    "name": "Five Star Chicken",
+    "address": "484/A, 1st Stage, 2nd Block, 4th Main Rd, SBM Colony, Seetha Circle, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Fast Food",
+      "Burger"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 20000,
+    "phone": "080 41716035",
+    "lat": 12.920314476902952,
+    "lng": 77.54267519714203,
+    "dishLiked": []
+  },
+  {
+    "name": "XO Belgian Waffle",
+    "address": "18, B K Complex, Opposite To BDA Complex, 21st, Main Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Desserts",
+      "Beverages"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 40000,
+    "phone": "+91 9920950331",
+    "lat": 12.924094572908032,
+    "lng": 77.54645030551102,
+    "dishLiked": []
+  },
+  {
+    "name": "Peppy Peppers",
+    "address": "942, 3rd Floor, 21st Main Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Italian",
+      "North Indian",
+      "Mexican"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 80000,
+    "phone": "+91 8042297555",
+    "lat": 12.926587341969375,
+    "lng": 77.54484255318879,
+    "dishLiked": [
+      "Pasta",
+      "Pepper Pizza",
+      "Paneer Pizza",
+      "Peppy Paneer",
+      "Nachos",
+      "Supreme Pizza",
+      "Manchow Soup"
+    ]
+  },
+  {
+    "name": "Goa 0 Km",
+    "address": "1828, 50 Feet Road, 2nd Stage, Kumaraswamy Layout, Bangalore",
+    "city": "Bangalore",
+    "location": "Kumaraswamy Layout",
+    "cuisines": [
+      "Goan",
+      "Seafood",
+      "North Indian",
+      "Chinese",
+      "Biryani"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 80000,
+    "phone": "080 49653548",
+    "lat": 12.976208529922209,
+    "lng": 77.59420854626208,
+    "dishLiked": [
+      "Sea Food",
+      "Crab Meat",
+      "Crab Soup",
+      "Fish Curry",
+      "Chicken Cafreal",
+      "Butter Naan",
+      "Butter Chicken"
+    ]
+  },
+  {
+    "name": "Chinese Kitchen",
+    "address": "67, Kanasu Complex, Kubirmutt Road, Hunumathathangar, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "Chinese"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 15000,
+    "phone": "+91 9845914270",
+    "lat": 12.942551484972409,
+    "lng": 77.57108564027493,
+    "dishLiked": []
+  },
+  {
+    "name": "1947",
+    "address": "296, Ram Towers, 100 Feet Ring Road, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Chinese"
+    ],
+    "avgRating": 4,
+    "costForTwo": 85000,
+    "phone": "080 26791213",
+    "lat": 12.92094060992221,
+    "lng": 77.54954313062872,
+    "dishLiked": [
+      "Salads",
+      "Panneer Butter Masala",
+      "Rabri",
+      "Gajar Ka Halwa",
+      "Manchow Soup",
+      "Aam Panna",
+      "Tomato Basil Soup"
+    ]
+  },
+  {
+    "name": "Cake of the Day",
+    "address": "295/B, 7th Main Road, 100 Feet Ring Road, 7th Block, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Bakery"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 15000,
+    "phone": "080 22977725",
+    "lat": 12.926129541996994,
+    "lng": 77.5443606764226,
+    "dishLiked": []
+  },
+  {
+    "name": "Kabab Magic",
+    "address": "31, Opposite Vijaya College, RV Road, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "North Indian",
+      "Kebab",
+      "Chinese",
+      "Fast Food"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 40000,
+    "phone": "080 26570381",
+    "lat": 12.941394333129054,
+    "lng": 77.5789136315715,
+    "dishLiked": [
+      "Grape Juice",
+      "Chicken Grill",
+      "Chicken Tikka Roll",
+      "Shawarma Roll",
+      "Chicken Shawarama",
+      "Biryani Combo",
+      "Rolls"
+    ]
+  },
+  {
+    "name": "Namma Brahmin's Idli",
+    "address": "30th Cross, 8th Main, Near Jain Temple, 4th Block, Jayanagar, Bangalore",
+    "city": "Bangalore",
+    "location": "Jayanagar",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 10000,
+    "phone": "+91 8310555879",
+    "lat": 12.921221958231431,
+    "lng": 77.59310575286398,
+    "dishLiked": []
+  },
+  {
+    "name": "Gustoes Beer House",
+    "address": "10, 30th Main, Deve Gowda Petrol Bunk Road, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Continental",
+      "Italian",
+      "Mexican",
+      "North Indian",
+      "Chinese"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 120000,
+    "phone": "080 49653521",
+    "lat": 12.921908680898143,
+    "lng": 77.54198456013722,
+    "dishLiked": [
+      "Beer",
+      "Wedges",
+      "Pizza",
+      "Nachos",
+      "Salads",
+      "Papaya Salad",
+      "Buffalo Wings"
+    ]
+  },
+  {
+    "name": "Sugar Rush",
+    "address": "186, 11th Main, 4th Cross, Hanumanthnagar, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Bakery",
+      "Desserts"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 30000,
+    "phone": "+91 9916366551",
+    "lat": 12.925280485821563,
+    "lng": 77.55011119857726,
+    "dishLiked": []
+  },
+  {
+    "name": "Burger King",
+    "address": "59/3, Ground & First Floor, West Anjaneya Temple Road, Ward 49, Gandhi Bazaar, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "Burger",
+      "Fast Food",
+      "Beverages"
+    ],
+    "avgRating": 3.2,
+    "costForTwo": 60000,
+    "phone": "091 8147302939",
+    "lat": 12.937412208741563,
+    "lng": 77.57782598522013,
+    "dishLiked": []
+  },
+  {
+    "name": "The Good Bowl",
+    "address": "101, Ground Floor, Manjunatha Complex, 22nd Main Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Italian",
+      "North Indian",
+      "Biryani"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 50000,
+    "phone": "+91 8042172269",
+    "lat": 12.928988608532148,
+    "lng": 77.54871593131212,
+    "dishLiked": []
+  },
+  {
+    "name": "The Biryani Cafe",
+    "address": "476, 2nd Floor, 9th Cross, Avalahalli BDA Park, BSK 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Biryani",
+      "Chinese",
+      "Kebab"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 30000,
+    "phone": "+91 7010846043",
+    "lat": 12.926987448938965,
+    "lng": 77.54996627597059,
+    "dishLiked": [
+      "Vegetable Biryani",
+      "Ginger Chicken",
+      "Chicken Biryani",
+      "Donne Biryani",
+      "Chicken Kebab",
+      "Egg Bhurji",
+      "Dum Biryani"
+    ]
+  },
+  {
+    "name": "Spicy Tandoor",
+    "address": "Opposite ICICi Bank, Hanuman Nagar, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian"
+    ],
+    "avgRating": null,
+    "costForTwo": 15000,
+    "phone": "+91 8050884222",
+    "lat": 12.929467087751284,
+    "lng": 77.5514365985883,
+    "dishLiked": []
+  },
+  {
+    "name": "LSD Cafe",
+    "address": "100 Feet Road, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Chinese",
+      "Continental",
+      "Italian",
+      "North Indian"
+    ],
+    "avgRating": 2.9,
+    "costForTwo": 70000,
+    "phone": "080 65600000",
+    "lat": 12.925842784416943,
+    "lng": 77.54570677228257,
+    "dishLiked": []
+  },
+  {
+    "name": "Rolls On Wheels",
+    "address": "Shop 33 & 30, 21st Main, Near BDA Complex, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Fast Food",
+      "Rolls",
+      "Momos"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 30000,
+    "phone": "+91 9071734101",
+    "lat": 12.924443683332697,
+    "lng": 77.54535251351791,
+    "dishLiked": [
+      "Rolls",
+      "Momos",
+      "Fries",
+      "Veggie Roll",
+      "Chicken Kebab Roll",
+      "Paneer Roll",
+      "Cheese Roll"
+    ]
+  },
+  {
+    "name": "Om Sri Vinayaka Chats",
+    "address": "39, S B M Colony, Near-Sita Circle, 1st Stage, Banashankari, Bengaluru",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Street Food",
+      "Fast Food"
+    ],
+    "avgRating": null,
+    "costForTwo": 50000,
+    "phone": "+91 8553206035",
+    "lat": 12.92687613467768,
+    "lng": 77.5501545829695,
+    "dishLiked": []
+  },
+  {
+    "name": "Sri Guru Kottureshwara Davangere Benne Dosa",
+    "address": "49/1, Subbaraoshetty Road, Netkallappa Circle, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": 4.1,
+    "costForTwo": 15000,
+    "phone": "+91 9448305384",
+    "lat": 12.945465093076654,
+    "lng": 77.57142257365163,
+    "dishLiked": [
+      "Benne Dosa",
+      "Mirchi Bajji",
+      "Filter Coffee",
+      "Poha",
+      "Tea",
+      "Butter Dosa",
+      "Crispy Dosa"
+    ]
+  },
+  {
+    "name": "Devanna Dum Biriyani Centre",
+    "address": "16th Main Road, Near PESIT College, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Biryani",
+      "South Indian"
+    ],
+    "avgRating": 3.6,
+    "costForTwo": 30000,
+    "phone": "+91 9980204944",
+    "lat": 12.927401978644038,
+    "lng": 77.54579199581099,
+    "dishLiked": []
+  },
+  {
+    "name": "Kolbeh",
+    "address": "1430, 22nd Cross, Next To Coffee Day, Near BDA Complex, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Fast Food"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 50000,
+    "phone": "+91 8050701820",
+    "lat": 12.92860962661319,
+    "lng": 77.54939343199861,
+    "dishLiked": []
+  },
+  {
+    "name": "Upahar Sagar",
+    "address": "727, 23rd Cross, KR Road, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian",
+      "Chinese",
+      "North Indian"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 35000,
+    "phone": "+91 9164571705",
+    "lat": 12.926712336467661,
+    "lng": 77.55067311878334,
+    "dishLiked": [
+      "Masala Dosa"
+    ]
+  },
+  {
+    "name": "Kadalu Sea Food Restaurant",
+    "address": "36, 2nd Main, RPC Layout, Vijay Nagar, Bangalore",
+    "city": "Bangalore",
+    "location": "Vijay Nagar",
+    "cuisines": [
+      "Seafood",
+      "North Indian",
+      "Chinese",
+      "Andhra",
+      "Biryani"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 50000,
+    "phone": "+91 7337681786",
+    "lat": 12.967635145956539,
+    "lng": 77.59631414890663,
+    "dishLiked": []
+  },
+  {
+    "name": "Frozen Bottle",
+    "address": "2477, 24th Cross Road, Siddanna Layout, Stage 2, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Beverages",
+      "Desserts",
+      "Ice Cream"
+    ],
+    "avgRating": 4.2,
+    "costForTwo": 40000,
+    "phone": "080 48664811",
+    "lat": 12.924359686467296,
+    "lng": 77.54210112361407,
+    "dishLiked": [
+      "Berryblast",
+      "Waffles",
+      "Cheesecake",
+      "Salted Caramel"
+    ]
+  },
+  {
+    "name": "Parimala Sweets",
+    "address": "1142, 22nd Cross, 30th Main, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Mithai",
+      "Street Food"
+    ],
+    "avgRating": 3.5,
+    "costForTwo": 20000,
+    "phone": "+91 9738013203",
+    "lat": 12.92381852682557,
+    "lng": 77.54373458130642,
+    "dishLiked": []
+  },
+  {
+    "name": "Vaishali Deluxe",
+    "address": "512, 2nd Cross, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Chinese"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 70000,
+    "phone": "+91 9886092321",
+    "lat": 12.929011770421655,
+    "lng": 77.54955394100702,
+    "dishLiked": []
+  },
+  {
+    "name": "Chill Out",
+    "address": "161/C, 6th Main, 80 Feet Road, Bhuvaneshwari Nagercoil, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian",
+      "Chinese"
+    ],
+    "avgRating": null,
+    "costForTwo": 10000,
+    "phone": "+91 9341215167",
+    "lat": 12.923713206706273,
+    "lng": 77.54950830313075,
+    "dishLiked": []
+  },
+  {
+    "name": "The Big O Bakes",
+    "address": "45/12, 4th Cross, 10th Main, Gururaja Layout, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Bakery",
+      "Desserts"
+    ],
+    "avgRating": 4,
+    "costForTwo": 30000,
+    "phone": "+91 9845216137",
+    "lat": 12.922523292192778,
+    "lng": 77.54908774938353,
+    "dishLiked": []
+  },
+  {
+    "name": "Meghana Foods",
+    "address": "52, 1st Floor, 33rd Cross, 4th Block, Jayanagar, Bangalore",
+    "city": "Bangalore",
+    "location": "Jayanagar",
+    "cuisines": [
+      "Biryani",
+      "North Indian",
+      "Chinese"
+    ],
+    "avgRating": 4.4,
+    "costForTwo": 60000,
+    "phone": "080 49653564",
+    "lat": 12.929384079511541,
+    "lng": 77.59307073854953,
+    "dishLiked": [
+      "Chicken Boneless Biryani",
+      "Hyderabadi Biryani",
+      "Paneer Biryani",
+      "Tandoori Chicken",
+      "Vegetable Biryani",
+      "Chicken Kebab",
+      "Raita"
+    ]
+  },
+  {
+    "name": "Krishna Sagar",
+    "address": "38, 22nd Main, 22nd Cross, Opposite BDA, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian"
+    ],
+    "avgRating": 3.5,
+    "costForTwo": 20000,
+    "phone": "+91 8892752997",
+    "lat": 12.927517967685588,
+    "lng": 77.54697246522929,
+    "dishLiked": []
+  },
+  {
+    "name": "Dessert Rose",
+    "address": "1/34, 3rd Cross Road, Kathriguppe IV Phase, Banashankari 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Desserts"
+    ],
+    "avgRating": 3.5,
+    "costForTwo": 50000,
+    "phone": "+91 7829604777",
+    "lat": 12.928716896964573,
+    "lng": 77.5439712129029,
+    "dishLiked": []
+  },
+  {
+    "name": "Chickpet Donne Biryani House",
+    "address": "480/A, 50 feet road, Nagendra block, Near PES College, Nagendra block, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Biryani"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 25000,
+    "phone": "+91 9482020323",
+    "lat": 12.924618906732327,
+    "lng": 77.54586847738258,
+    "dishLiked": []
+  },
+  {
+    "name": "Me And My Cake",
+    "address": "BDA Shopping Complex, 24th Cross Road, Siddanna Layout, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Bakery",
+      "Desserts"
+    ],
+    "avgRating": null,
+    "costForTwo": 50000,
+    "phone": "+91 9036070410",
+    "lat": 12.926194422011095,
+    "lng": 77.55006504370823,
+    "dishLiked": []
+  },
+  {
+    "name": "Sunsadm",
+    "address": "Shop 18 , 3rd cross road,Markandeya Layout, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": null,
+    "costForTwo": 40000,
+    "phone": "+91 7829290358",
+    "lat": 12.924187723865751,
+    "lng": 77.55055075377568,
+    "dishLiked": []
+  },
+  {
+    "name": "Annapooraneshwari Mess",
+    "address": "625, 5th Cross Road, Hanumanthnagar, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": null,
+    "costForTwo": 20000,
+    "phone": "+91 9742009518",
+    "lat": 12.921213177229863,
+    "lng": 77.55117942746782,
+    "dishLiked": []
+  },
+  {
+    "name": "Thanco's Natural Ice Creams",
+    "address": "941, 21st Main Road, BSK 2nd Stage , Near BDA Complex, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Ice Cream"
+    ],
+    "avgRating": 3.2,
+    "costForTwo": 30000,
+    "phone": "080 41477334",
+    "lat": 12.92324785460477,
+    "lng": 77.55128314462641,
+    "dishLiked": []
+  },
+  {
+    "name": "Nandhini Deluxe",
+    "address": "304, Opposite Apollo Public School, 100 Feet Ring Road, 4th Phase, 7th Block, Banashankari 3rd Stage, Bangalore,",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian"
+    ],
+    "avgRating": 2.6,
+    "costForTwo": 60000,
+    "phone": "080 26890011",
+    "lat": 12.929425323668855,
+    "lng": 77.54593271599717,
+    "dishLiked": [
+      "Biryani",
+      "Chicken Guntur",
+      "Thali",
+      "Buttermilk",
+      "Manchurian"
+    ]
+  },
+  {
+    "name": "Vi Ra's Bar and Restaurant",
+    "address": "3828, Near Deve Gowda Petrol Bunk, 30th Cross, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian",
+      "North Indian",
+      "Chinese"
+    ],
+    "avgRating": 3.3,
+    "costForTwo": 80000,
+    "phone": "+91 9845063930",
+    "lat": 12.929641353697031,
+    "lng": 77.55014696450857,
+    "dishLiked": [
+      "Chilli Chicken"
+    ]
+  },
+  {
+    "name": "Kaggis",
+    "address": "50 Feet Road, Hanumanthanagar, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Fast Food",
+      "Bakery"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 25000,
+    "phone": "+91 9900191258",
+    "lat": 12.928589117732752,
+    "lng": 77.54881352083166,
+    "dishLiked": []
+  },
+  {
+    "name": "Ayda Persian Kitchen",
+    "address": "34, 22nd Main, 22nd Cross, Opposite BDA, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "North Indian",
+      "Iranian"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 95000,
+    "phone": "080 42124293",
+    "lat": 12.921435972117422,
+    "lng": 77.5426480271472,
+    "dishLiked": []
+  },
+  {
+    "name": "Chatar Patar",
+    "address": "24/1, 23rd Cross, 6th Main Road, Opposite Kaveri Grameena Bank, 2nd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "Fast Food",
+      "Street Food"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 30000,
+    "phone": "+91 7619353103",
+    "lat": 12.922402664919161,
+    "lng": 77.54612902140848,
+    "dishLiked": [
+      "Panipuri",
+      "Chaat",
+      "Noodles",
+      "Dahi Bhalle"
+    ]
+  },
+  {
+    "name": "Polar Bear",
+    "address": "96, Opposite Jain Collage, Basavanagudi, Bangalore",
+    "city": "Bangalore",
+    "location": "Basavanagudi",
+    "cuisines": [
+      "Ice Cream",
+      "Desserts",
+      "Beverages",
+      "Sandwich"
+    ],
+    "avgRating": 3.8,
+    "costForTwo": 40000,
+    "phone": "080 49652725",
+    "lat": 12.942333297194326,
+    "lng": 77.57412989583169,
+    "dishLiked": [
+      "Hot Chocolate Fudge"
+    ]
+  },
+  {
+    "name": "Kidambi's Kitchen",
+    "address": "2465, 3rd Floor, Opposite BDA Complex, 24th Cross, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": 3.5,
+    "costForTwo": 30000,
+    "phone": "080 42112211",
+    "lat": 12.924706069003344,
+    "lng": 77.54770215982536,
+    "dishLiked": [
+      "Rooftop Ambience"
+    ]
+  },
+  {
+    "name": "Mane Thindi",
+    "address": "295/A, 7th Main road, 7th Block, 3rd Stage, Banashankari, Bangalore",
+    "city": "Bangalore",
+    "location": "Banashankari",
+    "cuisines": [
+      "South Indian"
+    ],
+    "avgRating": 3.7,
+    "costForTwo": 20000,
+    "phone": "+91 9964410276",
+    "lat": 12.924397488593375,
+    "lng": 77.54810108042948,
+    "dishLiked": [
+      "Coffee",
+      "Tea",
+      "Kesari Bath",
+      "Open Dosa",
+      "Vada",
+      "Idli",
+      "Bread Dosa"
+    ]
+  }
+]

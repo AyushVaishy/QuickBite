@@ -1,4 +1,4 @@
-import LOGO from "../assets/logo.png";
+﻿﻿import LOGO from "../assets/logo.png";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,7 +8,8 @@ import toast from "react-hot-toast";
 import { FaShoppingCart, FaTrash, FaEdit, FaPlus, FaSearch, FaMapMarkerAlt, FaUserCircle, FaStore } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
 import SignInSidebar from './SignInSidebar';
-import { SEARCH_SUGGEST_API } from "../utils/constants";
+import { getAddresses, deleteAddress as deleteAddressAPI } from '../services/addressService';
+
 
 const GET_LOCATION_API_URL =
   "https://india-pincode-with-latitude-and-longitude.p.rapidapi.com/api/v1/pincode/";
@@ -118,19 +119,19 @@ const Header = ({ location, setLocation }) => {
     const run = async () => {
       try {
         setSearchLoading(true);
-        const url = SEARCH_SUGGEST_API(location.lat, location.lng, q);
-        const res = await fetch(url, { signal: controller.signal });
-        const data = await res.json();
-        const suggestions = data?.data?.suggestions || [];
-        // Normalize
-        const normalized = suggestions.map((s) => ({
-          text: s?.text,
-          type: s?.type, // e.g., "RESTAURANT" or "DISH"
-          subTitle: s?.subTitle,
-          cloudinaryId: s?.cloudinaryId,
-          cta: s?.cta,
+        // Use own backend search API
+        const searchUrl = `/api/restaurants/search?q=${encodeURIComponent(q)}&lat=${location.lat}&lng=${location.lng}`;
+        const apiRes = await fetch(searchUrl, { signal: controller.signal });
+        const data = await apiRes.json();
+        const normalized = (data?.restaurants || []).slice(0, 12).map((r) => ({
+          text: r.name,
+          type: 'RESTAURANT',
+          subTitle: Array.isArray(r.cuisines) ? r.cuisines.slice(0, 2).join(', ') : (r.cuisines || ''),
+          cloudinaryId: null,
+          cta: { link: `/home/restaurants/${r.id}` },
+          id: r.id,
         }));
-        setSearchSuggest(normalized.slice(0, 12));
+        setSearchSuggest(normalized);
       } catch (e) {
         if (e.name !== 'AbortError') setSearchSuggest([]);
       } finally {
@@ -148,6 +149,23 @@ const Header = ({ location, setLocation }) => {
   useEffect(() => {
     if (sidebarOpen && searchInputRef.current) {
       setTimeout(() => searchInputRef.current.focus(), 100);
+    }
+    // Fetch saved addresses from API when sidebar opens (user is logged in)
+    if (sidebarOpen && displayUser) {
+      getAddresses()
+        .then((res) => {
+          const apiAddresses = (res.data.addresses || []).map((a) => ({
+            id: a.id,
+            label: a.label,
+            address: `${a.street}, ${a.city}, ${a.state} ${a.pincode}`.trim(),
+            lat: a.lat,
+            lng: a.lng,
+          }));
+          if (apiAddresses.length > 0) {
+            setSavedAddresses(apiAddresses);
+          }
+        })
+        .catch(() => {}); // silently fail — keep DEFAULT_ADDRESSES as fallback
     }
   }, [sidebarOpen]);
 
@@ -262,8 +280,12 @@ const Header = ({ location, setLocation }) => {
     });
   };
 
-  // Remove saved address
+  // Remove saved address (calls API if has id, otherwise local only)
   const removeSavedAddress = (idx) => {
+    const addr = savedAddresses[idx];
+    if (addr?.id) {
+      deleteAddressAPI(addr.id).catch(() => {});
+    }
     setSavedAddresses((prev) => prev.filter((_, i) => i !== idx));
   };
 

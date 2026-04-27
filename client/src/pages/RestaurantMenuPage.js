@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import useRestaurantMenu from "../hooks/useRestaurantMenu";
 import ShimmerMenu from "../components/ShimmerMenu";
 import RestaurantCategory from "../components/RestaurantCategory";
-import { FaStar, FaArrowLeft, FaMapMarkerAlt, FaClock, FaSearch } from "react-icons/fa";
+import { FaStar, FaArrowLeft, FaMapMarkerAlt, FaClock, FaSearch, FaRegStar } from "react-icons/fa";
 import { MdTwoWheeler } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -200,6 +200,73 @@ const RestaurantMenuPage = () => {
           </div>
         )}
       </div>
+
+      {/* ── Reviews Section ── */}
+      {restaurant.reviews && restaurant.reviews.length > 0 && (
+        <div className="max-w-3xl mx-auto px-4 pb-8">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <FaStar className="text-yellow-400" size={18} />
+            Reviews
+            <span className="text-sm font-normal text-gray-400">({restaurant.reviews.length})</span>
+          </h2>
+
+          {/* Rating breakdown */}
+          <div className="flex items-center gap-4 mb-5 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+            <div className="text-center flex-shrink-0">
+              <p className="text-4xl font-extrabold text-gray-800 dark:text-gray-100">{restaurant.avgRating || "—"}</p>
+              <div className="flex gap-0.5 justify-center mt-1">
+                {[1,2,3,4,5].map((n) => (
+                  <FaStar key={n} size={12} className={n <= Math.round(restaurant.avgRating || 0) ? "text-yellow-400" : "text-gray-300"} />
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">{restaurant.totalRatings || restaurant.reviews.length} ratings</p>
+            </div>
+            <div className="flex-1 space-y-1">
+              {[5,4,3,2,1].map((star) => {
+                const count = restaurant.reviews.filter((r) => r.rating === star).length;
+                const pct = restaurant.reviews.length ? (count / restaurant.reviews.length) * 100 : 0;
+                return (
+                  <div key={star} className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 w-3">{star}</span>
+                    <FaStar size={10} className="text-yellow-400 flex-shrink-0" />
+                    <div className="flex-1 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="text-xs text-gray-400 w-4">{count}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Review list */}
+          <div className="space-y-3">
+            {restaurant.reviews.slice(0, 5).map((review, idx) => (
+              <div key={idx} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm">
+                      {(review.user?.name || "U").charAt(0).toUpperCase()}
+                    </div>
+                    <span className="font-semibold text-sm text-gray-800 dark:text-gray-100">
+                      {review.user?.name || "Customer"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">
+                    <FaStar size={9} /> {review.rating}
+                  </div>
+                </div>
+                {review.comment && (
+                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{review.comment}</p>
+                )}
+                <p className="text-xs text-gray-400 mt-2">
+                  {new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Floating cart bar ── */}
       {cartCount > 0 && (

@@ -77,6 +77,10 @@ model Restaurant {
   costForTwo  Int      @default(200) // in rupees
   isOpen      Boolean  @default(true)
   isApproved  Boolean  @default(false)
+  openingTime String?  @default("09:00")
+  closingTime String?  @default("23:00")
+  fssaiNumber String?
+  phone       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -132,7 +136,7 @@ model Order {
   id           String      @id @default(uuid())
   userId       String
   restaurantId String
-  addressId    String
+  addressId    String?
   status       OrderStatus @default(PLACED)
   totalAmount  Int         // in paise
   notes        String?
@@ -141,7 +145,7 @@ model Order {
 
   user       User       @relation(fields: [userId], references: [id])
   restaurant Restaurant @relation(fields: [restaurantId], references: [id])
-  address    Address    @relation(fields: [addressId], references: [id])
+  address    Address?   @relation(fields: [addressId], references: [id])
   items      OrderItem[]
 }
 

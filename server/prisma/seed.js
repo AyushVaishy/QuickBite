@@ -1,225 +1,289 @@
 /**
- * QuickBite DB Seed Script
- * Uses csv-parse to correctly handle multi-line/quoted Zomato CSV fields.
- *
- * Usage: node prisma/seed.js [path/to/zomato.csv]
+ * QuickBite DB Seed — Zomato CSV data (100 Bangalore restaurants)
+ * Idempotent: wipes seeded data then recreates.
+ * Usage: npm run db:seed
  */
 
 require("dotenv").config();
-const fs = require("fs");
-const { parse } = require("csv-parse");
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
+const path = require("path");
 
 const prisma = new PrismaClient();
-const CSV_PATH =
-  process.argv[2] ||
-  "C:\\Users\\Ayush Vaish\\Downloads\\zomato.csv\\zomato.csv";
-const MAX_RESTAURANTS = 100;
 
-// Bangalore area approximate coordinates
-const AREA_COORDS = {
-  Banashankari: [12.9257, 77.5468],
-  "Koramangala 5th Block": [12.9364, 77.6139],
-  "Koramangala 7th Block": [12.9262, 77.6226],
-  BTM: [12.9165, 77.6101],
-  "HSR Layout": [12.9082, 77.6476],
-  Indiranagar: [12.9784, 77.6408],
-  Whitefield: [12.9698, 77.7499],
-  Jayanagar: [12.9318, 77.5836],
-  Marathahalli: [12.9591, 77.6974],
-  "MG Road": [12.9752, 77.6186],
-  "Brigade Road": [12.9721, 77.6079],
-  "Old Airport Road": [12.9601, 77.6499],
-  "Electronic City": [12.8451, 77.6601],
-  Yelahanka: [13.1006, 77.5964],
-  "JP Nagar": [12.9073, 77.5863],
-  Malleshwaram: [13.0035, 77.5706],
-  Basavanagudi: [12.9432, 77.5758],
-  Shivajinagar: [12.9878, 77.5982],
-};
-const DEFAULT_COORDS = [12.9716, 77.5946];
+// ─── Static Users ─────────────────────────────────────────────────────────────
 
-const jitter = ([lat, lng]) => [
-  lat + (Math.random() - 0.5) * 0.04,
-  lng + (Math.random() - 0.5) * 0.04,
+const USERS = [
+  { name: "Admin User",      email: "admin@quickbite.com",  role: "ADMIN" },
+  { name: "Rajesh Kumar",    email: "owner1@quickbite.com", role: "RESTAURANT_OWNER" },
+  { name: "Priya Sharma",    email: "owner2@quickbite.com", role: "RESTAURANT_OWNER" },
+  { name: "Arun Nair",       email: "owner3@quickbite.com", role: "RESTAURANT_OWNER" },
+  { name: "Sunita Verma",    email: "user1@quickbite.com",  role: "USER" },
+  { name: "Karan Mehta",     email: "user2@quickbite.com",  role: "USER" },
+  { name: "Ananya Iyer",     email: "user3@quickbite.com",  role: "USER" },
 ];
 
-const parseRate = (s) => {
-  if (!s || s === "NEW" || s === "-") return 3.5 + Math.random() * 0.8;
-  const m = s.match(/(\d+\.?\d*)/);
-  return m ? Math.min(5, Math.max(1, parseFloat(m[1]))) : 3.5;
+// ─── Restaurant image pool by cuisine ────────────────────────────────────────
+
+const CUISINE_IMAGES = {
+  "North Indian": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600",
+  "South Indian": "https://images.unsplash.com/photo-1630383249896-424e482df921?w=600",
+  "Chinese":      "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600",
+  "Pizza":        "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600",
+  "Biryani":      "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600",
+  "Cafe":         "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600",
+  "Burgers":      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600",
+  "Italian":      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600",
+  "Desserts":     "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
+  "Seafood":      "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600",
+  "default":      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600",
 };
 
-const parseCost = (s) => {
-  if (!s) return 300;
-  const n = parseInt(s.replace(/[^0-9]/g, ""), 10);
-  return isNaN(n) || n < 100 ? 300 : n;
-};
+// ─── Menu item image pool by category ────────────────────────────────────────
 
-const parseCuisines = (s) =>
-  (s || "Multi-Cuisine")
-    .split(",")
-    .map((c) => c.trim())
-    .filter(Boolean)
-    .slice(0, 5);
+const DISH_IMAGES = [
+  "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400",
+  "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400",
+  "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400",
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
+  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400",
+  "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400",
+  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400",
+  "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=400",
+];
 
-const parseDishes = (s) =>
-  (s || "")
-    .split(",")
-    .map((d) => d.trim())
-    .filter((d) => d.length > 2 && d.length < 60)
-    .slice(0, 10);
-
-const isVegDish = (name) => {
-  const nonVeg = ["chicken", "mutton", "fish", "prawn", "egg", "lamb", "beef", "pork", "crab", "keema"];
-  return !nonVeg.some((k) => name.toLowerCase().includes(k));
-};
-
-const buildMenuItems = (dishes, costForTwo, restaurantId, restType) => {
-  const basePrice = Math.max(5000, Math.round((costForTwo / 4) * 100));
-  const categories = [restType || "Main Course", "Starters", "Desserts", "Beverages"];
-
-  if (!dishes.length) {
-    return [
-      { name: "Special Thali", price: basePrice, category: "Main Course", isVeg: true },
-      { name: "Veg Biryani", price: Math.round(basePrice * 0.9), category: "Main Course", isVeg: true },
-      { name: "Chicken Biryani", price: Math.round(basePrice * 1.1), category: "Main Course", isVeg: false },
-      { name: "Masala Chai", price: 3000, category: "Beverages", isVeg: true },
-      { name: "Gulab Jamun", price: 7000, category: "Desserts", isVeg: true },
-    ].map((item) => ({ ...item, restaurantId, isAvailable: true, description: null, imageUrl: null }));
+function restaurantImage(cuisines) {
+  for (const c of cuisines) {
+    if (CUISINE_IMAGES[c]) return CUISINE_IMAGES[c];
   }
-
-  return dishes.map((name, idx) => ({
-    restaurantId,
-    name,
-    price: Math.max(5000, basePrice + Math.round((Math.random() - 0.5) * basePrice * 0.4)),
-    category: categories[idx % categories.length],
-    isVeg: isVegDish(name),
-    isAvailable: true,
-    description: null,
-    imageUrl: null,
-  }));
-};
-
-const isValidName = (name) =>
-  name &&
-  name.length > 1 &&
-  name.length < 101 &&
-  !/^rated/i.test(name) &&
-  !/^\[/.test(name) &&
-  !/^https?:\/\//.test(name);
-
-async function streamCSV() {
-  return new Promise((resolve, reject) => {
-    const rows = [];
-    const parser = parse({
-      columns: true,
-      skip_empty_lines: true,
-      relax_quotes: true,
-      trim: true,
-      on_record: (record) => {
-        if (rows.length >= MAX_RESTAURANTS) return null; // skip remaining
-        const name = record["name"]?.trim();
-        if (!isValidName(name)) return null;
-        return {
-          name,
-          address: record["address"]?.trim() || "",
-          location: record["location"]?.trim() || "Bangalore",
-          cuisines: record["cuisines"]?.trim() || "",
-          rate: record["rate"]?.trim() || "",
-          votes: record["votes"]?.trim() || "0",
-          cost: record["approx_cost(for two people)"]?.trim() || "300",
-          dishLiked: record["dish_liked"]?.trim() || "",
-          restType: record["rest_type"]?.trim() || "",
-        };
-      },
-    });
-
-    parser.on("readable", () => {
-      let row;
-      while ((row = parser.read()) !== null) {
-        if (row && rows.length < MAX_RESTAURANTS) rows.push(row);
-      }
-    });
-    parser.on("end", () => resolve(rows));
-    parser.on("error", reject);
-
-    fs.createReadStream(CSV_PATH).pipe(parser);
-  });
+  return CUISINE_IMAGES["default"];
 }
 
-async function main() {
-  console.log("🌱 Starting QuickBite seed...");
+function dishImage(index) {
+  return DISH_IMAGES[index % DISH_IMAGES.length];
+}
 
-  const password = await bcrypt.hash("Test1234!", 12);
-  const [admin, owner] = await Promise.all([
-    prisma.user.upsert({
-      where: { email: "admin@quickbite.com" },
-      update: {},
-      create: { name: "Admin User", email: "admin@quickbite.com", password, role: "ADMIN" },
-    }),
-    prisma.user.upsert({
-      where: { email: "owner@quickbite.com" },
-      update: {},
-      create: { name: "Restaurant Owner", email: "owner@quickbite.com", password, role: "RESTAURANT_OWNER" },
-    }),
-    prisma.user.upsert({
-      where: { email: "user@quickbite.com" },
-      update: {},
-      create: { name: "Test User", email: "user@quickbite.com", password, role: "USER" },
-    }),
-  ]);
-  console.log("✅ Test users ready (password: Test1234!)");
+// ─── Category inference from dish name ───────────────────────────────────────
 
-  console.log("📂 Streaming Zomato CSV...");
-  const rows = await streamCSV();
-  console.log(`📊 ${rows.length} valid restaurants parsed`);
+const VEG_KEYWORDS = ["paneer", "veg", "aloo", "dal", "palak", "mushroom", "tofu", "chole",
+  "rajma", "corn", "veggie", "gobhi", "malai", "matar", "lassi", "tea", "coffee",
+  "juice", "shake", "kheer", "gulab", "halwa", "ice cream", "cake", "pastry",
+  "bread", "roti", "naan", "paratha", "idli", "dosa", "uttapam", "upma", "poha",
+  "chaat", "pani puri", "bhel", "samosa", "pakoda", "spring roll"];
 
-  let created = 0;
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    const [lat, lng] = jitter(AREA_COORDS[row.location] || DEFAULT_COORDS);
-    const costForTwo = parseCost(row.cost);
+const CATEGORY_MAP = [
+  { keywords: ["biryani", "rice", "pulao", "fried rice"], cat: "Rice & Biryani" },
+  { keywords: ["paneer", "dal", "curry", "gravy", "sabzi", "matar", "chole"], cat: "Main Course" },
+  { keywords: ["soup", "shorba"], cat: "Soups" },
+  { keywords: ["salad", "raita", "slaw"], cat: "Salads" },
+  { keywords: ["bread", "roti", "naan", "paratha", "kulcha"], cat: "Breads" },
+  { keywords: ["idli", "dosa", "uttapam", "vada", "upma"], cat: "South Indian" },
+  { keywords: ["pasta", "pizza", "burger", "sandwich", "wrap"], cat: "Continental" },
+  { keywords: ["cake", "ice cream", "pastry", "brownie", "kheer", "gulab", "halwa", "rasgulla", "kulfi"], cat: "Desserts" },
+  { keywords: ["coffee", "tea", "lassi", "shake", "juice", "mojito", "smoothie"], cat: "Beverages" },
+  { keywords: ["chaat", "pani puri", "bhel", "samosa", "pakoda", "spring roll", "tikka", "kebab", "starter"], cat: "Starters" },
+];
 
-    try {
-      const restaurant = await prisma.restaurant.create({
-        data: {
-          ownerId: i < 5 ? owner.id : admin.id,
-          name: row.name.slice(0, 100),
-          description: row.restType || null,
-          cuisines: parseCuisines(row.cuisines),
-          address: (row.address || row.location).slice(0, 255),
-          city: row.location,
-          lat,
-          lng,
-          avgRating: parseRate(row.rate),
-          totalRatings: parseInt(row.votes) || 0,
-          costForTwo,
-          deliveryTime: 20 + Math.floor(Math.random() * 30),
-          isOpen: true,
-          isApproved: true,
-        },
+function inferCategory(dishName) {
+  const lower = dishName.toLowerCase();
+  for (const { keywords, cat } of CATEGORY_MAP) {
+    if (keywords.some((k) => lower.includes(k))) return cat;
+  }
+  return "Main Course";
+}
+
+function inferIsVeg(dishName) {
+  const lower = dishName.toLowerCase();
+  return VEG_KEYWORDS.some((k) => lower.includes(k));
+}
+
+// ─── Price generation ────────────────────────────────────────────────────────
+
+function generatePrice(costForTwo, category) {
+  const base = costForTwo ? costForTwo / 2 / 100 : 200; // convert paise → rupees, divide by items
+  const categoryMultipliers = {
+    "Starters": 0.4,
+    "Soups": 0.3,
+    "Salads": 0.35,
+    "Breads": 0.2,
+    "Beverages": 0.25,
+    "Desserts": 0.3,
+    "Main Course": 0.5,
+    "Rice & Biryani": 0.55,
+    "South Indian": 0.4,
+    "Continental": 0.6,
+  };
+  const multiplier = categoryMultipliers[category] || 0.5;
+  const price = Math.round((base * multiplier) / 10) * 10; // round to nearest 10
+  return Math.max(price, 50) * 100; // min ₹50, convert to paise
+}
+
+// ─── Menu item generation from dish names ────────────────────────────────────
+
+function generateMenuItems(dishes, cuisines, costForTwo) {
+  const items = [];
+
+  // Use real dish names from CSV
+  for (const dish of dishes.slice(0, 10)) {
+    const category = inferCategory(dish);
+    const isVeg = inferIsVeg(dish);
+    items.push({
+      name: dish,
+      description: `A delightful ${isVeg ? "vegetarian" : ""} ${category.toLowerCase()} dish loved by our guests`,
+      price: generatePrice(costForTwo, category),
+      category,
+      imageUrl: dishImage(items.length),
+      isVeg,
+      isAvailable: true,
+    });
+  }
+
+  // If too few dish names, pad with cuisine-appropriate generics
+  const GENERIC_BY_CUISINE = {
+    "North Indian": [
+      { name: "Butter Chicken", isVeg: false, cat: "Main Course" },
+      { name: "Paneer Butter Masala", isVeg: true, cat: "Main Course" },
+      { name: "Dal Makhani", isVeg: true, cat: "Main Course" },
+      { name: "Garlic Naan", isVeg: true, cat: "Breads" },
+      { name: "Gulab Jamun", isVeg: true, cat: "Desserts" },
+    ],
+    "South Indian": [
+      { name: "Masala Dosa", isVeg: true, cat: "South Indian" },
+      { name: "Idli Sambar", isVeg: true, cat: "South Indian" },
+      { name: "Vada", isVeg: true, cat: "South Indian" },
+      { name: "Rava Uttapam", isVeg: true, cat: "South Indian" },
+    ],
+    "Chinese": [
+      { name: "Chicken Fried Rice", isVeg: false, cat: "Rice & Biryani" },
+      { name: "Veg Manchurian", isVeg: true, cat: "Main Course" },
+      { name: "Hakka Noodles", isVeg: true, cat: "Main Course" },
+      { name: "Spring Rolls", isVeg: true, cat: "Starters" },
+    ],
+    "default": [
+      { name: "Chef's Special", isVeg: false, cat: "Main Course" },
+      { name: "Veg Platter", isVeg: true, cat: "Main Course" },
+      { name: "Fresh Lime Soda", isVeg: true, cat: "Beverages" },
+    ],
+  };
+
+  if (items.length < 5) {
+    const cuisine = cuisines[0] || "default";
+    const generics = GENERIC_BY_CUISINE[cuisine] || GENERIC_BY_CUISINE["default"];
+    for (const g of generics) {
+      if (items.length >= 10) break;
+      if (items.some((i) => i.name === g.name)) continue;
+      items.push({
+        name: g.name,
+        description: `Classic ${g.cat.toLowerCase()} prepared fresh`,
+        price: generatePrice(costForTwo, g.cat),
+        category: g.cat,
+        imageUrl: dishImage(items.length),
+        isVeg: g.isVeg,
+        isAvailable: true,
       });
-
-      const items = buildMenuItems(parseDishes(row.dishLiked), costForTwo, restaurant.id, row.restType);
-      await prisma.menuItem.createMany({ data: items });
-      created++;
-      if (created % 25 === 0) console.log(`   ${created}/${rows.length} seeded...`);
-    } catch {
-      // skip duplicate names or bad rows
     }
   }
 
-  console.log(`\n✅ Seeded ${created} restaurants`);
-  const menuCount = await prisma.menuItem.count();
-  console.log(`✅ ${menuCount} menu items total`);
-  console.log("\n🎉 Seed complete! Test credentials:");
-  console.log("   👤 user@quickbite.com   / Test1234!");
-  console.log("   🍽️  owner@quickbite.com  / Test1234!");
-  console.log("   🔑 admin@quickbite.com  / Test1234!");
+  return items;
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+
+async function main() {
+  const PARSED = require(path.join(__dirname, "zomato-parsed.json"));
+  const PASSWORD = await bcrypt.hash("Test1234!", 12);
+  const OWNER_EMAILS = USERS.filter((u) => u.role === "RESTAURANT_OWNER").map((u) => u.email);
+
+  console.log("🧹 Cleaning previous seed data…");
+
+  // Delete restaurants owned by seed owners (cascades to menuItems, orders, etc.)
+  const seedOwners = await prisma.user.findMany({
+    where: { email: { in: USERS.map((u) => u.email) } },
+    select: { id: true },
+  });
+  const seedOwnerIds = seedOwners.map((u) => u.id);
+
+  if (seedOwnerIds.length > 0) {
+    // Delete order items → orders → carts → reviews, then restaurants
+    const restaurants = await prisma.restaurant.findMany({
+      where: { ownerId: { in: seedOwnerIds } },
+      select: { id: true },
+    });
+    const restIds = restaurants.map((r) => r.id);
+
+    if (restIds.length > 0) {
+      await prisma.orderItem.deleteMany({ where: { order: { restaurantId: { in: restIds } } } });
+      await prisma.order.deleteMany({ where: { restaurantId: { in: restIds } } });
+      await prisma.cartItem.deleteMany({ where: { cart: { restaurantId: { in: restIds } } } });
+      await prisma.cart.deleteMany({ where: { restaurantId: { in: restIds } } });
+      await prisma.review.deleteMany({ where: { restaurantId: { in: restIds } } });
+      await prisma.menuItem.deleteMany({ where: { restaurantId: { in: restIds } } });
+      await prisma.restaurant.deleteMany({ where: { id: { in: restIds } } });
+    }
+
+    await prisma.address.deleteMany({ where: { userId: { in: seedOwnerIds } } });
+    await prisma.user.deleteMany({ where: { id: { in: seedOwnerIds } } });
+  }
+
+  // ── Create users ────────────────────────────────────────────────────────────
+  console.log("👤 Creating users…");
+  const createdUsers = {};
+  for (const u of USERS) {
+    const user = await prisma.user.create({
+      data: { name: u.name, email: u.email, password: PASSWORD, role: u.role },
+    });
+    createdUsers[u.email] = user;
+  }
+
+  // ── Create restaurants from Zomato data ────────────────────────────────────
+  console.log(`🍽️  Creating ${PARSED.length} restaurants…`);
+  let menuTotal = 0;
+
+  for (let i = 0; i < PARSED.length; i++) {
+    const r = PARSED[i];
+    const ownerEmail = OWNER_EMAILS[i % OWNER_EMAILS.length];
+    const owner = createdUsers[ownerEmail];
+
+    const restaurant = await prisma.restaurant.create({
+      data: {
+        ownerId: owner.id,
+        name: r.name,
+        description: `${r.cuisines.join(", ")} cuisine in ${r.location || "Bangalore"}. Popular for ${(r.dishLiked[0] || "great food")}.`,
+        cuisines: r.cuisines,
+        imageUrl: restaurantImage(r.cuisines),
+        lat: r.lat,
+        lng: r.lng,
+        address: r.address,
+        city: r.city,
+        costForTwo: r.costForTwo || 50000,
+        avgRating: r.avgRating ?? 0,
+        phone: r.phone || null,
+        isOpen: true,
+        isApproved: true,
+        openingTime: "09:00",
+        closingTime: "23:00",
+      },
+    });
+
+    const menuItems = generateMenuItems(r.dishLiked, r.cuisines, r.costForTwo);
+    await prisma.menuItem.createMany({
+      data: menuItems.map((item) => ({ ...item, restaurantId: restaurant.id })),
+    });
+    menuTotal += menuItems.length;
+
+    if ((i + 1) % 20 === 0) console.log(`  ✓ ${i + 1}/${PARSED.length} restaurants done`);
+  }
+
+  console.log(`\n✅ Seed complete!`);
+  console.log(`   Users: ${USERS.length}`);
+  console.log(`   Restaurants: ${PARSED.length}`);
+  console.log(`   Menu items: ${menuTotal}`);
+  console.log(`\n🔑 Test credentials (password: Test1234!)`);
+  console.log(`   admin@quickbite.com  → Admin`);
+  console.log(`   owner1@quickbite.com → Restaurant Owner (${Math.ceil(PARSED.length / 3)} restaurants)`);
+  console.log(`   user1@quickbite.com  → Customer`);
 }
 
 main()
-  .catch((err) => { console.error("❌ Seed failed:", err.message); process.exit(1); })
+  .catch((err) => { console.error("Seed failed:", err); process.exit(1); })
   .finally(() => prisma.$disconnect());
