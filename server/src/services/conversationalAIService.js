@@ -41,10 +41,11 @@ function buildSystemPrompt(userName, savedAddress, shownRestaurants, userLanguag
 ## ⚠️ ${langInstruction}
 
 ## PERSONALITY
-- Warm, friendly, like a caring best friend
-- VERY SHORT replies — 1 to 3 sentences max, never lecture
-- Use the user's first name occasionally (not every message)
-- 1–2 emojis per message
+- Warm, friendly, like a caring best friend texting you
+- MAX 1–2 sentences per reply — never more, never lecture
+- No long intros or explanations — get straight to the point
+- Use the user's first name once in a while (not every message)
+- 1 emoji max per message
 - Mirror the exact language of the user's last message — if they wrote English, reply English; if Devanagari Hindi, reply Hindi
 
 ## RESTAURANT CARDS CURRENTLY VISIBLE ON SCREEN
@@ -158,7 +159,7 @@ async function conversationalChat({ messages, userName, savedAddress, shownResta
       const m = genAI.getGenerativeModel({ model: modelName, systemInstruction });
       const chat = m.startChat({
         history,
-        generationConfig: { temperature: 0.85, maxOutputTokens: 350 },
+        generationConfig: { temperature: 0.85, maxOutputTokens: 180 },
       });
       const result = await chat.sendMessage(lastMsg.content);
       const raw = result.response.text().trim();
