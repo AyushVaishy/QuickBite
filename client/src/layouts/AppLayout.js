@@ -2,6 +2,7 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ChatWidget from "../components/ChatWidget";
 
 const DEFAULT_LOCATION = { lat: 12.9716, lng: 77.5946, address: "Bengaluru, Karnataka" };
 
@@ -25,6 +26,7 @@ const AppLayout = () => {
         <Outlet context={{ location, setLocation: handleSetLocation }} />
       </div>
       <Footer />
+      <ChatWidget />
     </>
   );
 };
