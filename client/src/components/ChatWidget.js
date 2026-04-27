@@ -1,228 +1,241 @@
-import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
 import api from "../services/api";
 
-/* ── constants ────────────────────────────────────────────────────────────── */
+// ─── Utilities ────────────────────────────────────────────────────────────────
 
-const QUICK_PROMPTS = [
-  "I'm feeling hungry 🍽️",
-  "Had a breakup, comfort food 💔",
-  "Cheap food under ₹200",
-  "Suggest healthy options 🥗",
-  "Best biryani near me",
-  "Spicy food 🌶️",
-  "Something sweet 🍰",
-  "Quick meal for party 🎉",
-];
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return "Good morning";
+  if (h >= 12 && h < 17) return "Good afternoon";
+  if (h >= 17 && h < 21) return "Good evening";
+  return "Good night";
+}
 
-// Maps ordinal words to 0-based restaurant index
-const ORDINAL_IDX = {
-  first: 0, "1st": 0, second: 1, "2nd": 1, third: 2, "3rd": 2,
-  top: 0, this: 0, that: 0, it: 0, one: 0,
-};
-
-/* ── helpers ──────────────────────────────────────────────────────────────── */
-
-const formatPrice = (paise) => `₹${Math.round(paise / 100)}`;
+const fmtPrice = (p) => `₹${Math.round(p / 100)}`;
 
 function getSavedLocation() {
   try {
-    const saved = localStorage.getItem("quickbite_location");
-    if (saved) {
-      const loc = JSON.parse(saved);
-      if (loc && !isNaN(Number(loc.lat)) && !isNaN(Number(loc.lng)))
-        return { lat: Number(loc.lat), lng: Number(loc.lng) };
+    const s = localStorage.getItem("quickbite_location");
+    if (s) {
+      const l = JSON.parse(s);
+      if (!isNaN(+l.lat) && !isNaN(+l.lng)) return { lat: +l.lat, lng: +l.lng };
     }
   } catch {}
   return { lat: null, lng: null };
 }
 
-function isLoggedIn() {
-  return !!(
-    localStorage.getItem("accessToken") ||
-    localStorage.getItem("userData")
-  );
+function cleanForSpeech(text) {
+  return text
+    .replace(/[\u{1F000}-\u{1FFFF}]/gu, "")
+    .replace(/[\u2600-\u27BF]/g, "")
+    .replace(/[*_~`#[\]]/g, "")
+    .replace(/\n+/g, ". ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-// Detect order confirmation / placement intent locally (has conversation context)
-function detectLocalIntent(message, hasPendingOrder) {
-  const lower = message.toLowerCase().trim();
+let _id = 0;
+const uid = () => `${++_id}_${Date.now()}`;
 
-  if (hasPendingOrder) {
-    if (/\b(yes|yeah|yep|ok|okay|sure|confirm|go ahead|place it|do it|absolutely|proceed)\b/.test(lower))
-      return { action: "confirm_order" };
-    if (/\b(no|nope|cancel|don.t|skip|never|never mind|stop)\b/.test(lower))
-      return { action: "cancel_order" };
-  }
+// ─── Injected CSS ─────────────────────────────────────────────────────────────
 
-  if (
-    /\b(order|buy|get me|place order)\b.{0,30}\b(first|second|third|1st|2nd|3rd|this|that|it|one)\b/i.test(lower) ||
-    /\border (the )?(first|second|third|1st|2nd|3rd|top|this|that)\b/i.test(lower)
-  ) {
-    const m = lower.match(/\b(first|second|third|1st|2nd|3rd|top|this|that|it|one)\b/);
-    return { action: "place_order", restaurantIndex: m ? (ORDINAL_IDX[m[1]] ?? 0) : 0 };
-  }
-
-  return { action: "chat" };
+const WIDGET_CSS = `
+@keyframes qbWave {
+  0%,100% { transform: scaleY(0.3); opacity: 0.5; }
+  50%      { transform: scaleY(1);   opacity: 1;   }
 }
-
-/* ── CSS injected once for voice waveform animation ─────────────────────── */
-
-const VOICE_STYLES = `
-  @keyframes qbVoiceBar {
-    0%, 100% { transform: scaleY(0.3); }
-    50% { transform: scaleY(1); }
-  }
-  .qb-voice-bar {
-    display: inline-block;
-    width: 3px;
-    border-radius: 999px;
-    background: currentColor;
-    transform-origin: bottom;
-    animation: qbVoiceBar 0.6s ease-in-out infinite;
-  }
+@keyframes qbDot {
+  0%,100% { transform: translateY(0);    opacity: 0.4; }
+  50%      { transform: translateY(-5px); opacity: 1;   }
+}
+@keyframes qbSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+.qb-in { animation: qbSlide 0.22s ease both; }
 `;
 
-/* ── sub-components ───────────────────────────────────────────────────────── */
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
-const VoiceWaveform = ({ className = "" }) => (
-  <span className={`inline-flex items-end gap-0.5 ${className}`}>
-    {[10, 16, 22, 16, 10].map((h, i) => (
-      <span
-        key={i}
-        className="qb-voice-bar"
-        style={{ height: `${h}px`, animationDelay: `${i * 100}ms` }}
-      />
-    ))}
-  </span>
-);
-
-const TypingIndicator = () => (
-  <div className="flex items-end gap-2 mb-3">
-    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-      AI
-    </div>
-    <div className="bg-white dark:bg-gray-700 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
-      <div className="flex gap-1 items-center">
-        {[0, 150, 300].map((d) => (
-          <span
-            key={d}
-            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-            style={{ animationDelay: `${d}ms` }}
-          />
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-const RestaurantCard = ({ restaurant, index, onNavigate, onQuickOrder }) => {
-  const hasOrderableItem = restaurant.dishes?.some((d) => d.id);
+function WaveBar({ i }) {
+  const heights = [8, 13, 17, 13, 8];
   return (
-    <div className="bg-orange-50 dark:bg-gray-700 rounded-xl p-3 border border-orange-100 dark:border-gray-600">
-      <div
-        className="cursor-pointer hover:bg-orange-100 dark:hover:bg-gray-600 rounded-lg transition-colors"
-        onClick={() => onNavigate(restaurant.id)}
-      >
-        <div className="flex items-start gap-2">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-[10px] font-bold text-orange-500 bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded-full flex-shrink-0">
-                #{index + 1}
-              </span>
-              <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm truncate">
-                {restaurant.name}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-green-600 dark:text-green-400 font-medium">
-                ⭐ {restaurant.rating?.toFixed(1)}
-              </span>
-              {restaurant.deliveryTime && (
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  🕐 {restaurant.deliveryTime} min
-                </span>
-              )}
-              {restaurant.costForTwo && (
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatPrice(restaurant.costForTwo)} for 2
-                </span>
-              )}
-              {restaurant.distance != null && (
-                <span className="text-xs text-blue-500 dark:text-blue-400">
-                  📍 {restaurant.distance} km
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-        {restaurant.dishes?.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1">
-            {restaurant.dishes.map((d, i) => (
-              <span
-                key={i}
-                className="text-xs bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full border border-gray-200 dark:border-gray-600"
-              >
-                {d.isVeg ? "🟢" : "🔴"} {d.name} · {formatPrice(d.price)}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
+    <span
+      style={{
+        display: "inline-block",
+        width: 3,
+        height: heights[i],
+        borderRadius: 2,
+        background: "currentColor",
+        animation: `qbWave 0.9s ease-in-out ${i * 0.1}s infinite`,
+      }}
+    />
+  );
+}
 
-      <div className="flex gap-2 mt-2">
-        {hasOrderableItem && (
-          <button
-            onClick={() => onQuickOrder(restaurant)}
-            className="flex-1 text-xs bg-orange-500 hover:bg-orange-600 text-white font-semibold py-1.5 rounded-lg transition-colors"
-          >
-            🛒 Quick Order
-          </button>
-        )}
-        <button
-          onClick={() => onNavigate(restaurant.id)}
-          className="flex-1 text-xs bg-white dark:bg-gray-600 hover:bg-gray-50 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-500 font-medium py-1.5 rounded-lg transition-colors"
-        >
-          View Menu →
-        </button>
-      </div>
+function Waveform({ cls = "" }) {
+  return (
+    <span className={`inline-flex items-end gap-0.5 ${cls}`}>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <WaveBar key={i} i={i} />
+      ))}
+    </span>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <div className="flex items-center gap-1 px-3 py-2.5">
+      {[0, 0.18, 0.36].map((d, i) => (
+        <span
+          key={i}
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: "#fb923c",
+            display: "inline-block",
+            animation: `qbDot 1s ease-in-out ${d}s infinite`,
+          }}
+        />
+      ))}
     </div>
   );
-};
+}
 
-const MessageBubble = ({ msg, onNavigate, onQuickOrder }) => {
-  const isUser = msg.role === "user";
+function VegBadge({ isVeg }) {
   return (
-    <div className={`flex items-end gap-2 mb-3 ${isUser ? "flex-row-reverse" : ""}`}>
-      {!isUser && (
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-          AI
+    <span
+      className={`inline-flex items-center justify-center w-3.5 h-3.5 rounded-sm border-2 shrink-0 ${
+        isVeg ? "border-green-500" : "border-red-500"
+      }`}
+    >
+      <span
+        className={`w-1.5 h-1.5 rounded-full ${
+          isVeg ? "bg-green-500" : "bg-red-500"
+        }`}
+      />
+    </span>
+  );
+}
+
+function RestaurantCard({ restaurant, idx, onAdd, cart }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-xl overflow-hidden border border-orange-100 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm mb-2">
+      <button
+        className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors text-left"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="w-7 h-7 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-300 text-xs font-bold flex items-center justify-center shrink-0">
+          {idx + 1}
+        </span>
+        {restaurant.imageUrl && (
+          <img
+            src={restaurant.imageUrl}
+            alt=""
+            className="w-10 h-10 rounded-lg object-cover shrink-0"
+          />
+        )}
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+            {restaurant.name}
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            ⭐ {restaurant.rating?.toFixed(1)} · {restaurant.deliveryTime} min ·{" "}
+            {fmtPrice(restaurant.costForTwo)} for 2
+          </p>
+        </div>
+        <span className="text-gray-400 text-xs">{open ? "▲" : "▼"}</span>
+      </button>
+
+      {open && (
+        <div className="px-3 pb-3 pt-2 border-t border-gray-100 dark:border-gray-700 space-y-2">
+          {(restaurant.dishes || []).length === 0 ? (
+            <p className="text-xs text-gray-400 text-center py-1">
+              No dishes listed
+            </p>
+          ) : (
+            (restaurant.dishes || []).map((dish) => {
+              const added = cart.some((c) => c.dishId === dish.id);
+              return (
+                <div key={dish.id} className="flex items-center gap-2">
+                  <VegBadge isVeg={dish.isVeg} />
+                  <span className="flex-1 text-xs text-gray-700 dark:text-gray-300 truncate">
+                    {dish.name}
+                  </span>
+                  <span className="text-xs text-gray-500 shrink-0">
+                    {fmtPrice(dish.price)}
+                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAdd(restaurant, dish);
+                    }}
+                    className={`text-xs px-2.5 py-1 rounded-lg font-medium transition-all shrink-0 ${
+                      added
+                        ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300"
+                        : "bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 hover:bg-orange-200"
+                    }`}
+                  >
+                    {added ? "✓ Added" : "+ Add"}
+                  </button>
+                </div>
+              );
+            })
+          )}
         </div>
       )}
-      <div className="max-w-[85%]">
-        <div
-          className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
-            isUser
-              ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-br-sm"
-              : "bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-sm"
-          }`}
-        >
-          {isUser && msg.isVoice && (
-            <span className="mr-1 opacity-70 text-xs">🎤</span>
-          )}
-          {msg.content}
-        </div>
+    </div>
+  );
+}
 
-        {!isUser && msg.restaurants?.length > 0 && (
-          <div className="mt-2 space-y-2">
-            {msg.restaurants.map((r, idx) => (
+function PriyaAvatar() {
+  return (
+    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
+      P
+    </div>
+  );
+}
+
+function ChatBubble({ msg, onAdd, cart }) {
+  const isUser = msg.role === "user";
+  return (
+    <div
+      className={`flex gap-2 qb-in mb-3 ${
+        isUser ? "flex-row-reverse" : "flex-row"
+      }`}
+    >
+      {!isUser && <PriyaAvatar />}
+      <div
+        className={`flex flex-col gap-1.5 ${
+          isUser ? "items-end max-w-[78%]" : "items-start max-w-[85%]"
+        }`}
+      >
+        {msg.content && (
+          <div
+            className={`text-sm leading-relaxed px-3.5 py-2.5 rounded-2xl ${
+              isUser
+                ? "bg-gradient-to-br from-orange-500 to-pink-500 text-white rounded-tr-sm"
+                : "bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow-sm border border-gray-100 dark:border-gray-700 rounded-tl-sm"
+            }`}
+          >
+            {msg.content}
+            {msg.isVoice && (
+              <span className="ml-1 text-[10px] opacity-50">🎤</span>
+            )}
+          </div>
+        )}
+        {msg.restaurants?.length > 0 && (
+          <div className="w-72 sm:w-80">
+            {msg.restaurants.map((r, i) => (
               <RestaurantCard
                 key={r.id}
                 restaurant={r}
-                index={idx}
-                onNavigate={onNavigate}
-                onQuickOrder={onQuickOrder}
+                idx={i}
+                onAdd={onAdd}
+                cart={cart}
               />
             ))}
           </div>
@@ -230,644 +243,580 @@ const MessageBubble = ({ msg, onNavigate, onQuickOrder }) => {
       </div>
     </div>
   );
-};
+}
 
-// Sticky banner shown above input when an order is pending confirmation
-const PendingOrderBanner = ({ order, onConfirm, onCancel, isSpeaking }) => (
-  <div className="px-3 pb-2 flex-shrink-0">
-    <div className="bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-xl p-3 shadow-sm">
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <div>
-          <p className="text-xs font-bold text-green-800 dark:text-green-300 uppercase tracking-wide">
-            🛒 Confirm Order
-          </p>
-          <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 mt-0.5">
-            {order.restaurant.name}
-          </p>
-          {order.dish && (
-            <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
-              {order.dish.isVeg ? "🟢" : "🔴"} {order.dish.name} ·{" "}
-              {formatPrice(order.dish.price)} × 1
-            </p>
-          )}
-        </div>
-        <button
-          onClick={onCancel}
-          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg leading-none flex-shrink-0"
-          aria-label="Cancel order"
-        >
-          ✕
-        </button>
-      </div>
-      <div className="flex gap-2">
-        <button
-          onClick={onConfirm}
-          className="flex-1 text-sm bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition-colors"
-        >
-          ✅ Place Order
-        </button>
-        <button
-          onClick={onCancel}
-          className="flex-1 text-sm bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 font-medium py-2 rounded-lg transition-colors"
-        >
-          Cancel
-        </button>
-      </div>
-      <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center mt-1.5">
-        {isSpeaking ? "🔊 Listening for yes / no…" : 'Say "Yes" to confirm or "No" to cancel'}
-      </p>
-    </div>
-  </div>
-);
+// ─── Main Component ───────────────────────────────────────────────────────────
 
-/* ── main component ───────────────────────────────────────────────────────── */
+export default function ChatWidget() {
+  const authUser = useSelector((s) => s.auth?.user);
+  const reduxIsAuth = useSelector((s) => s.auth?.isAuthenticated);
 
-const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      role: "assistant",
-      content:
-        "Hi! 👋 I'm your AI food assistant. Tell me what you're craving, your mood, or budget — I'll find the perfect options! Tap 🎤 to speak.",
-      restaurants: [],
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [msgs, setMsgs] = useState([]);
+  const [inputText, setInputText] = useState("");
+  const [thinking, setThinking] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [voiceOk, setVoiceOk] = useState(false);
+  const [cart, setCart] = useState([]);
 
-  // Voice state
-  const [voiceState, setVoiceState] = useState("idle"); // "idle" | "listening"
-  const [voiceTranscript, setVoiceTranscript] = useState(""); // live preview only
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [voiceSupported, setVoiceSupported] = useState(false);
+  // ── Refs (avoid stale closures across async/voice callbacks) ──────────────
+  const mountedRef = useRef(true);
+  const msgsRef = useRef([]);
+  const cartRef = useRef([]);
+  const recRef = useRef(null);
+  const finalTransRef = useRef("");
+  const voiceRef = useRef(null);
+  const autoListenTimer = useRef(null);
+  const greeted = useRef(false);
 
-  // Pending order awaiting confirmation (displayed as sticky banner)
-  const [pendingOrder, setPendingOrder] = useState(null);
+  // Forward-declared function refs (filled in below)
+  const sendRef = useRef(null);
+  const placeOrderRef = useRef(null);
+  const startListenRef = useRef(null);
+  const scheduleListenRef = useRef(null);
 
-  // Refs — avoid stale closures in async recognition callbacks
-  const messagesEndRef = useRef(null);
-  const inputRef = useRef(null);
-  const recognitionRef = useRef(null);
-  const finalTranscriptRef = useRef(""); // only isFinal results
-  const conversationContextRef = useRef({ lastRestaurants: [] });
-  const sendMessageRef = useRef(null); // updated each render
-  const isMountedRef = useRef(true);
+  // ── Sync refs with state ──────────────────────────────────────────────────
+  useEffect(() => { msgsRef.current = msgs; }, [msgs]);
+  useEffect(() => { cartRef.current = cart; }, [cart]);
 
-  const navigate = useNavigate();
-  const reduxIsAuth = useSelector((state) => state.auth.isAuthenticated);
-  const userLoggedIn = reduxIsAuth || isLoggedIn();
-
-  /* ── lifecycle ──────────────────────────────────────────────────────────── */
-
+  // ── One-time setup ────────────────────────────────────────────────────────
   useEffect(() => {
-    isMountedRef.current = true;
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    setVoiceSupported(!!(SR && window.speechSynthesis));
-
-    // Inject voice animation styles once
-    if (!document.getElementById("qb-voice-styles")) {
-      const style = document.createElement("style");
-      style.id = "qb-voice-styles";
-      style.textContent = VOICE_STYLES;
-      document.head.appendChild(style);
+    mountedRef.current = true; // reset on strict-mode remount
+    if (!document.getElementById("qb-widget-css")) {
+      const el = document.createElement("style");
+      el.id = "qb-widget-css";
+      el.textContent = WIDGET_CSS;
+      document.head.appendChild(el);
     }
-
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    setVoiceOk(!!SR);
     return () => {
-      isMountedRef.current = false;
+      mountedRef.current = false;
     };
   }, []);
 
-  // Cleanup voice resources when widget closes
+  // ── Auto-scroll ───────────────────────────────────────────────────────────
+  const bottomRef = useRef(null);
   useEffect(() => {
-    if (!isOpen) {
-      try { recognitionRef.current?.abort(); } catch {}
-      window.speechSynthesis?.cancel();
-      if (isMountedRef.current) {
-        setVoiceState("idle");
-        setVoiceTranscript("");
-        setIsSpeaking(false);
-      }
-    }
-  }, [isOpen]);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [msgs, thinking]);
 
-  // Auto scroll on new messages
+  // ── TTS: pick female voice ────────────────────────────────────────────────
+  const pickVoice = useCallback(() => {
+    const all = window.speechSynthesis?.getVoices?.() || [];
+    voiceRef.current =
+      all.find((v) => v.lang === "en-IN" && /female|heera|raveena/i.test(v.name)) ||
+      all.find((v) => /zira|hazel|samantha|victoria|karen|moira|lisa|siri/i.test(v.name)) ||
+      all.find((v) => v.lang === "en-IN") ||
+      all.find((v) => v.lang.startsWith("en") && /female/i.test(v.name)) ||
+      all.find((v) => v.lang.startsWith("en")) ||
+      null;
+  }, []);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading, pendingOrder]);
-
-  // Focus input on open
-  useEffect(() => {
-    if (isOpen && inputRef.current) setTimeout(() => inputRef.current?.focus(), 100);
-  }, [isOpen]);
-
-  /* ── TTS ────────────────────────────────────────────────────────────────── */
-
-  const speak = (text) => {
-    if (!window.speechSynthesis || !text) return;
-    window.speechSynthesis.cancel();
-    // Strip emojis/symbols for clean speech
-    const clean = text.replace(/[^\w\s.,!?₹%\-']/g, " ").replace(/\s+/g, " ").trim();
-    if (!clean) return;
-
-    const utterance = new SpeechSynthesisUtterance(clean);
-    utterance.rate = 1.05;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-
-    const pickVoice = () => {
-      const voices = window.speechSynthesis.getVoices();
-      const v =
-        voices.find((v) => v.lang === "en-IN") ||
-        voices.find((v) => v.lang.startsWith("en") && v.localService) ||
-        voices.find((v) => v.lang.startsWith("en"));
-      if (v) utterance.voice = v;
-    };
     pickVoice();
-    if (window.speechSynthesis.getVoices().length === 0)
+    if (window.speechSynthesis) {
       window.speechSynthesis.onvoiceschanged = pickVoice;
-
-    utterance.onstart = () => { if (isMountedRef.current) setIsSpeaking(true); };
-    utterance.onend = () => { if (isMountedRef.current) setIsSpeaking(false); };
-    utterance.onerror = () => { if (isMountedRef.current) setIsSpeaking(false); };
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const stopSpeaking = () => {
-    window.speechSynthesis?.cancel();
-    if (isMountedRef.current) setIsSpeaking(false);
-  };
-
-  /* ── Voice Recognition ──────────────────────────────────────────────────── */
-
-  const startListening = () => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return;
-
-    stopSpeaking();
-    try { recognitionRef.current?.abort(); } catch {}
-
-    const recognition = new SR();
-    recognition.continuous = false;
-    recognition.interimResults = true; // for live preview only
-    recognition.lang = "en-IN";
-    recognitionRef.current = recognition;
-    finalTranscriptRef.current = ""; // reset before each session
-
-    if (isMountedRef.current) {
-      setVoiceState("listening");
-      setVoiceTranscript("");
     }
+    return () => {
+      if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, [pickVoice]);
 
-    recognition.onresult = (event) => {
-      let interim = "";
-      let finalChunk = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalChunk += t; // accumulate confirmed speech only
-        } else {
-          interim += t;
+  // ── speak() ───────────────────────────────────────────────────────────────
+  const speak = useCallback(
+    (text, onDone) => {
+      if (!text || !window.speechSynthesis) { onDone?.(); return; }
+      window.speechSynthesis.cancel();
+      const clean = cleanForSpeech(text);
+      if (!clean) { onDone?.(); return; }
+
+      const isHindiScript = /[\u0900-\u097F]/.test(text);
+      const utter = new SpeechSynthesisUtterance(clean);
+
+      if (isHindiScript) {
+        const hiVoice = (window.speechSynthesis.getVoices() || []).find((v) =>
+          v.lang.startsWith("hi-IN")
+        );
+        utter.voice = hiVoice || voiceRef.current;
+        utter.lang = "hi-IN";
+      } else {
+        utter.voice = voiceRef.current;
+        utter.lang = "en-IN";
+      }
+      utter.rate = 0.91;
+      utter.pitch = 1.15; // slightly higher → more feminine/friendly
+      utter.volume = 1;
+
+      if (mountedRef.current) setSpeaking(true);
+      utter.onend = () => { if (mountedRef.current) setSpeaking(false); onDone?.(); };
+      utter.onerror = () => { if (mountedRef.current) setSpeaking(false); onDone?.(); };
+      window.speechSynthesis.speak(utter);
+    },
+    []
+  );
+
+  // ── scheduleAutoListen() ──────────────────────────────────────────────────
+  const scheduleAutoListen = useCallback(
+    (delayMs = 900) => {
+      clearTimeout(autoListenTimer.current);
+      if (!voiceOk) return;
+      autoListenTimer.current = setTimeout(() => {
+        if (mountedRef.current && !window.speechSynthesis?.speaking) {
+          startListenRef.current?.();
         }
+      }, delayMs);
+    },
+    [voiceOk]
+  );
+
+  // Keep ref up-to-date
+  useEffect(() => { scheduleListenRef.current = scheduleAutoListen; }, [scheduleAutoListen]);
+
+  // ── startListening() ──────────────────────────────────────────────────────
+  const startListening = useCallback(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR || !mountedRef.current) return;
+
+    if (recRef.current) { try { recRef.current.abort(); } catch {} }
+    window.speechSynthesis?.cancel();
+
+    const rec = new SR();
+    recRef.current = rec;
+    finalTransRef.current = "";
+
+    rec.continuous = false;
+    rec.interimResults = true;
+    // hi-IN recognises Hindi AND English speech in Chrome — perfect for Hinglish
+    rec.lang = "hi-IN";
+    rec.maxAlternatives = 1;
+
+    rec.onstart = () => { if (mountedRef.current) setListening(true); };
+
+    rec.onresult = (e) => {
+      let interim = "", final = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
       }
-      if (finalChunk) finalTranscriptRef.current += finalChunk;
-      // Update preview: show final so far + current interim
-      if (isMountedRef.current)
-        setVoiceTranscript((finalTranscriptRef.current + " " + interim).trim());
+      if (final) finalTransRef.current = final;
+      if (mountedRef.current) setInputText(final || interim);
     };
 
-    recognition.onend = () => {
-      const transcript = finalTranscriptRef.current.trim();
-      if (isMountedRef.current) {
-        setVoiceState("idle");
-        setVoiceTranscript("");
-      }
-      // Only send if we got confirmed final speech
-      if (transcript && sendMessageRef.current) {
-        sendMessageRef.current(transcript, true);
+    rec.onend = () => {
+      if (mountedRef.current) { setListening(false); setInputText(""); }
+      const transcript = finalTransRef.current.trim();
+      finalTransRef.current = "";
+      if (transcript && mountedRef.current) {
+        // Use ref to call sendMessage — avoids stale closure
+        sendRef.current?.(transcript, true);
       }
     };
 
-    recognition.onerror = (event) => {
-      if (event.error !== "no-speech" && event.error !== "aborted")
-        console.warn("Speech recognition error:", event.error);
-      if (isMountedRef.current) {
-        setVoiceState("idle");
-        setVoiceTranscript("");
-      }
+    rec.onerror = () => {
+      if (mountedRef.current) { setListening(false); setInputText(""); }
     };
 
-    recognition.start();
-  };
+    try { rec.start(); } catch {}
+  }, []);
 
-  const stopListening = () => {
-    try { recognitionRef.current?.stop(); } catch {}
-    if (isMountedRef.current) {
-      setVoiceState("idle");
-      setVoiceTranscript("");
-    }
-  };
+  // Keep startListenRef up-to-date
+  useEffect(() => { startListenRef.current = startListening; }, [startListening]);
 
-  /* ── Order Execution ────────────────────────────────────────────────────── */
-
-  const executeOrder = async (order, wasVoice) => {
-    if (!userLoggedIn) {
-      const text =
-        "Please sign in first to place orders! 🔐 Your selection is ready — just log in and come back.";
-      if (isMountedRef.current)
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now() + 1, role: "assistant", content: text, restaurants: [] },
-        ]);
-      if (wasVoice) speak(text);
-      setPendingOrder(null);
-      setIsLoading(false);
-      return;
-    }
-
-    const dish = order.dish;
-    if (!dish?.id) {
-      // No orderable dish ID — send to restaurant page instead
-      const text = `Let me take you to ${order.restaurant.name}'s menu so you can pick your items! 🍽️`;
-      if (isMountedRef.current) {
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now() + 1, role: "assistant", content: text, restaurants: [] },
-        ]);
-      }
-      if (wasVoice) speak(text);
-      setPendingOrder(null);
-      setIsLoading(false);
-      navigate(`/home/restaurants/${order.restaurant.id}`);
-      setIsOpen(false);
-      return;
-    }
-
-    try {
-      await api.post("/orders", {
-        restaurantId: order.restaurant.id,
-        items: [{ menuItemId: dish.id, quantity: 1 }],
-        notes: "Placed via QuickBite AI voice assistant",
-      });
-      const successText = `🎉 Order placed from ${order.restaurant.name}! Your food is being prepared. Track it in Orders!`;
-      if (isMountedRef.current) {
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now() + 1, role: "assistant", content: successText, restaurants: [] },
-        ]);
-      }
-      speak(successText);
-    } catch (err) {
-      const text =
-        err.response?.status === 401
-          ? "Please sign in to place orders! 🔐"
-          : "Couldn't place the order right now — please try from the restaurant page. 🙏";
-      if (isMountedRef.current) {
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now() + 1, role: "assistant", content: text, restaurants: [] },
-        ]);
-      }
-      if (wasVoice) speak(text);
-    } finally {
-      if (isMountedRef.current) {
-        setPendingOrder(null);
-        setIsLoading(false);
-      }
-    }
-  };
-
-  /* ── Message Sending ────────────────────────────────────────────────────── */
-
-  const sendMessage = async (text, isVoice = false) => {
-    const trimmed = (typeof text === "string" ? text : input).trim();
-    if (!trimmed || isLoading) return;
-    if (!isVoice) setInput("");
-
-    const { action, restaurantIndex } = detectLocalIntent(trimmed, !!pendingOrder);
-
-    // ── Order confirmation responses ──────────────────────────────────────
-    if (action === "confirm_order" && pendingOrder) {
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now(), role: "user", content: trimmed, isVoice },
-      ]);
-      setIsLoading(true);
-      await executeOrder(pendingOrder, isVoice);
-      return;
-    }
-
-    if (action === "cancel_order" && pendingOrder) {
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now(), role: "user", content: trimmed, isVoice },
-      ]);
-      setPendingOrder(null);
-      const cancelText = "No worries! Let me know if you'd like to explore more options. 😊";
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, role: "assistant", content: cancelText, restaurants: [] },
-      ]);
-      if (isVoice) speak(cancelText);
-      return;
-    }
-
-    // ── Voice-triggered order initiation ──────────────────────────────────
-    if (action === "place_order") {
-      const lastRest = conversationContextRef.current.lastRestaurants;
-      if (lastRest.length > 0) {
-        const target = lastRest[Math.min(restaurantIndex, lastRest.length - 1)];
-        const dish = target.dishes?.find((d) => d.id) || null;
-        const order = { restaurant: target, dish };
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now(), role: "user", content: trimmed, isVoice },
-        ]);
-        setPendingOrder(order);
-        const confirmText = dish
-          ? `I'll order ${dish.name} from ${target.name} (${formatPrice(dish.price)}). Confirm below! 🛒`
-          : `I'll take you to ${target.name}'s menu — tap a dish to order. 🍽️`;
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now() + 1, role: "assistant", content: confirmText, restaurants: [] },
-        ]);
-        speak(confirmText);
-        return;
-      }
-    }
-
-    // ── Regular AI chat ───────────────────────────────────────────────────
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), role: "user", content: trimmed, isVoice },
-    ]);
-    setIsLoading(true);
-
-    // Clear stale context before each new recommendation request
-    conversationContextRef.current.lastRestaurants = [];
-
-    try {
-      const { lat, lng } = getSavedLocation();
-      const { data } = await api.post("/ai/chat", { message: trimmed, lat, lng });
-
-      if (data.restaurants?.length > 0)
-        conversationContextRef.current.lastRestaurants = data.restaurants;
-
-      const aiMsg = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content: data.message || "Here are some options for you!",
-        restaurants: data.restaurants || [],
+  // ── placeOrder() ──────────────────────────────────────────────────────────
+  const placeOrder = useCallback(async () => {
+    const isLoggedIn = reduxIsAuth || !!localStorage.getItem("accessToken");
+    if (!isLoggedIn) {
+      const m = {
+        id: uid(), role: "ai",
+        content: "You need to be logged in to place an order! Please sign in first. 🔐",
       };
-      if (isMountedRef.current) setMessages((prev) => [...prev, aiMsg]);
-      if (isVoice) speak(aiMsg.content);
+      setMsgs((p) => [...p, m]);
+      speak(m.content, () => scheduleListenRef.current?.());
+      return;
+    }
+
+    const items = cartRef.current;
+    if (!items.length) {
+      const m = {
+        id: uid(), role: "ai",
+        content: "Please tap '+ Add' on the dishes you'd like, then say 'place the order'! 🍽️",
+      };
+      setMsgs((p) => [...p, m]);
+      speak(m.content, () => scheduleListenRef.current?.());
+      return;
+    }
+
+    // Group items by first restaurant (single-restaurant orders)
+    const restId = items[0].restaurantId;
+    const orderItems = items
+      .filter((i) => i.restaurantId === restId)
+      .map((i) => ({ menuItemId: i.dishId, quantity: 1 }));
+
+    try {
+      await api.post("/orders", { restaurantId: restId, items: orderItems, addressId: null });
+      setCart([]);
+      const firstName = (authUser?.name || authUser?.username || "").split(" ")[0] || "friend";
+      const names = items.map((i) => i.dishName).join(", ");
+      const m = {
+        id: uid(), role: "ai",
+        content: `🎉 Order confirmed! ${names} from ${items[0].restaurantName} is on its way. Enjoy your meal, ${firstName}! 😊`,
+      };
+      setMsgs((p) => [...p, m]);
+      speak(m.content);
     } catch {
-      const errMsg = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content: "Sorry, I'm having trouble connecting right now. Please try again! 🙏",
-        restaurants: [],
+      const m = {
+        id: uid(), role: "ai",
+        content: "Something went wrong placing your order. Please try again! 🙏",
       };
-      if (isMountedRef.current) setMessages((prev) => [...prev, errMsg]);
-      if (isVoice) speak(errMsg.content);
-    } finally {
-      if (isMountedRef.current) setIsLoading(false);
+      setMsgs((p) => [...p, m]);
+      speak(m.content, () => scheduleListenRef.current?.());
     }
-  };
+  }, [reduxIsAuth, authUser, speak]);
 
-  // Keep sendMessageRef current on every render (avoids stale closure in onend)
-  sendMessageRef.current = sendMessage;
+  // Keep placeOrderRef up-to-date
+  useEffect(() => { placeOrderRef.current = placeOrder; }, [placeOrder]);
 
-  /* ── Handlers ───────────────────────────────────────────────────────────── */
+  // ── sendMessage() ──────────────────────────────────────────────────────────
+  const sendMessage = useCallback(
+    async (text, isVoice = false) => {
+      if (!text?.trim() || !mountedRef.current) return;
+      const content = text.trim();
+      clearTimeout(autoListenTimer.current);
 
-  const handleNavigate = (restaurantId) => {
-    navigate(`/home/restaurants/${restaurantId}`);
+      // Add user message
+      const userMsg = { id: uid(), role: "user", content, isVoice };
+      const allMsgs = [...msgsRef.current, userMsg];
+      if (mountedRef.current) {
+        setMsgs(allMsgs);
+        setInputText("");
+        setThinking(true);
+      }
+
+      // Build history for API (role: user|assistant, last 20 turns)
+      const history = allMsgs
+        .map((m) => ({
+          role: m.role === "user" ? "user" : "assistant",
+          content: m.content || "",
+        }))
+        .filter((m) => m.content)
+        .slice(-20);
+
+      const { lat, lng } = getSavedLocation();
+      const firstName = (authUser?.name || authUser?.username || "").split(" ")[0] || "";
+      const savedAddress = localStorage.getItem("quickbite_address") || "";
+
+      try {
+        const res = await api.post("/ai/converse", {
+          messages: history,
+          userName: firstName,
+          savedAddress,
+          lat,
+          lng,
+        });
+        if (!mountedRef.current) return;
+
+        const d = res.data;
+        const aiMsg = {
+          id: uid(),
+          role: "ai",
+          content: d.reply || "",
+          restaurants: d.action === "RECOMMEND" ? (d.restaurants || []) : null,
+        };
+
+        setMsgs((prev) => [...prev, aiMsg]);
+        setThinking(false);
+
+        // Execute order if Priya confirmed it
+        if (d.action === "PLACE_ORDER") {
+          await placeOrderRef.current?.();
+          return;
+        }
+
+        // Build what to speak: if restaurants returned, briefly mention them
+        let toSpeak = aiMsg.content;
+        if (aiMsg.restaurants?.length > 0) {
+          const names = aiMsg.restaurants.slice(0, 3).map((r) => r.name).join(", ");
+          toSpeak = `${aiMsg.content} I found ${aiMsg.restaurants.length} great options including ${names}. Tap any card to see the dishes!`;
+        }
+
+        // Auto-listen after speaking (longer delay when cards are shown)
+        speak(toSpeak, () => {
+          if (mountedRef.current) {
+            scheduleListenRef.current?.(aiMsg.restaurants?.length > 0 ? 2800 : 900);
+          }
+        });
+      } catch {
+        if (!mountedRef.current) return;
+        setThinking(false);
+        const errMsg = {
+          id: uid(), role: "ai",
+          content: "Oops, I had a little hiccup! 😅 Could you say that again?",
+        };
+        setMsgs((prev) => [...prev, errMsg]);
+        speak(errMsg.content, () => scheduleListenRef.current?.());
+      }
+    },
+    [authUser, speak]
+  );
+
+  // Keep sendRef up-to-date
+  useEffect(() => { sendRef.current = sendMessage; }, [sendMessage]);
+
+  // ── Cart toggle ───────────────────────────────────────────────────────────
+  const toggleCartItem = useCallback((restaurant, dish) => {
+    setCart((prev) => {
+      const exists = prev.some((c) => c.dishId === dish.id);
+      if (exists) return prev.filter((c) => c.dishId !== dish.id);
+      return [
+        ...prev,
+        {
+          restaurantId: restaurant.id,
+          restaurantName: restaurant.name,
+          dishId: dish.id,
+          dishName: dish.name,
+          price: dish.price,
+        },
+      ];
+    });
+  }, []);
+
+  // ── Open chat → auto greet ────────────────────────────────────────────────
+  const openChat = useCallback(async () => {
+    setIsOpen(true);
+    if (greeted.current) return; // already sent greeting this session
+    greeted.current = true;
+    if (!mountedRef.current) return;
+
+    setThinking(true);
+    await new Promise((r) => setTimeout(r, 650)); // small natural delay
+    if (!mountedRef.current) return;
+
+    const firstName = (authUser?.name || authUser?.username || "").split(" ")[0] || "";
+    const nameStr = firstName ? `, ${firstName}` : "";
+    const greeting = getGreeting();
+
+    const greetMsg = {
+      id: uid(),
+      role: "ai",
+      content: `${greeting}${nameStr}! 😊 I'm Priya, your personal food assistant at QuickBite. How are you feeling today?`,
+    };
+    setMsgs([greetMsg]);
+    setThinking(false);
+
+    speak(greetMsg.content, () => {
+      if (mountedRef.current) scheduleListenRef.current?.(600);
+    });
+  }, [authUser, speak]);
+
+  // ── Close chat ────────────────────────────────────────────────────────────
+  const closeChat = useCallback(() => {
     setIsOpen(false);
+    clearTimeout(autoListenTimer.current);
+    window.speechSynthesis?.cancel();
+    if (recRef.current) try { recRef.current.abort(); } catch {}
+    setListening(false);
+    setSpeaking(false);
+    // Reset so every new open starts with a fresh greeting + clean conversation
+    greeted.current = false;
+    setMsgs([]);
+    setCart([]);
+  }, []);
+
+  // ── Cleanup on unmount ────────────────────────────────────────────────────
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+      clearTimeout(autoListenTimer.current);
+      window.speechSynthesis?.cancel();
+      if (recRef.current) try { recRef.current.abort(); } catch {}
+    };
+  }, []);
+
+  // ── Form submit (typed message) ───────────────────────────────────────────
+  const handleSubmit = (e) => {
+    e?.preventDefault();
+    clearTimeout(autoListenTimer.current);
+    if (listening) { try { recRef.current?.stop(); } catch {} }
+    if (inputText.trim()) sendRef.current?.(inputText);
   };
 
-  const handleQuickOrder = (restaurant) => {
-    const dish = restaurant.dishes?.find((d) => d.id) || null;
-    const order = { restaurant, dish };
-    setPendingOrder(order);
-    const confirmText = dish
-      ? `Ready to order ${dish.name} from ${restaurant.name} (${formatPrice(dish.price)}). Confirm below or say "Yes"! 🛒`
-      : `Let me open ${restaurant.name}'s menu for you! 🍽️`;
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), role: "assistant", content: confirmText, restaurants: [] },
-    ]);
-    speak(confirmText);
-    if (!dish) {
-      setTimeout(() => {
-        navigate(`/home/restaurants/${restaurant.id}`);
-        setIsOpen(false);
-      }, 1500);
-    }
-  };
-
-  const handleConfirmOrder = () => {
-    if (!pendingOrder) return;
-    setIsLoading(true);
-    executeOrder(pendingOrder, false);
-  };
-
-  const handleCancelOrder = () => {
-    if (!pendingOrder) return;
-    setPendingOrder(null);
-    const text = "Order cancelled — no worries! Let me know what else you'd like. 😊";
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), role: "assistant", content: text, restaurants: [] },
-    ]);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
+  // ── Mic button ────────────────────────────────────────────────────────────
   const handleMicClick = () => {
-    if (voiceState === "listening") stopListening();
-    else startListening();
+    if (listening) {
+      try { recRef.current?.stop(); } catch {}
+    } else {
+      clearTimeout(autoListenTimer.current);
+      window.speechSynthesis?.cancel();
+      startListenRef.current?.();
+    }
   };
 
-  /* ── Render ─────────────────────────────────────────────────────────────── */
+  // ─── Render ───────────────────────────────────────────────────────────────
+  const cartTotal = cart.reduce((s, i) => s + i.price, 0);
 
   return (
     <>
+      {/* ── Chat panel ─────────────────────────────────────────────────── */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[340px] sm:w-[380px] max-h-[620px] flex flex-col bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div
+          className="fixed bottom-20 right-4 sm:right-6 z-50 w-80 sm:w-96 flex flex-col bg-gray-50 dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+          style={{ height: 585, animation: "qbSlide 0.2s ease both" }}
+        >
           {/* Header */}
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm">
-                🤖
-              </div>
-              <div>
-                <p className="text-white font-semibold text-sm">QuickBite AI</p>
-                <div className="flex items-center gap-1.5 h-4">
-                  {voiceState === "listening" ? (
-                    <span className="flex items-center gap-1.5 text-orange-100 text-xs">
-                      <VoiceWaveform className="text-white" />
-                      Listening…
-                    </span>
-                  ) : isSpeaking ? (
-                    <span className="text-orange-100 text-xs animate-pulse">🔊 Speaking…</span>
-                  ) : (
-                    <p className="text-orange-100 text-xs">Smart food recommendations</p>
-                  )}
-                </div>
-              </div>
+          <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white shrink-0">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-lg shrink-0">
+              {speaking ? (
+                <Waveform cls="text-white" />
+              ) : listening ? (
+                <Waveform cls="text-white" />
+              ) : (
+                "P"
+              )}
             </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-sm">Priya · QuickBite AI</p>
+              <p className="text-xs opacity-80 truncate">
+                {listening
+                  ? "Listening… speak now 🎤"
+                  : speaking
+                  ? "Speaking…"
+                  : thinking
+                  ? "Thinking…"
+                  : "Your personal food assistant"}
+              </p>
+            </div>
+            {speaking && (
+              <button
+                onClick={() => { window.speechSynthesis?.cancel(); setSpeaking(false); }}
+                title="Stop speaking"
+                className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-xs shrink-0"
+              >
+                ⏹
+              </button>
+            )}
             <button
-              onClick={() => setIsOpen(false)}
-              className="text-white/80 hover:text-white transition-colors p-1"
-              aria-label="Close chat"
+              onClick={closeChat}
+              className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center shrink-0"
             >
               ✕
             </button>
           </div>
 
-          {/* Live transcript banner during listening */}
-          {voiceState === "listening" && voiceTranscript && (
-            <div className="bg-red-50 dark:bg-red-900/20 border-b border-red-100 dark:border-red-800 px-4 py-2 text-sm text-red-700 dark:text-red-300 italic flex-shrink-0">
-              🎤 "{voiceTranscript}"
-            </div>
-          )}
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-1" style={{ maxHeight: "360px" }}>
-            {messages.map((msg) => (
-              <MessageBubble
-                key={msg.id}
-                msg={msg}
-                onNavigate={handleNavigate}
-                onQuickOrder={handleQuickOrder}
-              />
-            ))}
-            {isLoading && <TypingIndicator />}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Quick Prompts — shown only when conversation has just started */}
-          {messages.length <= 2 && !isLoading && !pendingOrder && (
-            <div className="px-4 pb-2 flex-shrink-0">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Quick suggestions:</p>
-              <div className="flex flex-wrap gap-1.5">
-                {QUICK_PROMPTS.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => sendMessage(p)}
-                    className="text-xs bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-700 rounded-full px-2.5 py-1 hover:bg-orange-50 dark:hover:bg-gray-600 transition-colors"
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Pending Order Banner — sticky above input */}
-          {pendingOrder && (
-            <PendingOrderBanner
-              order={pendingOrder}
-              onConfirm={handleConfirmOrder}
-              onCancel={handleCancelOrder}
-              isSpeaking={isSpeaking}
-            />
-          )}
-
-          {/* Input */}
-          <div className="px-3 pb-3 flex-shrink-0 border-t border-gray-200 dark:border-gray-700 pt-3">
-            <div className="flex gap-2 items-center bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 px-3 py-2 shadow-sm focus-within:border-orange-400 transition-colors">
-              <input
-                ref={inputRef}
-                type="text"
-                value={voiceState === "listening" ? voiceTranscript : input}
-                onChange={(e) => {
-                  if (voiceState !== "listening") setInput(e.target.value);
-                }}
-                onKeyDown={handleKeyDown}
-                placeholder={
-                  voiceState === "listening"
-                    ? "Listening…"
-                    : pendingOrder
-                    ? 'Say "Yes" to confirm or "No" to cancel…'
-                    : "Ask me anything about food…"
-                }
-                className="flex-1 text-sm bg-transparent text-gray-800 dark:text-gray-100 placeholder-gray-400 outline-none min-w-0"
-                disabled={isLoading || voiceState === "listening"}
-                readOnly={voiceState === "listening"}
-              />
-
-              {/* Mic Button */}
-              {voiceSupported && (
-                <button
-                  onClick={handleMicClick}
-                  disabled={isLoading}
-                  className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
-                    voiceState === "listening"
-                      ? "bg-red-500 hover:bg-red-600 shadow-[0_0_0_4px_rgba(239,68,68,0.25)] animate-pulse"
-                      : "bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-600 dark:text-gray-300"
-                  }`}
-                  aria-label={voiceState === "listening" ? "Stop listening" : "Start voice input"}
-                >
-                  {voiceState === "listening" ? (
-                    // Stop icon
-                    <span className="w-2.5 h-2.5 bg-white rounded-sm block" />
-                  ) : (
-                    // Mic icon
-                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z" />
-                    </svg>
-                  )}
-                </button>
-              )}
-
-              {/* Send Button */}
+          {/* Cart bar */}
+          {cart.length > 0 && (
+            <div className="px-3 py-2 bg-green-50 dark:bg-green-900/30 border-b border-green-100 dark:border-green-800 flex items-center justify-between shrink-0">
+              <p className="text-xs font-medium text-green-700 dark:text-green-300">
+                🛒 {cart.length} item{cart.length > 1 ? "s" : ""} · {fmtPrice(cartTotal)}
+              </p>
               <button
-                onClick={() => sendMessage()}
-                disabled={(!input.trim() && voiceState !== "listening") || isLoading}
-                className="w-7 h-7 rounded-lg bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors flex-shrink-0"
-                aria-label="Send message"
+                onClick={() =>
+                  sendRef.current?.(
+                    `I'd like to order: ${cart.map((i) => i.dishName).join(", ")}`
+                  )
+                }
+                className="text-xs bg-green-500 hover:bg-green-600 text-white px-2.5 py-1 rounded-lg transition-colors"
               >
-                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
+                Order these →
               </button>
             </div>
+          )}
 
-            {voiceSupported && (
-              <p className="text-center text-[10px] text-gray-400 dark:text-gray-500 mt-1.5">
-                🎤 Tap mic to speak · 🔊 AI replies with voice
-              </p>
+          {/* Messages area */}
+          <div className="flex-1 overflow-y-auto px-3 py-3 scroll-smooth">
+            {msgs.length === 0 && !thinking && (
+              <div className="flex flex-col items-center justify-center h-full opacity-40 gap-3">
+                <span className="text-4xl">🤖</span>
+                <p className="text-sm text-gray-400">Starting conversation…</p>
+              </div>
             )}
+            {msgs.map((m) => (
+              <ChatBubble key={m.id} msg={m} onAdd={toggleCartItem} cart={cart} />
+            ))}
+            {thinking && (
+              <div className="flex gap-2 items-center mb-2 qb-in">
+                <PriyaAvatar />
+                <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100 dark:border-gray-700">
+                  <TypingIndicator />
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
           </div>
+
+          {/* Listening indicator bar */}
+          {listening && (
+            <div className="px-3 py-2 bg-orange-50 dark:bg-orange-900/20 border-t border-orange-100 dark:border-orange-800 flex items-center gap-2 shrink-0">
+              <Waveform cls="text-orange-500" />
+              <span className="text-xs text-orange-600 dark:text-orange-300 font-medium">
+                Listening… speak now
+              </span>
+              {inputText && (
+                <span className="text-xs text-gray-400 truncate max-w-[110px]">
+                  {inputText}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Input row */}
+          <form
+            onSubmit={handleSubmit}
+            className="px-3 py-2.5 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex items-center gap-2 shrink-0"
+          >
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onFocus={() => clearTimeout(autoListenTimer.current)}
+              placeholder={listening ? "Listening…" : "Type or tap 🎤 to speak"}
+              disabled={listening}
+              className="flex-1 text-sm bg-gray-100 dark:bg-gray-700 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 dark:text-white placeholder-gray-400 disabled:opacity-60"
+            />
+            {voiceOk && (
+              <button
+                type="button"
+                onClick={handleMicClick}
+                title={listening ? "Stop" : "Speak"}
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all shrink-0 ${
+                  listening
+                    ? "bg-red-500 text-white animate-pulse"
+                    : "bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-800"
+                }`}
+              >
+                {listening ? <Waveform cls="text-white" /> : "🎤"}
+              </button>
+            )}
+            <button
+              type="submit"
+              disabled={!inputText.trim() || listening}
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 text-white flex items-center justify-center disabled:opacity-40 hover:opacity-90 transition-opacity shrink-0"
+            >
+              ➤
+            </button>
+          </form>
         </div>
       )}
 
-      {/* FAB Button */}
+      {/* ── FAB ────────────────────────────────────────────────────────── */}
       <button
-        onClick={() => setIsOpen((v) => !v)}
-        className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${
+        onClick={isOpen ? closeChat : openChat}
+        className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 ${
           isOpen
             ? "bg-gray-700 dark:bg-gray-600 scale-90"
-            : "bg-gradient-to-br from-orange-500 to-orange-600 hover:scale-110"
+            : "bg-gradient-to-br from-orange-500 to-pink-500 hover:scale-110"
         }`}
-        aria-label="AI Food Assistant"
+        aria-label="Chat with Priya"
       >
         {isOpen ? (
-          <span className="text-xl text-white font-bold">✕</span>
-        ) : voiceState === "listening" ? (
-          <VoiceWaveform className="text-white" />
+          <span className="text-white text-xl font-bold">✕</span>
+        ) : listening ? (
+          <Waveform cls="text-white" />
         ) : (
           <span className="text-2xl">🤖</span>
         )}
       </button>
     </>
   );
-};
-
-export default ChatWidget;
+}
