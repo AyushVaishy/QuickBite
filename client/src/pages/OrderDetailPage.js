@@ -7,6 +7,7 @@ import { addItem, clearCart } from "../store/cartSlice";
 import { addNotification } from "../store/notificationsSlice";
 import { FaArrowLeft, FaStar, FaMapMarkerAlt, FaBoxOpen, FaMotorcycle, FaPhoneAlt } from "react-icons/fa";
 import { MdDeliveryDining } from "react-icons/md";
+import DeliveryMap from "../components/DeliveryMap";
 
 const STEPS = [
   { key: "PLACED",           label: "Order Placed",  icon: "📋" },
@@ -190,6 +191,10 @@ const LiveTrackingCard = ({ order }) => {
 
   return (
     <div className="space-y-5">
+      {/* Delivery Map */}
+      {['CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY'].includes(order.status) && (
+        <DeliveryMap order={order} status={order.status} />
+      )}
       {/* ETA Banner */}
       <div className={`rounded-xl p-4 text-center ${isArriving ? "bg-orange-50 dark:bg-orange-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}>
         {timeLeft > 0 ? (

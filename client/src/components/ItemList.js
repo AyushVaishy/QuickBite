@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { addItem, removeItem, updateQuantity } from "../store/cartSlice";
+import ItemCustomizationModal from "./ItemCustomizationModal";
 
 const PLACEHOLDER_IMG =
   "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop";
@@ -13,6 +15,7 @@ const isBestseller = (id = "") => {
 const ItemList = ({ items, restaurantName }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((s) => s.cart.items);
+  const [customizingItem, setCustomizingItem] = useState(null);
 
   const getCartQty = (id) => {
     const found = cartItems.find((i) => i.id === id);
@@ -50,6 +53,7 @@ const ItemList = ({ items, restaurantName }) => {
   };
 
   return (
+    <>
     <div className="divide-y divide-gray-100 dark:divide-gray-700">
       {items.map((item) => {
         const qty = getCartQty(item.id);
@@ -109,7 +113,7 @@ const ItemList = ({ items, restaurantName }) => {
               {/* Add / qty control */}
               {qty === 0 ? (
                 <button
-                  onClick={() => handleAdd(item)}
+                  onClick={() => setCustomizingItem(item)}
                   className="absolute -bottom-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-green-600 dark:text-green-400 font-bold text-sm px-5 py-1 rounded-lg shadow hover:bg-green-50 dark:hover:bg-green-900/20 transition"
                 >
                   ADD
@@ -138,6 +142,18 @@ const ItemList = ({ items, restaurantName }) => {
         );
       })}
     </div>
+    {customizingItem && (
+      <ItemCustomizationModal
+        item={customizingItem}
+        restaurantName={restaurantName}
+        onClose={() => setCustomizingItem(null)}
+        onConfirm={(item, qty, customizations) => {
+          for (let i = 0; i < qty; i++) handleAdd(item);
+          setCustomizingItem(null);
+        }}
+      />
+    )}
+    </>
   );
 };
 
