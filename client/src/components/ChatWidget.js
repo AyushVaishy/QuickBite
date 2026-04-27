@@ -590,23 +590,11 @@ export default function ChatWidget() {
         }
 
         // ── Build TTS speech ───────────────────────────────────────────────
-        let toSpeak = aiMsg.content;
-        if (aiMsg.restaurants?.length > 0) {
-          // Read out top 2 restaurants with their first dish so user knows what's there
-          const top = aiMsg.restaurants.slice(0, 2);
-          const spoken = top
-            .map((r) => {
-              const dish = r.dishes?.[0]?.name;
-              return dish ? `${r.name}, serving ${dish}` : r.name;
-            })
-            .join("; and ");
-          toSpeak = `${aiMsg.content} I found ${aiMsg.restaurants.length} great spots — ${spoken}. Tap any card to see the full menu!`;
-        }
-
-        // Auto-listen after speaking
-        speak(toSpeak, () => {
+        // Just speak whatever Priya said — she will read out the options herself
+        // (no "tap the card" prompts — this is a fully voice-driven flow)
+        speak(aiMsg.content, () => {
           if (mountedRef.current) {
-            scheduleListenRef.current?.(aiMsg.restaurants?.length > 0 ? 2500 : 900);
+            scheduleListenRef.current?.(aiMsg.restaurants?.length > 0 ? 2000 : 900);
           }
         });
       } catch {
