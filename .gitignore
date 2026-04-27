@@ -1,5 +1,9 @@
 node_modules
-
 node_modules/
 .cache/
 dist/
+
+# Environment variables — never commit secrets
+.env
+.env.local
+.env.*.local

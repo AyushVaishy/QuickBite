@@ -1,5 +1,6 @@
 const { parseIntent, getRecommendations } = require('../services/recommendationService');
 const { buildMessage } = require('../services/promptBuilder');
+const { generateFoodResponse } = require('../services/geminiService');
 
 const chat = async (req, res) => {
   try {
@@ -12,7 +13,18 @@ const chat = async (req, res) => {
     const trimmed = message.trim().slice(0, 500);
     const intent = parseIntent(trimmed);
     const restaurants = await getRecommendations(intent, lat || null, lng || null);
-    const responseMessage = buildMessage(intent, restaurants);
+
+    // Try Gemini first; fall back to template message if unavailable/quota exceeded
+    let responseMessage;
+    try {
+      responseMessage = await generateFoodResponse(trimmed, intent, restaurants);
+    } catch (geminiErr) {
+      console.warn('Gemini unavailable, using fallback:', geminiErr.message);
+      responseMessage = null;
+    }
+    if (!responseMessage) {
+      responseMessage = buildMessage(intent, restaurants);
+    }
 
     return res.json({
       message: responseMessage,
