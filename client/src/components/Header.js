@@ -211,6 +211,13 @@ const Header = ({ location, setLocation }) => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
+  // Listen for openSignIn event (dispatched from Sign In button)
+  useEffect(() => {
+    const handler = () => setSignInOpen(true);
+    window.addEventListener('openSignIn', handler);
+    return () => window.removeEventListener('openSignIn', handler);
+  }, []);
+
   // Toggle dark mode and persist
   const toggleTheme = () => {
     const next = !isDark;
@@ -504,6 +511,7 @@ const Header = ({ location, setLocation }) => {
 
   return (
     <>
+      <SignInSidebar isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
       {sidebarOpen && <SidebarOverlay />}
       {addressSidebarContent}
       {isSearchOpen && (
@@ -682,8 +690,8 @@ const Header = ({ location, setLocation }) => {
                 )}
                </div>
 
-              {/* User Profile / Dropdown Logout */}
-               {userData ? (
+              {/* User Profile / Dropdown */}
+               {displayUser ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -692,10 +700,10 @@ const Header = ({ location, setLocation }) => {
                     aria-expanded={isUserMenuOpen}
                   >
                     <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                      {(userData.name || userData.email || "U").charAt(0).toUpperCase()}
+                      {(displayUser.name || '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('')}
                     </div>
                     <span className="font-medium text-gray-700 dark:text-gray-200 max-w-[120px] truncate hidden md:block">
-                      {userData.name?.split(" ")[0] || "Account"}
+                      {displayUser.name?.split(" ")[0] || "Account"}
                     </span>
                     <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -705,8 +713,8 @@ const Header = ({ location, setLocation }) => {
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden z-50" role="menu">
                       <div className="px-4 py-3 bg-orange-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-                        <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm truncate">{userData.name}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{userData.email}</p>
+                        <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm truncate">{displayUser.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{displayUser.email}</p>
                       </div>
                       <Link to="/home/profile" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
                         <FaUserCircle className="text-orange-500 flex-shrink-0" size={15} />
@@ -724,13 +732,13 @@ const Header = ({ location, setLocation }) => {
                         <span className="text-base w-4 text-center flex-shrink-0">⚙️</span>
                         <span className="text-sm">Settings</span>
                       </Link>
-                      {(userData.role === 'RESTAURANT_OWNER' || userData.role === 'ADMIN') && (
+                      {(displayUser.role === 'RESTAURANT_OWNER' || displayUser.role === 'ADMIN') && (
                         <Link to="/owner" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
                           <FaStore className="text-orange-500 flex-shrink-0" size={14} />
                           <span className="text-sm">Owner Dashboard</span>
                         </Link>
                       )}
-                      {userData.role === 'ADMIN' && (
+                      {displayUser.role === 'ADMIN' && (
                         <Link to="/admin" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
                           <span className="text-base w-4 text-center flex-shrink-0">🛡️</span>
                           <span className="text-sm">Admin Panel</span>
@@ -746,8 +754,8 @@ const Header = ({ location, setLocation }) => {
                 </div>
               ) : (
                 <button
-                  onClick={() => window.dispatchEvent(new Event("openSignIn"))}
-                  className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold text-sm transition-colors shadow"
+                  onClick={() => setSignInOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all shadow text-sm"
                 >
                   <FiLogIn />
                   Sign In
@@ -757,6 +765,7 @@ const Header = ({ location, setLocation }) => {
           </div>
         </div>
       </header>
+      <SignInSidebar isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
     </>
   );
 };
