@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 const QUICK_PROMPTS = [
   "I'm feeling hungry 🍽️",
@@ -127,12 +128,11 @@ const ChatWidget = () => {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, lat: null, lng: null }),
+      const { data } = await api.post("/ai/chat", {
+        message: trimmed,
+        lat: null,
+        lng: null,
       });
-      const data = await res.json();
       setMessages((prev) => [
         ...prev,
         {
