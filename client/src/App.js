@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
+import DashboardLayout from "./layouts/DashboardLayout";
 import LandingPage from "./pages/LandingPage";
 import FeaturesLandingPage from "./pages/FeaturesLandingPage";
 import AboutLandingPage from "./pages/AboutLandingPage";
@@ -55,7 +56,7 @@ const appRouter = createBrowserRouter([
     path: "/home",
     element: (
       <ProtectedRoute>
-        <AppLayout />
+        <DashboardLayout />
       </ProtectedRoute>
     ),
     errorElement: <Error />,

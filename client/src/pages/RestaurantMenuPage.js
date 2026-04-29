@@ -118,7 +118,7 @@ const RestaurantMenuPage = () => {
       )}
 
       {/* ── Hero ── */}
-      <div className="relative w-full h-[240px] sm:h-[300px] pt-[70px] overflow-hidden">
+      <div className="relative w-full h-[240px] sm:h-[300px] overflow-hidden">
         <img
           src={restaurant.imageUrl || PLACEHOLDER}
           alt={restaurant.name}
@@ -130,7 +130,7 @@ const RestaurantMenuPage = () => {
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-[80px] left-4 z-10 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 rounded-full transition"
+          className="absolute top-4 left-4 z-10 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-2 rounded-full transition"
         >
           <FaArrowLeft />
         </button>

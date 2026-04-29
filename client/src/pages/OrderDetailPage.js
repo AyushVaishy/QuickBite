@@ -355,7 +355,7 @@ const OrderDetailPage = () => {
 
         {/* Back + Header */}
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground dark:hover:text-gray-200 transition">
+          <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition">
             <FaArrowLeft />
           </button>
           <div className="flex-1">
@@ -412,7 +412,7 @@ const OrderDetailPage = () => {
           <div className="px-4 py-3 border-b border-border">
             <h2 className="font-bold text-foreground">Order Items</h2>
           </div>
-          <div className="divide-y divide-gray-50">
+          <div className="divide-y divide-border">
             {order.items.map((item, idx) => (
               <div key={idx} className="flex items-center justify-between px-4 py-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">

@@ -127,12 +127,12 @@ const AdminPanel = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-gray-900 dark:bg-gray-950 px-6 py-4 flex items-center justify-between shadow-md">
+      <div className="bg-card border-b border-border px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-4">
           <Link to="/home" className="text-primary hover:text-primary/80 font-medium flex items-center gap-1 text-sm">
             ← Back to App
           </Link>
-          <h1 className="text-2xl font-bold text-white">🛡️ Admin Panel</h1>
+          <h1 className="text-2xl font-bold text-foreground">🛡️ Admin Panel</h1>
         </div>
       </div>
 

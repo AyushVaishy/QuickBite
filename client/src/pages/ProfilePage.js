@@ -19,21 +19,21 @@ import { FaHeart, FaMapMarkerAlt, FaHome, FaBriefcase, FaMapPin, FaTrash, FaPlus
 import api from "../services/api";
 
 const TABS = [
-  { id: "profile",    label: "My Profile",    icon: "👤" },
-  { id: "orders",     label: "My Orders",     icon: "📦" },
-  { id: "favourites", label: "Favourites",    icon: "❤️" },
-  { id: "reviews",    label: "My Reviews",    icon: "⭐" },
-  { id: "addresses",  label: "Addresses",     icon: "📍" },
-  { id: "settings",   label: "Settings",      icon: "⚙️" },
+  { id: "profile", label: "My Profile", icon: "👤" },
+  { id: "orders", label: "My Orders", icon: "📦" },
+  { id: "favourites", label: "Favourites", icon: "❤️" },
+  { id: "reviews", label: "My Reviews", icon: "⭐" },
+  { id: "addresses", label: "Addresses", icon: "📍" },
+  { id: "settings", label: "Settings", icon: "⚙️" },
 ];
 
 const STATUS_COLORS = {
-  PLACED:           "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  CONFIRMED:        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
-  PREPARING:        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+  PLACED: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  CONFIRMED: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
+  PREPARING: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
   OUT_FOR_DELIVERY: "bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary",
-  DELIVERED:        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-  CANCELLED:        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+  DELIVERED: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  CANCELLED: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
 const STATUS_LABELS = {
   PLACED: "Order Placed", CONFIRMED: "Confirmed", PREPARING: "Preparing",
@@ -90,7 +90,7 @@ const ProfileTab = ({ user, onUpdated }) => {
               className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-card text-foreground focus:ring-2 focus:ring-primary outline-none"
             />
           ) : (
-            <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-lg">
+            <div className="flex items-center gap-2 px-4 py-3 bg-white/80 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl">
               <FaUserCircle className="text-muted-foreground" size={14} />
               <span className="text-sm text-foreground">{user?.name || "—"}</span>
             </div>
@@ -117,7 +117,7 @@ const ProfileTab = ({ user, onUpdated }) => {
               className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-card text-foreground focus:ring-2 focus:ring-primary outline-none"
             />
           ) : (
-            <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-lg">
+            <div className="flex items-center gap-2 px-4 py-3 bg-white/80 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-xl">
               <FaPhone className="text-muted-foreground" size={14} />
               <span className="text-sm text-foreground">{user?.phone || "Not set"}</span>
             </div>
@@ -134,7 +134,7 @@ const ProfileTab = ({ user, onUpdated }) => {
             >
               <FiSave size={14} /> {saving ? "Saving…" : "Save Changes"}
             </button>
-            <button onClick={() => { setEditing(false); setForm({ name: user?.name||"", phone: user?.phone||"" }); }}
+            <button onClick={() => { setEditing(false); setForm({ name: user?.name || "", phone: user?.phone || "" }); }}
               className="flex items-center gap-2 px-5 py-2 border border-border text-muted-foreground rounded-lg font-semibold text-sm hover:bg-muted transition">
               <FiX size={14} /> Cancel
             </button>
@@ -178,7 +178,7 @@ const OrdersTab = () => {
     <div className="space-y-3 max-w-2xl">
       {orders.map((order) => (
         <Link to={`/home/orders/${order.id}`} key={order.id}
-          className="block bg-card rounded-xl border border-border shadow-sm hover:shadow-md transition overflow-hidden"
+          className="block bg-white/80 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition overflow-hidden"
         >
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ const OrdersTab = () => {
               <div>
                 <p className="font-semibold text-sm text-foreground">{order.restaurant?.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {new Date(order.createdAt).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" })}
+                  {new Date(order.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                 </p>
               </div>
             </div>
@@ -242,7 +242,7 @@ const ReviewsTab = () => {
   useEffect(() => {
     api.get("/restaurants/reviews/me")
       .then((res) => setReviews(res.data.reviews || []))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
@@ -261,7 +261,7 @@ const ReviewsTab = () => {
   return (
     <div className="space-y-4 max-w-2xl">
       {reviews.map((review) => (
-        <div key={review.id} className="bg-card rounded-xl border border-border p-4 shadow-sm">
+        <div key={review.id} className="bg-white/80 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
           <div className="flex items-start gap-3">
             {review.restaurant?.imageUrl && (
               <img
@@ -289,7 +289,7 @@ const ReviewsTab = () => {
                   <FaStar
                     key={star}
                     size={13}
-                    className={star <= review.rating ? "text-yellow-400" : "text-gray-200 dark:text-muted-foreground"}
+                    className={star <= review.rating ? "text-yellow-400" : "text-muted-foreground"}
                   />
                 ))}
                 <span className="ml-1 text-xs font-semibold text-muted-foreground">{review.rating}/5</span>
@@ -365,7 +365,7 @@ const AddressesTab = () => {
         </div>
       )}
       {addresses.map((addr) => (
-        <div key={addr.id} className="flex items-start justify-between bg-card border border-border rounded-xl p-4 shadow-sm">
+        <div key={addr.id} className="flex items-start justify-between bg-white/80 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 shadow-sm">
           <div className="flex items-start gap-3">
             <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
               {LABEL_ICONS[addr.label] || <FaMapPin />}
@@ -389,7 +389,7 @@ const AddressesTab = () => {
 
       {/* Add Address Form */}
       {showForm ? (
-        <form onSubmit={handleAdd} className="bg-card border border-primary/30 dark:border-primary/30 rounded-xl p-4 space-y-3 shadow-sm">
+        <form onSubmit={handleAdd} className="bg-white/80 dark:bg-black/20 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 space-y-3 shadow-sm">
           <h3 className="font-semibold text-foreground text-sm mb-2">Add New Address</h3>
           {/* Label selector */}
           <div className="flex gap-2">
@@ -398,20 +398,19 @@ const AddressesTab = () => {
                 key={lbl}
                 type="button"
                 onClick={() => setForm((p) => ({ ...p, label: lbl }))}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
-                  form.label === lbl
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${form.label === lbl
                     ? "bg-primary/50 text-white border-primary"
                     : "border-border text-muted-foreground hover:border-primary/40"
-                }`}
+                  }`}
               >
                 {lbl}
               </button>
             ))}
           </div>
           {[
-            { field: "street",  placeholder: "Street / Area" },
-            { field: "city",    placeholder: "City" },
-            { field: "state",   placeholder: "State" },
+            { field: "street", placeholder: "Street / Area" },
+            { field: "city", placeholder: "City" },
+            { field: "state", placeholder: "State" },
             { field: "pincode", placeholder: "Pincode" },
           ].map(({ field, placeholder }) => (
             <input
@@ -483,7 +482,7 @@ const SettingsTab = ({ onLogout }) => {
   return (
     <div className="max-w-md space-y-8">
       {/* Appearance */}
-      <div className="bg-card rounded-xl border border-border p-5">
+      <div className="bg-white/80 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
         <h3 className="font-bold text-foreground mb-4">Appearance</h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -492,7 +491,7 @@ const SettingsTab = ({ onLogout }) => {
           </div>
           <button
             onClick={toggleTheme}
-            className={`w-12 h-6 rounded-full transition-colors relative ${isDark ? "bg-primary/50" : "bg-gray-300"}`}
+            className={`w-12 h-6 rounded-full transition-colors relative ${isDark ? "bg-primary/50" : "bg-muted"}`}
           >
             <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${isDark ? "translate-x-7" : "translate-x-1"}`} />
           </button>
@@ -500,7 +499,7 @@ const SettingsTab = ({ onLogout }) => {
       </div>
 
       {/* Change Password */}
-      <div className="bg-card rounded-xl border border-border p-5">
+      <div className="bg-white/80 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
         <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
           <FaLock className="text-primary" size={14} /> Change Password
         </h3>
@@ -525,13 +524,7 @@ const SettingsTab = ({ onLogout }) => {
         </form>
       </div>
 
-      {/* Logout */}
-      <button
-        onClick={onLogout}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-semibold text-sm transition"
-      >
-        <FaSignOutAlt /> Sign Out
-      </button>
+
     </div>
   );
 };
@@ -573,15 +566,15 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-16 px-4">
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-6">
+    <div className="min-h-screen">
+      <div className="w-full px-6 md:px-8 py-6 md:py-10 flex flex-col md:flex-row gap-6 lg:gap-8">
 
         {/* ── Sidebar Nav ── */}
-        <aside className="w-full md:w-56 flex-shrink-0">
-          <div className="bg-card rounded-xl shadow border border-border overflow-hidden">
+        <aside className="w-full md:w-64 flex-shrink-0">
+          <div className="bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 dark:border-white/5 overflow-hidden">
             {/* Avatar header */}
-            <div className="bg-gradient-to-br from-primary to-accent px-4 py-5 text-center">
-              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-2 shadow">
+            <div className="bg-gradient-to-br from-[#FF5A5F] to-[#E0484D] px-4 py-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-white text-2xl font-extrabold mx-auto mb-2 shadow-sm">
                 {(user?.name || "U").charAt(0).toUpperCase()}
               </div>
               <p className="text-white font-semibold text-sm truncate">{user?.name || "Loading…"}</p>
@@ -594,11 +587,10 @@ const ProfilePage = () => {
                 <button
                   key={tab.id}
                   onClick={() => setTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition mb-0.5 ${
-                    activeTab === tab.id
-                      ? "bg-primary/50 text-white shadow-sm"
-                      : "text-muted-foreground hover:bg-muted"
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-bold transition-all duration-300 mb-1 ${activeTab === tab.id
+                      ? "bg-[#FF5A5F] text-white shadow-md shadow-[#FF5A5F]/20"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-white/10"
+                    }`}
                 >
                   <span>{tab.icon}</span>
                   {tab.label}
@@ -617,17 +609,17 @@ const ProfilePage = () => {
         </aside>
 
         {/* ── Content ── */}
-        <main className="flex-1 bg-card rounded-xl shadow border border-border p-6 min-h-[400px]">
-          <h1 className="text-xl font-bold text-foreground mb-6">
+        <main className="flex-1 bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 dark:border-white/5 p-6 md:p-10 min-h-[500px]">
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-8">
             {TABS.find((t) => t.id === activeTab)?.label}
           </h1>
 
-          {activeTab === "profile"    && <ProfileTab user={user} onUpdated={handleUpdated} />}
-          {activeTab === "orders"     && <OrdersTab />}
+          {activeTab === "profile" && <ProfileTab user={user} onUpdated={handleUpdated} />}
+          {activeTab === "orders" && <OrdersTab />}
           {activeTab === "favourites" && <FavouritesTab />}
-          {activeTab === "reviews"    && <ReviewsTab />}
-          {activeTab === "addresses"  && <AddressesTab />}
-          {activeTab === "settings"   && <SettingsTab onLogout={handleLogout} />}
+          {activeTab === "reviews" && <ReviewsTab />}
+          {activeTab === "addresses" && <AddressesTab />}
+          {activeTab === "settings" && <SettingsTab onLogout={handleLogout} />}
         </main>
       </div>
     </div>

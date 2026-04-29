@@ -8,7 +8,7 @@ const RestaurantCategory = ({ title, items, restaurantName }) => {
   return (
     <div className="border border-border rounded-xl overflow-hidden bg-card">
       <button
-        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted dark:hover:bg-gray-750 transition"
+        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted transition"
         onClick={() => setOpen((v) => !v)}
       >
         <span className="font-bold text-base sm:text-lg text-foreground">

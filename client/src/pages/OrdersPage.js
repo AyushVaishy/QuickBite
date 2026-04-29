@@ -175,7 +175,7 @@ const OrdersPage = () => {
                   )}
                   <Link
                     to={`/home/orders/${order.id}`}
-                    className="text-xs text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200 font-medium"
+                    className="text-xs text-muted-foreground hover:text-foreground font-medium"
                   >
                     View Details
                   </Link>

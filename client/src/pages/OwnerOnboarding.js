@@ -97,7 +97,7 @@ const OwnerOnboarding = () => {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-foreground placeholder-gray-400 bg-card ${
+    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-foreground placeholder:text-muted-foreground bg-card ${
       errors[field] ? "border-red-400" : "border-border"
     }`;
 

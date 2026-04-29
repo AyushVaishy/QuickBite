@@ -151,8 +151,8 @@ const SearchResultsPage = () => {
                     onClick={() => handleFilterChange(opt.value)}
                     className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
                       filterBy === opt.value
-                        ? 'bg-gray-800 dark:bg-gray-200 border-gray-800 dark:border-gray-200 text-white dark:text-gray-900'
-                        : 'bg-card border-border text-foreground hover:border-gray-500'
+                        ? 'bg-primary border-primary text-white'
+                        : 'bg-card border-border text-foreground hover:border-primary/50'
                     }`}
                   >
                     {opt.label}

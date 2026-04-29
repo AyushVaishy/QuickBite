@@ -429,7 +429,7 @@ const Header = ({ location, setLocation }) => {
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search for area, city, landmark..."
-                className="w-full pl-10 pr-4 py-3 border-2 border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all duration-300 text-foreground placeholder-gray-500 dark:placeholder-gray-400 bg-background"
+                className="w-full pl-10 pr-4 py-3 border-2 border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all duration-300 text-foreground placeholder:text-muted-foreground bg-background"
                 value={searchAddress}
                 onChange={e => setSearchAddress(e.target.value)}
               />

@@ -119,7 +119,7 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-foreground placeholder-gray-400 bg-white ${
+    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-foreground placeholder:text-muted-foreground bg-card ${
       errors[field] ? "border-red-400" : "border-border"
     }`;
 
@@ -133,7 +133,7 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
       />
 
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white shadow-2xl z-[9999] transition-transform duration-300 overflow-y-auto ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-card shadow-2xl z-[9999] transition-transform duration-300 overflow-y-auto ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -154,7 +154,7 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
                   key={tab}
                   onClick={() => switchTab(tab)}
                   className={`flex-1 py-2 rounded-lg font-semibold capitalize transition-all ${
-                    activeTab === tab ? "bg-white text-primary" : "bg-primary-hover text-white hover:bg-primary-hover"
+                    activeTab === tab ? "bg-card text-primary" : "bg-primary-hover text-white hover:bg-primary-hover"
                   }`}
                 >
                   {tab === "login" ? "Login" : "Sign Up"}

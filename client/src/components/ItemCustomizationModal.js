@@ -124,7 +124,7 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground dark:hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition"
         >
           ×
         </button>
@@ -181,13 +181,13 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm transition ${
                             selected
                               ? "border-primary bg-primary/5 dark:bg-primary/10"
-                              : "border-border hover:border-border dark:hover:border-gray-500"
+                              : "border-border hover:border-border dark:hover:border-border"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <span
                               className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                selected ? "border-primary" : "border-border dark:border-gray-500"
+                                selected ? "border-primary" : "border-border"
                               }`}
                             >
                               {selected && <span className="w-2 h-2 rounded-full bg-primary/50" />}
@@ -215,15 +215,14 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
                           type="button"
                           onClick={() => handleCheckboxChange(group.id, opt.id)}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm transition ${
-                            checked
-                              ? "border-primary bg-primary/5 dark:bg-primary/10"
-                              : "border-border hover:border-border dark:hover:border-gray-500"
+                            checked ? "border-primary bg-primary/5 dark:bg-primary/10"
+                              : "border-border hover:border-primary/50"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <span
                               className={`w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                                checked ? "border-primary bg-primary/50" : "border-border dark:border-gray-500"
+                                checked ? "border-primary bg-primary/50" : "border-border"
                               }`}
                             >
                               {checked && <span className="text-white text-[10px] font-bold">✓</span>}

@@ -1,18 +1,22 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import RestaurantCard from "../components/RestaurantCard";
-import Shimmer, { ShimmerCategories, ShimmerBrands, ShimmerCarousel } from "../components/Shimmer";
-import FilterModal from "../components/FilterModal";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { applyFilters, clearFilters, toggleVeg } from "../store/filtersSlice";
+import { toggleFavourite, selectIsFavourite } from "../store/favoritesSlice";
 import useOnlineStatus from "../hooks/useOnlineStatus";
-import { FaChevronLeft, FaChevronRight, FaLeaf, FaSlidersH, FaClock } from "react-icons/fa";
-import { MdOutlineStarPurple500 } from "react-icons/md";
 import { getRestaurants } from "../services/restaurantService";
 import { selectRecentlyViewed } from "../store/recentlyViewedSlice";
+import FilterModal from "../components/FilterModal";
+import {
+  FaChevronLeft, FaChevronRight, FaLeaf, FaSlidersH,
+  FaClock, FaStar, FaHeart, FaRegHeart, FaMapMarkerAlt,
+} from "react-icons/fa";
+import { ShimmerCategories, ShimmerBrands, ShimmerCarousel } from "../components/Shimmer";
+
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const RADIUS = 50;
-const LIMIT = 20;
+const LIMIT  = 20;
 
 const FOOD_CATEGORIES = [
   { id: 1,  name: "Biryani",      query: "Biryani",      imageUrl: "https://images.unsplash.com/photo-1563379091339-3b21bbd4c4e3?w=200&h=200&fit=crop" },
@@ -29,23 +33,15 @@ const FOOD_CATEGORIES = [
   { id: 12, name: "Cakes",        query: "Cake",          imageUrl: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&h=200&fit=crop" },
 ];
 
-// ── Reusable carousel arrow button ───────────────────────────────────────────
-const ArrowBtn = ({ direction, onClick, className = "" }) => (
-  <button
-    onClick={onClick}
-    aria-label={`Scroll ${direction}`}
-    className={`w-9 h-9 sm:w-10 sm:h-10 bg-card border border-border rounded-full flex items-center justify-center shadow hover:shadow-md hover:bg-muted transition-all ${className}`}
-  >
-    {direction === "left"
-      ? <FaChevronLeft className="text-muted-foreground" size={12} />
-      : <FaChevronRight className="text-muted-foreground" size={12} />}
-  </button>
-);
+const PLACEHOLDER_IMG = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop";
+const OFFER_POOL = [null, null, "20% OFF up to ₹100", "Free Delivery", "50% OFF up to ₹80", null, "30% OFF on first order", null, "Flat ₹50 OFF", null];
+const getOffer   = (id = "") => OFFER_POOL[id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % OFFER_POOL.length];
 
-// ── useCarousel: manages a scroll container ref + arrow visibility ─────────
+// ─── useCarousel hook ─────────────────────────────────────────────────────────
+
 const useCarousel = () => {
   const ref = useRef(null);
-  const [canLeft, setCanLeft]   = useState(false);
+  const [canLeft,  setCanLeft]  = useState(false);
   const [canRight, setCanRight] = useState(true);
 
   const update = useCallback(() => {
@@ -61,10 +57,7 @@ const useCarousel = () => {
     update();
     c.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update, { passive: true });
-    return () => {
-      c.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
+    return () => { c.removeEventListener("scroll", update); window.removeEventListener("resize", update); };
   }, [update]);
 
   const scroll = useCallback((dir) => {
@@ -75,96 +68,252 @@ const useCarousel = () => {
   return { ref, canLeft, canRight, scroll, update };
 };
 
-// ── Section wrapper (consistent padding + heading) ────────────────────────
-const Section = ({ bg = "bg-background", children }) => (
-  <div className={`${bg} py-8 sm:py-10`}>
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">{children}</div>
-  </div>
+// ─── Reusable small components ────────────────────────────────────────────────
+
+const CarouselArrow = ({ direction, onClick }) => (
+  <button
+    onClick={onClick}
+    aria-label={`Scroll ${direction}`}
+    className="glass-icon-btn w-9 h-9 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-200 shrink-0"
+  >
+    {direction === "left"
+      ? <FaChevronLeft  className="text-foreground/70" size={12} />
+      : <FaChevronRight className="text-foreground/70" size={12} />}
+  </button>
 );
 
-const SectionHeader = ({ title, subtitle, left, right }) => (
+const SectionHeader = ({ title, subtitle, right }) => (
   <div className="flex items-end justify-between mb-5 sm:mb-6">
     <div>
-      {left || (
-        <>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground leading-tight">
-            {title}
-          </h2>
-          {subtitle && (
-            <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
-          )}
-        </>
-      )}
+      <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-tight">{title}</h2>
+      {subtitle && <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
     </div>
     {right && <div className="hidden sm:flex gap-2">{right}</div>}
   </div>
 );
 
-// ── Brand card (circular, for "Top brands" section) ───────────────────────
-const BrandCard = ({ restaurant }) => {
+const FilterTag = ({ label, onRemove }) => (
+  <span className="flex items-center gap-1 text-xs bg-primary/10 text-primary border border-primary/30 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
+    {label}
+    <button onClick={onRemove} className="ml-0.5 hover:text-primary/70">✕</button>
+  </span>
+);
+
+// ─── Category Circle ──────────────────────────────────────────────────────────
+
+const CategoryCircle = ({ cat, onClick }) => (
+  <button
+    onClick={onClick}
+    className="flex flex-col items-center min-w-[90px] sm:min-w-[100px] group focus:outline-none"
+  >
+    <div className="glass-circle w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden mb-2.5 group-hover:scale-[1.08] group-hover:shadow-glow transition-all duration-300">
+      <img
+        src={cat.imageUrl}
+        alt={cat.name}
+        loading="lazy"
+        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop"; }}
+      />
+    </div>
+    <span className="text-xs sm:text-sm font-semibold text-foreground text-center group-hover:text-primary transition-colors leading-tight">
+      {cat.name}
+    </span>
+  </button>
+);
+
+// ─── Brand Circle ──────────────────────────────────────────────────────────────
+
+const BrandCircle = ({ restaurant }) => {
   const navigate = useNavigate();
-  const PLACEHOLDER = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200&h=200&fit=crop";
   return (
     <button
       onClick={() => navigate(`/home/restaurants/${restaurant.id}`)}
       className="flex flex-col items-center min-w-[110px] sm:min-w-[130px] group focus:outline-none"
     >
-      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden shadow-md mb-2.5 group-hover:shadow-xl transition-all duration-300 ring-2 ring-transparent group-hover:ring-primary/40">
+      <div className="relative glass-circle w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden mb-2.5 group-hover:scale-[1.07] group-hover:shadow-glow transition-all duration-300">
         <img
-          src={restaurant.imageUrl || PLACEHOLDER}
+          src={restaurant.imageUrl || PLACEHOLDER_IMG}
           alt={restaurant.name}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-          onError={(e) => { e.target.src = PLACEHOLDER; }}
+          onError={(e) => { e.target.src = PLACEHOLDER_IMG; }}
         />
-        {/* subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
-      <p className="text-xs sm:text-sm font-semibold text-foreground text-center leading-tight line-clamp-1 group-hover:text-primary transition-colors w-full px-1">
+      <p className="text-xs sm:text-sm font-bold text-foreground text-center line-clamp-1 group-hover:text-primary transition-colors w-full px-1">
         {restaurant.name}
       </p>
-      <p className="flex items-center gap-0.5 text-xs text-muted-foreground mt-0.5">
-        <FaClock size={9} />
-        {restaurant.deliveryTime ?? 30} min
+      <p className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+        <FaClock size={9} /> {restaurant.deliveryTime ?? 30} min
       </p>
     </button>
   );
 };
 
-// ── Active filter tag pill (appears in the filter bar) ────────────────────
-const FilterTag = ({ label, onRemove }) => (
-  <span className="flex items-center gap-1 text-xs bg-primary/10 text-primary border border-primary/30 dark:border-primary/30 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
-    {label}
-    <button onClick={onRemove} aria-label={`Remove ${label} filter`} className="ml-0.5 hover:text-primary dark:hover:text-primary/80">
-      ✕
-    </button>
-  </span>
+// ─── Glass Restaurant Card (carousel) ─────────────────────────────────────────
+
+const GlassRestaurantCard = ({ resData, wide = false }) => {
+  const dispatch = useDispatch();
+  const isFav    = useSelector(selectIsFavourite(resData.id));
+  const { id, name, cuisines, avgRating, costForTwo, deliveryTime, imageUrl, isOpen } = resData;
+
+  const cuisineList     = Array.isArray(cuisines) ? cuisines : (cuisines || "").split(",").map((c) => c.trim());
+  const displayCuisines = cuisineList.slice(0, 2);
+  const offer           = getOffer(id);
+
+  const handleFav = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(toggleFavourite(resData));
+  };
+
+  return (
+    <Link
+      to={`/home/restaurants/${id}`}
+      className={`block glass-card rounded-3xl overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:shadow-glow-md ${
+        wide ? "min-w-[280px] sm:min-w-[300px]" : "min-w-[230px] sm:min-w-[260px]"
+      }`}
+    >
+      <div className="relative w-full h-[165px] overflow-hidden">
+        <img
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          src={imageUrl || PLACEHOLDER_IMG}
+          alt={name}
+          onError={(e) => { e.target.src = PLACEHOLDER_IMG; }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        {isOpen === false && (
+          <span className="absolute top-2 left-2 bg-black/70 text-white text-xs font-semibold px-2 py-0.5 rounded-lg">CLOSED</span>
+        )}
+        {isOpen !== false && offer && (
+          <span className="absolute top-2 left-2 bg-primary/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow">🏷 {offer}</span>
+        )}
+        <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-xs font-medium px-2 py-0.5 rounded-lg">
+          🚀 {deliveryTime ?? "30"} min
+        </span>
+        <button
+          onClick={handleFav}
+          className="absolute top-2 right-2 w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform z-10"
+        >
+          {isFav ? <FaHeart className="text-red-400" size={13} /> : <FaRegHeart className="text-white" size={13} />}
+        </button>
+      </div>
+      <div className="p-3.5">
+        <h3 className="font-bold text-base text-foreground line-clamp-1 mb-1 group-hover:text-primary transition-colors">
+          {name}
+        </h3>
+        <div className="flex flex-wrap gap-1 mb-2.5">
+          {displayCuisines.map((c) => (
+            <span key={c} className="text-xs bg-white/20 dark:bg-white/5 text-muted-foreground px-1.5 py-0.5 rounded-md">{c}</span>
+          ))}
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-1 text-sm font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-lg">
+            <FaStar size={10} /> {avgRating || "New"}
+          </span>
+          <span className="text-xs text-muted-foreground">₹{Math.round((costForTwo || 0) / 100)} for two</span>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+// ─── Glass Grid Card (4-col grid) ─────────────────────────────────────────────
+
+const GlassGridCard = ({ resData }) => {
+  const dispatch = useDispatch();
+  const isFav    = useSelector(selectIsFavourite(resData.id));
+  const { id, name, cuisines, avgRating, costForTwo, deliveryTime, imageUrl, isOpen, address } = resData;
+
+  const cuisineList = Array.isArray(cuisines) ? cuisines : (cuisines || "").split(",").map((c) => c.trim());
+  const offer       = getOffer(id);
+
+  const handleFav = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(toggleFavourite(resData));
+  };
+
+  return (
+    <Link to={`/home/restaurants/${id}`} className="block">
+      <div className="glass-card rounded-2xl overflow-hidden group hover:-translate-y-1 hover:shadow-glow-md transition-all duration-300">
+        <div className="relative w-full h-[150px] overflow-hidden">
+          <img
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            src={imageUrl || PLACEHOLDER_IMG}
+            alt={name}
+            onError={(e) => { e.target.src = PLACEHOLDER_IMG; }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+          {isOpen === false && (
+            <span className="absolute top-2 left-2 bg-black/70 text-white text-xs font-semibold px-2 py-0.5 rounded-md">CLOSED</span>
+          )}
+          {isOpen !== false && offer && (
+            <span className="absolute top-2 left-2 bg-primary/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">🏷 {offer}</span>
+          )}
+          <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-xs font-medium px-1.5 py-0.5 rounded-md">
+            🚀 {deliveryTime ?? "30"} min
+          </span>
+          <button
+            onClick={handleFav}
+            className="absolute top-2 right-2 w-7 h-7 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:scale-110 transition-transform z-10"
+          >
+            {isFav ? <FaHeart className="text-red-400" size={12} /> : <FaRegHeart className="text-white" size={12} />}
+          </button>
+        </div>
+        <div className="p-3">
+          <h3 className="font-bold text-sm text-foreground line-clamp-1 mb-1 group-hover:text-primary transition-colors">{name}</h3>
+          {address && (
+            <p className="flex items-center gap-1 text-xs text-muted-foreground mb-1.5 truncate">
+              <FaMapMarkerAlt size={9} className="text-primary shrink-0" />
+              {typeof address === "string" ? address.split(",")[0] : ""}
+            </p>
+          )}
+          <p className="text-xs text-muted-foreground mb-2 truncate">
+            {cuisineList.slice(0, 2).join(" · ")}
+          </p>
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded">
+              <FaStar size={9} /> {avgRating || "New"}
+            </span>
+            <span className="text-xs text-muted-foreground">₹{Math.round((costForTwo || 0) / 100)} for two</span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+// ─── Section wrapper ──────────────────────────────────────────────────────────
+
+const Section = ({ children, className = "" }) => (
+  <div className={`dashboard-section px-4 sm:px-6 py-8 ${className}`}>{children}</div>
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── HomePage ─────────────────────────────────────────────────────────────────
+
 const HomePage = () => {
-  const { location }  = useOutletContext();
-  const { user }      = useSelector((s) => s.auth);
-  const filters       = useSelector((s) => s.filters);
+  const { location }   = useOutletContext();
+  const { user }       = useSelector((s) => s.auth);
+  const filters        = useSelector((s) => s.filters);
   const recentlyViewed = useSelector(selectRecentlyViewed);
-  const dispatch      = useDispatch();
-  const navigate      = useNavigate();
+  const dispatch       = useDispatch();
+  const navigate       = useNavigate();
+  const onlineStatus   = useOnlineStatus();
 
   const [fetchedRestaurants, setFetchedRestaurants] = useState([]);
-  const [total, setTotal]                           = useState(0);
-  const [page, setPage]                             = useState(1);
-  const [loading, setLoading]                       = useState(false);
-  const [loadingMore, setLoadingMore]               = useState(false);
-  const [error, setError]                           = useState("");
-  const [filterModalOpen, setFilterModalOpen]       = useState(false);
+  const [total,              setTotal]              = useState(0);
+  const [page,               setPage]               = useState(1);
+  const [loading,            setLoading]            = useState(false);
+  const [loadingMore,        setLoadingMore]         = useState(false);
+  const [error,              setError]              = useState("");
+  const [filterModalOpen,    setFilterModalOpen]     = useState(false);
 
-  // Carousel hooks (each manages its own ref + arrow state)
-  const categoryCarousel     = useCarousel();
-  const topBrandsCarousel    = useCarousel();
+  const categoryCarousel       = useCarousel();
+  const topBrandsCarousel      = useCarousel();
   const topRestaurantsCarousel = useCarousel();
   const recentlyViewedCarousel = useCarousel();
 
-  // Re-evaluate arrow visibility after data loads
   useEffect(() => {
     topBrandsCarousel.update();
     topRestaurantsCarousel.update();
@@ -178,15 +327,10 @@ const HomePage = () => {
   }, [location]); // eslint-disable-line
 
   const fetchPage = async (pageNum, reset = false) => {
-    if (pageNum === 1) setLoading(true);
-    else setLoadingMore(true);
+    if (pageNum === 1) setLoading(true); else setLoadingMore(true);
     setError("");
     try {
-      const { data } = await getRestaurants(location.lat, location.lng, {
-        radius: RADIUS,
-        limit: LIMIT,
-        page: pageNum,
-      });
+      const { data } = await getRestaurants(location.lat, location.lng, { radius: RADIUS, limit: LIMIT, page: pageNum });
       const restaurants = data.restaurants ?? [];
       const serverTotal = data.total ?? 0;
       setFetchedRestaurants((prev) => (reset || pageNum === 1 ? restaurants : [...prev, ...restaurants]));
@@ -199,96 +343,59 @@ const HomePage = () => {
     setLoadingMore(false);
   };
 
-  // ── Derived data ────────────────────────────────────────────────────────
-
-  // Top 10 highest-rated restaurants for "Top brands" carousel
+  // ── Derived data ─────────────────────────────────────────────────────────────
   const topBrands = useMemo(
-    () =>
-      [...fetchedRestaurants]
-        .filter((r) => r.avgRating)
-        .sort((a, b) => parseFloat(b.avgRating) - parseFloat(a.avgRating))
-        .slice(0, 10),
+    () => [...fetchedRestaurants].filter((r) => r.avgRating).sort((a, b) => parseFloat(b.avgRating) - parseFloat(a.avgRating)).slice(0, 10),
     [fetchedRestaurants]
   );
 
-  // Top 10 for "Top restaurants" carousel (same logic, different display)
   const topRestaurants = useMemo(
-    () =>
-      [...fetchedRestaurants]
-        .filter((r) => r.avgRating)
-        .sort((a, b) => parseFloat(b.avgRating) - parseFloat(a.avgRating))
-        .slice(0, 10),
+    () => [...fetchedRestaurants].filter((r) => r.avgRating).sort((a, b) => parseFloat(b.avgRating) - parseFloat(a.avgRating)).slice(0, 10),
     [fetchedRestaurants]
   );
 
-  // Unique cuisines (exact, normalized, sorted) — fed to FilterModal
   const allCuisines = useMemo(() => {
     const set = new Set();
-    fetchedRestaurants.forEach((r) => {
-      (Array.isArray(r.cuisines) ? r.cuisines : []).forEach((c) => {
-        const trimmed = c?.trim();
-        if (trimmed) set.add(trimmed);
-      });
-    });
+    fetchedRestaurants.forEach((r) =>
+      (Array.isArray(r.cuisines) ? r.cuisines : []).forEach((c) => { const t = c?.trim(); if (t) set.add(t); })
+    );
     return Array.from(set).sort();
   }, [fetchedRestaurants]);
 
-  // Filtered + sorted restaurant list — note: operates only on loaded pages
   const filteredRestaurants = useMemo(() => {
     let list = [...fetchedRestaurants];
-
     if (filters.vegOnly) {
-      list = list.filter((r) => {
-        const cuisines = Array.isArray(r.cuisines) ? r.cuisines : [];
-        return cuisines.some((c) =>
+      list = list.filter((r) =>
+        (Array.isArray(r.cuisines) ? r.cuisines : []).some((c) =>
           c.toLowerCase().includes("veg") || c.toLowerCase().includes("vegetarian")
-        );
-      });
+        )
+      );
     }
-
     if (filters.cuisines.length > 0) {
-      // Exact normalized match against restaurant's cuisines array
-      const selectedSet = new Set(filters.cuisines.map((c) => c.toLowerCase().trim()));
-      list = list.filter((r) => {
-        const cuisines = (Array.isArray(r.cuisines) ? r.cuisines : []).map((c) => c.toLowerCase().trim());
-        return cuisines.some((c) => selectedSet.has(c));
-      });
+      const sel = new Set(filters.cuisines.map((c) => c.toLowerCase().trim()));
+      list = list.filter((r) =>
+        (Array.isArray(r.cuisines) ? r.cuisines : []).map((c) => c.toLowerCase().trim()).some((c) => sel.has(c))
+      );
     }
-
-    if (filters.rating !== null) {
-      list = list.filter((r) => parseFloat(r.avgRating || 0) >= filters.rating);
-    }
-
+    if (filters.rating !== null) list = list.filter((r) => parseFloat(r.avgRating || 0) >= filters.rating);
     if (filters.costRange !== null) {
       list = list.filter((r) => {
-        const cost = r.costForTwo || 0; // in paise
-        if (filters.costRange === "low")  return cost < 20000;          // < ₹200 for two
-        if (filters.costRange === "mid")  return cost >= 20000 && cost <= 50000; // ₹200–₹500
-        if (filters.costRange === "high") return cost > 50000;           // > ₹500
+        const c = r.costForTwo || 0;
+        if (filters.costRange === "low")  return c < 20000;
+        if (filters.costRange === "mid")  return c >= 20000 && c <= 50000;
+        if (filters.costRange === "high") return c > 50000;
         return true;
       });
     }
-
-    if (filters.deliveryTimeMax !== null) {
-      list = list.filter((r) => {
-        const dt = parseInt(r.deliveryTime || 45, 10);
-        return dt <= filters.deliveryTimeMax;
-      });
-    }
-
-    // Sort — always on a copy (list is already a copy via [...fetchedRestaurants])
-    if (filters.sortBy === "rating_desc") {
+    if (filters.deliveryTimeMax !== null)
+      list = list.filter((r) => parseInt(r.deliveryTime || 45, 10) <= filters.deliveryTimeMax);
+    if (filters.sortBy === "rating_desc")
       list.sort((a, b) => parseFloat(b.avgRating || 0) - parseFloat(a.avgRating || 0));
-    } else if (filters.sortBy === "cost_asc") {
-      list.sort((a, b) => (a.costForTwo || 0) - (b.costForTwo || 0));
-    } else if (filters.sortBy === "cost_desc") {
-      list.sort((a, b) => (b.costForTwo || 0) - (a.costForTwo || 0));
-    }
-
+    else if (filters.sortBy === "cost_asc")  list.sort((a, b) => (a.costForTwo || 0) - (b.costForTwo || 0));
+    else if (filters.sortBy === "cost_desc") list.sort((a, b) => (b.costForTwo || 0) - (a.costForTwo || 0));
     return list;
   }, [fetchedRestaurants, filters]);
 
-  // How many non-default filter values are active (excluding vegOnly — shown separately)
   const modalFilterCount = [
     filters.sortBy !== "popularity" ? 1 : 0,
     filters.cuisines.length > 0 ? 1 : 0,
@@ -298,230 +405,188 @@ const HomePage = () => {
   ].reduce((a, b) => a + b, 0);
 
   const anyFilterActive = filters.vegOnly || modalFilterCount > 0;
-  const hasMore = fetchedRestaurants.length < total;
+  const hasMore         = fetchedRestaurants.length < total;
+  const locationName    = location?.address ? location.address.split(",")[0] : "your area";
 
-  const handleApplyFilters = useCallback((pending) => {
-    dispatch(applyFilters(pending));
-  }, [dispatch]);
+  const handleApplyFilters = useCallback((p) => dispatch(applyFilters(p)), [dispatch]);
+  const handleClearFilters = useCallback(() => dispatch(clearFilters()), [dispatch]);
 
-  const handleClearAllFilters = useCallback(() => {
-    dispatch(clearFilters());
-  }, [dispatch]);
-
-  // ── Guards ──────────────────────────────────────────────────────────────
-  const onlineStatus = useOnlineStatus();
+  // ── Guards ────────────────────────────────────────────────────────────────────
   if (!onlineStatus) {
     return (
-      <h1 className="text-center mt-24 text-xl font-semibold text-red-500">
-        🚨 You're offline! Please check your internet connection.
-      </h1>
-    );
-  }
-
-  if (loading) return <Shimmer />;
-
-  if (fetchedRestaurants.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] mt-24 px-6">
-        <img
-          src={require("../assets/location_unserviceable.webp")}
-          alt="Service not available"
-          className="w-56 h-56 object-contain opacity-90 mb-6"
-        />
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          We'll be there soon!
-        </h2>
-        <p className="text-muted-foreground max-w-xl text-center mb-6">
-          {error || "Cravon is not serving this location yet. We're expanding rapidly and hope to serve your area soon."}
-        </p>
-        <button
-          onClick={() => window.dispatchEvent(new Event("openLocationSidebar"))}
-          className="px-5 py-3 bg-primary/50 hover:bg-primary-hover text-white rounded-xl font-semibold transition-colors shadow"
-        >
-          Choose a different location
-        </button>
+      <div className="flex items-center justify-center min-h-[60vh] p-6">
+        <div className="glass-card rounded-3xl p-10 text-center max-w-sm">
+          <div className="text-5xl mb-4">🚨</div>
+          <h2 className="text-xl font-bold text-foreground mb-2">You're offline!</h2>
+          <p className="text-muted-foreground text-sm">Please check your internet connection.</p>
+        </div>
       </div>
     );
   }
 
-  // Friendly location name for headings
-  const locationName = location.address ? location.address.split(",")[0] : "your area";
+  if (loading) {
+    return (
+      <div className="p-6 space-y-10">
+        <ShimmerCategories />
+        <ShimmerBrands />
+        <ShimmerCarousel />
+      </div>
+    );
+  }
 
-  // ── Render ──────────────────────────────────────────────────────────────
+  if (!loading && fetchedRestaurants.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 py-12">
+        <div className="glass-card rounded-3xl p-10 text-center max-w-sm">
+          <img
+            src={require("../assets/location_unserviceable.webp")}
+            alt="Service not available"
+            className="w-40 h-40 object-contain opacity-90 mx-auto mb-5"
+          />
+          <h2 className="text-2xl font-bold text-foreground mb-2">We'll be there soon!</h2>
+          <p className="text-muted-foreground text-sm mb-6">
+            {error || "Cravon isn't serving this location yet. We're expanding rapidly!"}
+          </p>
+          <button
+            onClick={() => window.dispatchEvent(new Event("openLocationSidebar"))}
+            className="btn-primary rounded-full px-6"
+          >
+            Choose a different location
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background pt-[70px]">
+    <div className="dashboard-home pb-8">
 
-      {/* ── 1. WHAT'S ON YOUR MIND ───────────────────────────── */}
-      <Section bg="bg-background">
+      {/* ── 1. WHAT'S ON YOUR MIND ──────────────────────────────── */}
+      <Section>
         <SectionHeader
-          title={user ? `${user.name.split(" ")[0]}, what's on your mind?` : "What's on your mind?"}
+          title={user ? `${user.name.split(" ")[0]}, what's on your mind? 🤤` : "What's on your mind? 🤤"}
           subtitle="Tap a category to explore"
           right={
             <>
-              {categoryCarousel.canLeft && <ArrowBtn direction="left" onClick={() => categoryCarousel.scroll("left")} />}
-              {categoryCarousel.canRight && <ArrowBtn direction="right" onClick={() => categoryCarousel.scroll("right")} />}
+              {categoryCarousel.canLeft  && <CarouselArrow direction="left"  onClick={() => categoryCarousel.scroll("left")} />}
+              {categoryCarousel.canRight && <CarouselArrow direction="right" onClick={() => categoryCarousel.scroll("right")} />}
             </>
           }
         />
-        <div
-          ref={categoryCarousel.ref}
-          className="flex gap-5 sm:gap-8 overflow-x-auto scrollbar-hide pb-3"
-        >
+        <div ref={categoryCarousel.ref} className="flex gap-5 sm:gap-7 overflow-x-auto scrollbar-hide pb-3">
           {FOOD_CATEGORIES.map((cat) => (
-            <button
+            <CategoryCircle
               key={cat.id}
+              cat={cat}
               onClick={() => navigate(`/home/search?q=${encodeURIComponent(cat.query)}`)}
-              className="flex flex-col items-center min-w-[90px] sm:min-w-[110px] group focus:outline-none"
-            >
-              {/* Circular image */}
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-md mb-2.5 ring-2 ring-transparent group-hover:ring-primary/40 group-hover:shadow-lg transition-all duration-300">
-                <img
-                  src={cat.imageUrl}
-                  alt={cat.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop"; }}
-                />
-              </div>
-              <span className="text-xs sm:text-sm font-semibold text-foreground text-center group-hover:text-primary transition-colors leading-tight">
-                {cat.name}
-              </span>
-            </button>
+            />
           ))}
         </div>
       </Section>
 
-      <div className="w-full h-px bg-section" />
+      <div className="section-divider" />
 
-      {/* ── 2. TOP BRANDS FOR YOU ─────────────────────────────── */}
-      <Section bg="bg-background">
+      {/* ── 2. BEST RESTAURANTS FOR YOU ─────────────────────────── */}
+      <Section>
         <SectionHeader
-          title="Top brands for you"
-          subtitle="Most loved restaurants near you"
+          title="Best Restaurants for You 🌟"
+          subtitle="Most loved spots near you"
           right={
             <>
-              {topBrandsCarousel.canLeft && <ArrowBtn direction="left" onClick={() => topBrandsCarousel.scroll("left")} />}
-              {topBrandsCarousel.canRight && <ArrowBtn direction="right" onClick={() => topBrandsCarousel.scroll("right")} />}
+              {topBrandsCarousel.canLeft  && <CarouselArrow direction="left"  onClick={() => topBrandsCarousel.scroll("left")} />}
+              {topBrandsCarousel.canRight && <CarouselArrow direction="right" onClick={() => topBrandsCarousel.scroll("right")} />}
             </>
           }
         />
         {topBrands.length === 0 ? (
           <ShimmerBrands />
         ) : (
-          <div
-            ref={topBrandsCarousel.ref}
-            className="flex gap-5 sm:gap-7 overflow-x-auto scrollbar-hide pb-3"
-          >
-            {topBrands.map((r) => (
-              <BrandCard key={r.id} restaurant={r} />
-            ))}
+          <div ref={topBrandsCarousel.ref} className="flex gap-5 sm:gap-7 overflow-x-auto scrollbar-hide pb-3">
+            {topBrands.map((r) => <BrandCircle key={r.id} restaurant={r} />)}
           </div>
         )}
       </Section>
 
-      <div className="w-full h-px bg-section" />
+      <div className="section-divider" />
 
-      {/* ── 3. TOP RESTAURANTS CAROUSEL ──────────────────────── */}
-      <Section bg="bg-background">
+      {/* ── 3. TOP RESTAURANTS IN LOCATION ──────────────────────── */}
+      <Section>
         <SectionHeader
-          title={`Top restaurants in ${locationName}`}
+          title={`Top Restaurants in ${locationName} 📍`}
           subtitle="Best rated places to order from"
           right={
             <>
-              {topRestaurantsCarousel.canLeft && <ArrowBtn direction="left" onClick={() => topRestaurantsCarousel.scroll("left")} />}
-              {topRestaurantsCarousel.canRight && <ArrowBtn direction="right" onClick={() => topRestaurantsCarousel.scroll("right")} />}
+              {topRestaurantsCarousel.canLeft  && <CarouselArrow direction="left"  onClick={() => topRestaurantsCarousel.scroll("left")} />}
+              {topRestaurantsCarousel.canRight && <CarouselArrow direction="right" onClick={() => topRestaurantsCarousel.scroll("right")} />}
             </>
           }
         />
         {topRestaurants.length === 0 ? (
           <ShimmerCarousel />
         ) : (
-          <div
-            ref={topRestaurantsCarousel.ref}
-            className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide pb-3"
-          >
-            {topRestaurants.map((r) => (
-              <div key={r.id} className="min-w-[230px] sm:min-w-[260px]">
-                <RestaurantCard resData={r} />
-              </div>
-            ))}
+          <div ref={topRestaurantsCarousel.ref} className="flex gap-4 overflow-x-auto scrollbar-hide pb-3">
+            {topRestaurants.map((r) => <GlassRestaurantCard key={r.id} resData={r} wide />)}
           </div>
         )}
       </Section>
 
-      {/* ── DIVIDER ───────────────────────────────────────────── */}
-      <div className="w-full h-2 bg-section" />
-
-      {/* ── 3.5. RECENTLY VIEWED ──────────────────────────────── */}
+      {/* ── 3.5. RECENTLY VIEWED ─────────────────────────────────── */}
       {recentlyViewed.length > 0 && (
         <>
-          <Section bg="bg-background">
+          <div className="section-divider" />
+          <Section>
             <SectionHeader
-              title="Your recently viewed"
+              title="Your Recently Viewed 👀"
               subtitle="Pick up where you left off"
               right={
                 <>
-                  {recentlyViewedCarousel.canLeft && <ArrowBtn direction="left" onClick={() => recentlyViewedCarousel.scroll("left")} />}
-                  {recentlyViewedCarousel.canRight && <ArrowBtn direction="right" onClick={() => recentlyViewedCarousel.scroll("right")} />}
+                  {recentlyViewedCarousel.canLeft  && <CarouselArrow direction="left"  onClick={() => recentlyViewedCarousel.scroll("left")} />}
+                  {recentlyViewedCarousel.canRight && <CarouselArrow direction="right" onClick={() => recentlyViewedCarousel.scroll("right")} />}
                 </>
               }
             />
-            <div
-              ref={recentlyViewedCarousel.ref}
-              className="flex gap-3 sm:gap-4 overflow-x-auto scrollbar-hide pb-3"
-            >
-              {recentlyViewed.map((r) => (
-                <div key={r.id} className="min-w-[230px] sm:min-w-[260px]">
-                  <RestaurantCard resData={r} />
-                </div>
-              ))}
+            <div ref={recentlyViewedCarousel.ref} className="flex gap-4 overflow-x-auto scrollbar-hide pb-3">
+              {recentlyViewed.map((r) => <GlassRestaurantCard key={r.id} resData={r} />)}
             </div>
           </Section>
-          <div className="w-full h-px bg-section" />
         </>
       )}
 
-      {/* ── 4. ALL RESTAURANTS + FILTER BAR ──────────────────── */}
-      <Section bg="bg-background">
-        {/* Section heading */}
+      <div className="section-divider" />
+
+      {/* ── 4. ALL RESTAURANTS NEAR YOU ──────────────────────────── */}
+      <Section>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
           <div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">
-              All Restaurants Near Me
-            </h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground">All Restaurants Near Me 🏙️</h2>
             <p className="text-sm text-muted-foreground mt-0.5">
               {total} restaurants in {locationName}
-              {anyFilterActive && (
-                <span className="ml-2 text-primary font-medium">
-                  · filtered from {fetchedRestaurants.length} loaded
-                </span>
-              )}
+              {anyFilterActive && <span className="ml-2 text-primary font-medium">· filtered</span>}
             </p>
           </div>
         </div>
 
-        {/* ── Filter bar ────────────────────────────────────── */}
+        {/* Filter bar */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
-          {/* Pure Veg quick pill */}
           <button
             onClick={() => dispatch(toggleVeg())}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-sm font-semibold whitespace-nowrap transition-all ${
               filters.vegOnly
                 ? "bg-green-600 border-green-600 text-white shadow-md"
-                : "bg-card border-border text-foreground hover:border-green-400"
+                : "glass-btn border-border text-foreground hover:border-green-400"
             }`}
           >
             <FaLeaf className={filters.vegOnly ? "text-white" : "text-green-500"} size={11} />
             Pure Veg
           </button>
 
-          {/* Filters button */}
           <button
             onClick={() => setFilterModalOpen(true)}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-sm font-semibold whitespace-nowrap transition-all ${
               modalFilterCount > 0
-                ? "bg-primary/50 border-primary text-white shadow-md"
-                : "bg-card border-border text-foreground hover:border-primary"
+                ? "bg-primary/80 border-primary text-white shadow-md"
+                : "glass-btn border-border text-foreground hover:border-primary"
             }`}
           >
             <FaSlidersH size={13} />
@@ -533,7 +598,6 @@ const HomePage = () => {
             )}
           </button>
 
-          {/* Active filter tags */}
           {filters.sortBy !== "popularity" && (
             <FilterTag
               label={{ rating_desc: "Rating ↓", cost_asc: "Cost ↑", cost_desc: "Cost ↓" }[filters.sortBy]}
@@ -541,76 +605,43 @@ const HomePage = () => {
             />
           )}
           {filters.rating !== null && (
-            <FilterTag
-              label={`⭐ ${filters.rating}+`}
-              onRemove={() => dispatch(applyFilters({ rating: null }))}
-            />
+            <FilterTag label={`⭐ ${filters.rating}+`} onRemove={() => dispatch(applyFilters({ rating: null }))} />
           )}
           {filters.cuisines.map((c) => (
-            <FilterTag
-              key={c}
-              label={c}
-              onRemove={() =>
-                dispatch(applyFilters({ cuisines: filters.cuisines.filter((x) => x !== c) }))
-              }
-            />
+            <FilterTag key={c} label={c} onRemove={() => dispatch(applyFilters({ cuisines: filters.cuisines.filter((x) => x !== c) }))} />
           ))}
           {filters.costRange !== null && (
-            <FilterTag
-              label={{ low: "₹", mid: "₹₹", high: "₹₹₹" }[filters.costRange]}
-              onRemove={() => dispatch(applyFilters({ costRange: null }))}
-            />
+            <FilterTag label={{ low: "₹", mid: "₹₹", high: "₹₹₹" }[filters.costRange]} onRemove={() => dispatch(applyFilters({ costRange: null }))} />
           )}
           {filters.deliveryTimeMax !== null && (
-            <FilterTag
-              label={`⏱ Under ${filters.deliveryTimeMax} mins`}
-              onRemove={() => dispatch(applyFilters({ deliveryTimeMax: null }))}
-            />
+            <FilterTag label={`⏱ Under ${filters.deliveryTimeMax} mins`} onRemove={() => dispatch(applyFilters({ deliveryTimeMax: null }))} />
           )}
-
-          {/* Clear all (only when any active) */}
           {anyFilterActive && (
-            <button
-              onClick={handleClearAllFilters}
-              className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2 font-medium whitespace-nowrap"
-            >
+            <button onClick={handleClearFilters} className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2 font-medium whitespace-nowrap">
               Clear all
             </button>
           )}
         </div>
 
-        {/* ── Restaurant grid ───────────────────────────────── */}
+        {/* Grid */}
         {filteredRestaurants.length === 0 ? (
-          <div className="text-center py-16">
+          <div className="glass-card rounded-3xl text-center py-16 px-6">
             <div className="text-5xl mb-4">😕</div>
-            <p className="text-lg font-semibold text-foreground dark:text-muted-foreground mb-2">
-              No restaurants match your filters
-            </p>
-            <p className="text-sm text-muted-foreground mb-5">
-              Try adjusting or clearing filters to see more options.
-            </p>
-            <button
-              onClick={handleClearAllFilters}
-              className="px-6 py-2.5 bg-primary/50 hover:bg-primary-hover text-white rounded-full font-semibold transition shadow text-sm"
-            >
-              Clear all filters
-            </button>
+            <p className="text-lg font-semibold text-foreground mb-2">No restaurants match your filters</p>
+            <p className="text-sm text-muted-foreground mb-5">Try adjusting or clearing filters to see more options.</p>
+            <button onClick={handleClearFilters} className="btn-primary rounded-full">Clear all filters</button>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredRestaurants.map((r) => (
-                <RestaurantCard key={r.id} resData={r} />
-              ))}
+              {filteredRestaurants.map((r) => <GlassGridCard key={r.id} resData={r} />)}
             </div>
-
-            {/* Load more — always available, even with filters active */}
             {hasMore && (
               <div className="text-center mt-10">
                 <button
                   onClick={() => fetchPage(page + 1)}
                   disabled={loadingMore}
-                  className="px-8 py-3 bg-card border-2 border-gray-800 dark:border-gray-500 text-foreground font-semibold rounded-full hover:bg-gray-900 hover:text-white dark:hover:bg-gray-200 dark:hover:text-gray-900 transition-all disabled:opacity-50 text-sm"
+                  className="glass-btn px-8 py-3 rounded-full border border-border text-foreground font-semibold hover:border-primary hover:text-primary transition-all disabled:opacity-50 text-sm"
                 >
                   {loadingMore ? (
                     <span className="flex items-center gap-2">
@@ -630,7 +661,6 @@ const HomePage = () => {
         )}
       </Section>
 
-      {/* ── Filter Modal ─────────────────────────────────────── */}
       <FilterModal
         isOpen={filterModalOpen}
         onClose={() => setFilterModalOpen(false)}
@@ -642,4 +672,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomePage;

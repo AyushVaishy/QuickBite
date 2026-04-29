@@ -145,16 +145,16 @@ const CartPage = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted pt-24 pb-10 px-4">
-        <div className="max-w-lg mx-auto text-center">
-          <div className="w-28 h-28 bg-card rounded-full shadow-lg mx-auto flex items-center justify-center mb-6">
-            <FaShoppingCart className="text-5xl text-primary" />
+      <div className="min-h-screen">
+        <div className="w-full px-6 md:px-8 py-10 md:py-16 text-center">
+          <div className="w-28 h-28 bg-[#FF5A5F]/10 rounded-full mx-auto flex items-center justify-center mb-6">
+            <FaShoppingCart className="text-5xl text-[#FF5A5F]" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground mb-3">Your Cart is Empty</h1>
-          <p className="text-muted-foreground mb-8">Add some delicious food to get started!</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-3">Your Cart is Empty</h1>
+          <p className="text-gray-500 dark:text-gray-400 font-medium mb-8">Add some delicious food to get started!</p>
           <Link
             to="/home"
-            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-hover transition shadow"
+            className="inline-flex items-center gap-2 bg-[#FF5A5F] hover:bg-[#E0484D] text-white px-8 py-3 rounded-full font-bold transition-all shadow-md shadow-[#FF5A5F]/20 hover:-translate-y-0.5"
           >
             <FaUtensils /> Explore Restaurants
           </Link>
@@ -164,14 +164,14 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-16 px-4 md:px-8">
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-6">
+    <div className="min-h-screen">
+      <div className="w-full px-6 md:px-8 py-6 md:py-10 flex flex-col md:flex-row gap-6 lg:gap-8">
 
         {/* ── Left: Address + Payment ─────────────────────────── */}
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-6">
 
           {/* Delivery Address */}
-          <div className="bg-card rounded-xl shadow p-5">
+          <div className="bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 dark:border-white/5 p-6 md:p-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <span className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
@@ -277,7 +277,7 @@ const CartPage = () => {
           </div>
 
           {/* Instructions */}
-          <div className="bg-card rounded-xl shadow p-5">
+          <div className="bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 dark:border-white/5 p-6 md:p-8">
             <h3 className="font-semibold text-foreground mb-2 text-sm">Cooking instructions (optional)</h3>
             <input
               type="text"
@@ -289,7 +289,7 @@ const CartPage = () => {
           </div>
 
           {/* Coupon */}
-          <div className="bg-card rounded-xl shadow p-5">
+          <div className="bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 dark:border-white/5 p-6 md:p-8">
             <h3 className="font-semibold text-foreground mb-3 text-sm flex items-center gap-2">
               <FaTag className="text-primary" size={13} /> Apply Coupon
             </h3>
@@ -327,7 +327,7 @@ const CartPage = () => {
           </div>
 
           {/* Payment */}
-          <div className="bg-card rounded-xl shadow p-5">
+          <div className="bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 dark:border-white/5 p-6 md:p-8">
             <h2 className="font-bold text-lg text-foreground mb-4">Payment</h2>
             <div className="flex items-center gap-3 p-3 border-2 border-primary rounded-lg bg-muted">
               <div className="w-4 h-4 rounded-full border-2 border-primary flex items-center justify-center">
@@ -346,8 +346,8 @@ const CartPage = () => {
         </div>
 
         {/* ── Right: Cart Summary ──────────────────────────────── */}
-        <div className="w-full md:w-[360px] flex-shrink-0">
-          <div className="bg-card rounded-xl shadow p-5 sticky top-24">
+        <div className="w-full md:w-[380px] flex-shrink-0">
+          <div className="bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-3xl shadow-sm border border-white/60 dark:border-white/5 p-6 sticky top-6">
             {/* Restaurant name */}
             <div className="flex items-center gap-3 mb-4 pb-4 border-b border-border">
               <img
@@ -372,7 +372,7 @@ const CartPage = () => {
                         if (item.quantity <= 1) dispatch(removeItem(item.id));
                         else dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
                       }}
-                      className="w-6 h-6 rounded-full bg-muted text-muted-foreground font-bold hover:bg-gray-200 transition flex items-center justify-center text-sm"
+                      className="w-6 h-6 rounded-full bg-muted text-muted-foreground font-bold hover:bg-muted/80 transition flex items-center justify-center text-sm"
                     >−</button>
                     <span className="w-5 text-center text-sm font-semibold text-foreground">{item.quantity}</span>
                     <button

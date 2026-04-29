@@ -856,7 +856,7 @@ export default function ChatWidget() {
               onFocus={() => clearTimeout(autoListenTimer.current)}
               placeholder={listening ? "Listening…" : "Type or tap 🎤 to speak"}
               disabled={listening}
-              className="flex-1 text-sm bg-muted rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-primary text-foreground placeholder-gray-400 disabled:opacity-60"
+              className="flex-1 text-sm bg-muted rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground disabled:opacity-60"
             />
             {voiceOk && (
               <button
@@ -888,7 +888,7 @@ export default function ChatWidget() {
         onClick={isOpen ? closeChat : openChat}
         className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 ${
           isOpen
-            ? "bg-gray-700 dark:bg-gray-600 scale-90"
+            ? "bg-muted scale-90"
             : "bg-gradient-to-br from-primary to-accent hover:scale-110"
         }`}
         aria-label="Chat with Priya"

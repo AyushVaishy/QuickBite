@@ -207,7 +207,7 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                               </svg>
                             )}
                           </div>
-                          <span className={`text-sm ${checked ? 'font-semibold text-foreground' : 'text-muted-foreground group-hover:text-gray-900 dark:group-hover:text-white'}`}>
+                          <span className={`text-sm ${checked ? 'font-semibold text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
                             {c}
                           </span>
                         </label>

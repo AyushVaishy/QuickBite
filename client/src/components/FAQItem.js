@@ -6,7 +6,7 @@ const FAQItem = ({ title, description }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-border dark:border-gray-800">
+    <div className="border-b border-border">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
