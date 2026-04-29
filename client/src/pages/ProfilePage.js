@@ -31,7 +31,7 @@ const STATUS_COLORS = {
   PLACED:           "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   CONFIRMED:        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
   PREPARING:        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-  OUT_FOR_DELIVERY: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+  OUT_FOR_DELIVERY: "bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary",
   DELIVERED:        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
   CANCELLED:        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
@@ -67,13 +67,13 @@ const ProfileTab = ({ user, onUpdated }) => {
   return (
     <div className="max-w-md">
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-20 h-20 rounded-full bg-orange-500 flex items-center justify-center text-white text-3xl font-bold shadow-md">
+        <div className="w-20 h-20 rounded-full bg-primary/50 flex items-center justify-center text-white text-3xl font-bold shadow-md">
           {(user?.name || "U").charAt(0).toUpperCase()}
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{user?.name}</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
-          <span className="inline-block mt-1 text-xs bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded-full font-medium">
+          <h2 className="text-xl font-bold text-foreground">{user?.name}</h2>
+          <p className="text-sm text-muted-foreground">{user?.email}</p>
+          <span className="inline-block mt-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
             {user?.role === "USER" ? "Customer" : user?.role?.replace("_", " ")}
           </span>
         </div>
@@ -82,44 +82,44 @@ const ProfileTab = ({ user, onUpdated }) => {
       <div className="space-y-4">
         {/* Name */}
         <div>
-          <label className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 block">Full Name</label>
+          <label className="text-sm font-semibold text-muted-foreground mb-1 block">Full Name</label>
           {editing ? (
             <input
               value={form.name}
               onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-              className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-orange-400 outline-none"
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-card text-foreground focus:ring-2 focus:ring-primary outline-none"
             />
           ) : (
-            <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <FaUserCircle className="text-gray-400" size={14} />
-              <span className="text-sm text-gray-800 dark:text-gray-100">{user?.name || "—"}</span>
+            <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-lg">
+              <FaUserCircle className="text-muted-foreground" size={14} />
+              <span className="text-sm text-foreground">{user?.name || "—"}</span>
             </div>
           )}
         </div>
 
         {/* Email (read-only) */}
         <div>
-          <label className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 block">Email</label>
-          <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <FaEnvelope className="text-gray-400" size={14} />
-            <span className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</span>
+          <label className="text-sm font-semibold text-muted-foreground mb-1 block">Email</label>
+          <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-lg">
+            <FaEnvelope className="text-muted-foreground" size={14} />
+            <span className="text-sm text-muted-foreground">{user?.email}</span>
           </div>
         </div>
 
         {/* Phone */}
         <div>
-          <label className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 block">Phone</label>
+          <label className="text-sm font-semibold text-muted-foreground mb-1 block">Phone</label>
           {editing ? (
             <input
               value={form.phone}
               onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
               placeholder="+91 XXXXX XXXXX"
-              className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-orange-400 outline-none"
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-card text-foreground focus:ring-2 focus:ring-primary outline-none"
             />
           ) : (
-            <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <FaPhone className="text-gray-400" size={14} />
-              <span className="text-sm text-gray-800 dark:text-gray-100">{user?.phone || "Not set"}</span>
+            <div className="flex items-center gap-2 px-3 py-2 bg-card rounded-lg">
+              <FaPhone className="text-muted-foreground" size={14} />
+              <span className="text-sm text-foreground">{user?.phone || "Not set"}</span>
             </div>
           )}
         </div>
@@ -130,19 +130,19 @@ const ProfileTab = ({ user, onUpdated }) => {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-2 px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold text-sm transition disabled:opacity-60"
+              className="flex items-center gap-2 px-5 py-2 bg-primary/50 hover:bg-primary-hover text-white rounded-lg font-semibold text-sm transition disabled:opacity-60"
             >
               <FiSave size={14} /> {saving ? "Saving…" : "Save Changes"}
             </button>
             <button onClick={() => { setEditing(false); setForm({ name: user?.name||"", phone: user?.phone||"" }); }}
-              className="flex items-center gap-2 px-5 py-2 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg font-semibold text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+              className="flex items-center gap-2 px-5 py-2 border border-border text-muted-foreground rounded-lg font-semibold text-sm hover:bg-muted transition">
               <FiX size={14} /> Cancel
             </button>
           </div>
         ) : (
           <button
             onClick={() => setEditing(true)}
-            className="flex items-center gap-2 px-5 py-2 border border-orange-400 text-orange-600 rounded-lg font-semibold text-sm hover:bg-orange-50 transition"
+            className="flex items-center gap-2 px-5 py-2 border border-primary text-primary rounded-lg font-semibold text-sm hover:bg-primary/5 transition"
           >
             <FiEdit2 size={14} /> Edit Profile
           </button>
@@ -164,13 +164,13 @@ const OrdersTab = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="text-gray-400 animate-pulse py-8">Loading orders…</div>;
+  if (loading) return <div className="text-muted-foreground animate-pulse py-8">Loading orders…</div>;
   if (orders.length === 0)
     return (
-      <div className="flex flex-col items-center py-16 text-gray-400">
-        <FaBoxOpen size={48} className="mb-4 text-gray-300" />
+      <div className="flex flex-col items-center py-16 text-muted-foreground">
+        <FaBoxOpen size={48} className="mb-4 text-muted-foreground" />
         <p className="font-medium">No orders yet</p>
-        <Link to="/home" className="mt-4 text-orange-500 hover:underline text-sm">Browse restaurants →</Link>
+        <Link to="/home" className="mt-4 text-primary hover:underline text-sm">Browse restaurants →</Link>
       </div>
     );
 
@@ -178,17 +178,17 @@ const OrdersTab = () => {
     <div className="space-y-3 max-w-2xl">
       {orders.map((order) => (
         <Link to={`/home/orders/${order.id}`} key={order.id}
-          className="block bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition overflow-hidden"
+          className="block bg-card rounded-xl border border-border shadow-sm hover:shadow-md transition overflow-hidden"
         >
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-3">
               <img
                 src={order.restaurant?.imageUrl || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=60&h=60&fit=crop"}
                 alt="" className="w-9 h-9 rounded-lg object-cover"
               />
               <div>
-                <p className="font-semibold text-sm text-gray-800 dark:text-gray-100">{order.restaurant?.name}</p>
-                <p className="text-xs text-gray-400">
+                <p className="font-semibold text-sm text-foreground">{order.restaurant?.name}</p>
+                <p className="text-xs text-muted-foreground">
                   {new Date(order.createdAt).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" })}
                 </p>
               </div>
@@ -198,10 +198,10 @@ const OrdersTab = () => {
             </span>
           </div>
           <div className="px-4 py-2.5 flex justify-between items-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
+            <p className="text-xs text-muted-foreground line-clamp-1">
               {order.items.map((i) => i.menuItem?.name || "Item").join(", ")}
             </p>
-            <span className="text-sm font-bold text-gray-800 dark:text-gray-100 flex-shrink-0 ml-3">
+            <span className="text-sm font-bold text-foreground flex-shrink-0 ml-3">
               ₹{Math.round(order.totalAmount / 100)}
             </span>
           </div>
@@ -217,11 +217,11 @@ const FavouritesTab = () => {
 
   if (favs.length === 0)
     return (
-      <div className="flex flex-col items-center py-16 text-gray-400">
-        <FaHeart size={48} className="mb-4 text-gray-300" />
+      <div className="flex flex-col items-center py-16 text-muted-foreground">
+        <FaHeart size={48} className="mb-4 text-muted-foreground" />
         <p className="font-medium">No favourites yet</p>
         <p className="text-sm mt-1">Tap the ❤️ on any restaurant to save it here.</p>
-        <Link to="/home" className="mt-4 text-orange-500 hover:underline text-sm">Explore restaurants →</Link>
+        <Link to="/home" className="mt-4 text-primary hover:underline text-sm">Explore restaurants →</Link>
       </div>
     );
 
@@ -246,22 +246,22 @@ const ReviewsTab = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="text-gray-400 animate-pulse py-8">Loading reviews…</div>;
+  if (loading) return <div className="text-muted-foreground animate-pulse py-8">Loading reviews…</div>;
 
   if (reviews.length === 0)
     return (
-      <div className="flex flex-col items-center py-16 text-gray-400">
-        <FaStar size={48} className="mb-4 text-gray-300" />
+      <div className="flex flex-col items-center py-16 text-muted-foreground">
+        <FaStar size={48} className="mb-4 text-muted-foreground" />
         <p className="font-medium">No reviews yet</p>
         <p className="text-sm mt-1">After ordering, you can rate restaurants from the Order Details page.</p>
-        <Link to="/home/orders" className="mt-4 text-orange-500 hover:underline text-sm">View my orders →</Link>
+        <Link to="/home/orders" className="mt-4 text-primary hover:underline text-sm">View my orders →</Link>
       </div>
     );
 
   return (
     <div className="space-y-4 max-w-2xl">
       {reviews.map((review) => (
-        <div key={review.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4 shadow-sm">
+        <div key={review.id} className="bg-card rounded-xl border border-border p-4 shadow-sm">
           <div className="flex items-start gap-3">
             {review.restaurant?.imageUrl && (
               <img
@@ -275,11 +275,11 @@ const ReviewsTab = () => {
               <div className="flex items-center justify-between mb-1">
                 <Link
                   to={`/home/restaurants/${review.restaurant?.id}`}
-                  className="font-semibold text-gray-800 dark:text-gray-100 hover:text-orange-500 transition-colors text-sm"
+                  className="font-semibold text-foreground hover:text-primary-hover transition-colors text-sm"
                 >
                   {review.restaurant?.name || "Restaurant"}
                 </Link>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-muted-foreground">
                   {new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                 </span>
               </div>
@@ -289,13 +289,13 @@ const ReviewsTab = () => {
                   <FaStar
                     key={star}
                     size={13}
-                    className={star <= review.rating ? "text-yellow-400" : "text-gray-200 dark:text-gray-600"}
+                    className={star <= review.rating ? "text-yellow-400" : "text-gray-200 dark:text-muted-foreground"}
                   />
                 ))}
-                <span className="ml-1 text-xs font-semibold text-gray-600 dark:text-gray-300">{review.rating}/5</span>
+                <span className="ml-1 text-xs font-semibold text-muted-foreground">{review.rating}/5</span>
               </div>
               {review.comment && (
-                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{review.comment}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
               )}
             </div>
           </div>
@@ -353,26 +353,26 @@ const AddressesTab = () => {
     }
   };
 
-  if (loading) return <div className="text-gray-400 animate-pulse py-8">Loading addresses…</div>;
+  if (loading) return <div className="text-muted-foreground animate-pulse py-8">Loading addresses…</div>;
 
   return (
     <div className="max-w-lg space-y-4">
       {/* Address cards */}
       {addresses.length === 0 && !showForm && (
-        <div className="flex flex-col items-center py-12 text-gray-400">
-          <FaMapMarkerAlt size={40} className="mb-3 text-gray-300" />
+        <div className="flex flex-col items-center py-12 text-muted-foreground">
+          <FaMapMarkerAlt size={40} className="mb-3 text-muted-foreground" />
           <p className="font-medium">No saved addresses</p>
         </div>
       )}
       {addresses.map((addr) => (
-        <div key={addr.id} className="flex items-start justify-between bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4 shadow-sm">
+        <div key={addr.id} className="flex items-start justify-between bg-card border border-border rounded-xl p-4 shadow-sm">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-500 flex-shrink-0">
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
               {LABEL_ICONS[addr.label] || <FaMapPin />}
             </div>
             <div>
-              <p className="font-semibold text-sm text-gray-800 dark:text-gray-100">{addr.label}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
+              <p className="font-semibold text-sm text-foreground">{addr.label}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                 {[addr.street, addr.city, addr.state, addr.pincode].filter(Boolean).join(", ")}
               </p>
             </div>
@@ -389,8 +389,8 @@ const AddressesTab = () => {
 
       {/* Add Address Form */}
       {showForm ? (
-        <form onSubmit={handleAdd} className="bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-800 rounded-xl p-4 space-y-3 shadow-sm">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm mb-2">Add New Address</h3>
+        <form onSubmit={handleAdd} className="bg-card border border-primary/30 dark:border-primary/30 rounded-xl p-4 space-y-3 shadow-sm">
+          <h3 className="font-semibold text-foreground text-sm mb-2">Add New Address</h3>
           {/* Label selector */}
           <div className="flex gap-2">
             {["Home", "Work", "Other"].map((lbl) => (
@@ -400,8 +400,8 @@ const AddressesTab = () => {
                 onClick={() => setForm((p) => ({ ...p, label: lbl }))}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
                   form.label === lbl
-                    ? "bg-orange-500 text-white border-orange-500"
-                    : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-orange-300"
+                    ? "bg-primary/50 text-white border-primary"
+                    : "border-border text-muted-foreground hover:border-primary/40"
                 }`}
               >
                 {lbl}
@@ -420,21 +420,21 @@ const AddressesTab = () => {
               placeholder={placeholder}
               value={form[field]}
               onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))}
-              className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-orange-400 outline-none"
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
             />
           ))}
           <div className="flex gap-2 pt-1">
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white py-2 rounded-lg font-semibold text-sm transition"
+              className="flex-1 bg-primary/50 hover:bg-primary-hover disabled:opacity-60 text-white py-2 rounded-lg font-semibold text-sm transition"
             >
               {saving ? "Saving…" : "Save Address"}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+              className="px-4 py-2 border border-border rounded-lg text-sm text-muted-foreground hover:bg-muted transition"
             >
               Cancel
             </button>
@@ -443,7 +443,7 @@ const AddressesTab = () => {
       ) : (
         <button
           onClick={() => setShowForm(true)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-orange-300 dark:border-orange-700 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/10 font-semibold text-sm transition"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-primary/40 dark:border-primary/30 text-primary hover:bg-primary/5 dark:hover:bg-primary/5 font-semibold text-sm transition"
         >
           <FaPlus size={12} /> Add New Address
         </button>
@@ -483,16 +483,16 @@ const SettingsTab = ({ onLogout }) => {
   return (
     <div className="max-w-md space-y-8">
       {/* Appearance */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5">
-        <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4">Appearance</h3>
+      <div className="bg-card rounded-xl border border-border p-5">
+        <h3 className="font-bold text-foreground mb-4">Appearance</h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {isDark ? <FaMoon className="text-indigo-400" /> : <FaSun className="text-yellow-400" />}
-            <span className="text-sm text-gray-700 dark:text-gray-300">{isDark ? "Dark Mode" : "Light Mode"}</span>
+            <span className="text-sm text-foreground dark:text-muted-foreground">{isDark ? "Dark Mode" : "Light Mode"}</span>
           </div>
           <button
             onClick={toggleTheme}
-            className={`w-12 h-6 rounded-full transition-colors relative ${isDark ? "bg-orange-500" : "bg-gray-300"}`}
+            className={`w-12 h-6 rounded-full transition-colors relative ${isDark ? "bg-primary/50" : "bg-gray-300"}`}
           >
             <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${isDark ? "translate-x-7" : "translate-x-1"}`} />
           </button>
@@ -500,9 +500,9 @@ const SettingsTab = ({ onLogout }) => {
       </div>
 
       {/* Change Password */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5">
-        <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <FaLock className="text-orange-500" size={14} /> Change Password
+      <div className="bg-card rounded-xl border border-border p-5">
+        <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+          <FaLock className="text-primary" size={14} /> Change Password
         </h3>
         <form onSubmit={handleChangePassword} className="space-y-3">
           {["currentPassword", "newPassword", "confirmPassword"].map((field) => (
@@ -512,13 +512,13 @@ const SettingsTab = ({ onLogout }) => {
               placeholder={field === "currentPassword" ? "Current password" : field === "newPassword" ? "New password (min 8 chars)" : "Confirm new password"}
               value={form[field]}
               onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))}
-              className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-orange-400 outline-none"
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
             />
           ))}
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white py-2 rounded-lg font-semibold text-sm transition"
+            className="w-full bg-primary/50 hover:bg-primary-hover disabled:opacity-60 text-white py-2 rounded-lg font-semibold text-sm transition"
           >
             {saving ? "Updating…" : "Update Password"}
           </button>
@@ -573,19 +573,19 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16 px-4">
+    <div className="min-h-screen bg-background pt-24 pb-16 px-4">
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-6">
 
         {/* ── Sidebar Nav ── */}
         <aside className="w-full md:w-56 flex-shrink-0">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="bg-card rounded-xl shadow border border-border overflow-hidden">
             {/* Avatar header */}
-            <div className="bg-gradient-to-br from-orange-500 to-red-500 px-4 py-5 text-center">
+            <div className="bg-gradient-to-br from-primary to-accent px-4 py-5 text-center">
               <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-2 shadow">
                 {(user?.name || "U").charAt(0).toUpperCase()}
               </div>
               <p className="text-white font-semibold text-sm truncate">{user?.name || "Loading…"}</p>
-              <p className="text-orange-100 text-xs truncate">{user?.email}</p>
+              <p className="text-primary/80 text-xs truncate">{user?.email}</p>
             </div>
 
             {/* Tabs */}
@@ -596,15 +596,15 @@ const ProfilePage = () => {
                   onClick={() => setTab(tab.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition mb-0.5 ${
                     activeTab === tab.id
-                      ? "bg-orange-500 text-white shadow-sm"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      ? "bg-primary/50 text-white shadow-sm"
+                      : "text-muted-foreground hover:bg-muted"
                   }`}
                 >
                   <span>{tab.icon}</span>
                   {tab.label}
                 </button>
               ))}
-              <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
+              <div className="border-t border-border mt-2 pt-2">
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition"
@@ -617,8 +617,8 @@ const ProfilePage = () => {
         </aside>
 
         {/* ── Content ── */}
-        <main className="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-6 min-h-[400px]">
-          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">
+        <main className="flex-1 bg-card rounded-xl shadow border border-border p-6 min-h-[400px]">
+          <h1 className="text-xl font-bold text-foreground mb-6">
             {TABS.find((t) => t.id === activeTab)?.label}
           </h1>
 

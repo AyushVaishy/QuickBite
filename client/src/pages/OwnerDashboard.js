@@ -16,7 +16,7 @@ import {
 const STATUS_COLORS = {
   PLACED: "bg-yellow-100 text-yellow-800",
   CONFIRMED: "bg-blue-100 text-blue-800",
-  PREPARING: "bg-orange-100 text-orange-800",
+  PREPARING: "bg-primary/10 text-primary",
   OUT_FOR_DELIVERY: "bg-purple-100 text-purple-800",
   DELIVERED: "bg-green-100 text-green-800",
   CANCELLED: "bg-red-100 text-red-800",
@@ -76,56 +76,56 @@ const DishModal = ({ open, onClose, onSave, initial }) => {
   };
 
   if (!open) return null;
-  const inp = (k) => `w-full px-3 py-2.5 border-2 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-gray-700 ${errors[k]?"border-red-400":"border-gray-200"}`;
+  const inp = (k) => `w-full px-3 py-2.5 border-2 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-foreground ${errors[k]?"border-red-400":"border-border"}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 max-h-screen overflow-y-auto">
+      <div className="relative bg-card rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 max-h-screen overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-gray-800">{initial ? "Edit Dish" : "Add New Dish"}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl"><FaTimes /></button>
+          <h3 className="text-lg font-bold text-foreground">{initial ? "Edit Dish" : "Add New Dish"}</h3>
+          <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground text-xl"><FaTimes /></button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Name *</label>
+            <label className="block text-sm font-semibold text-foreground mb-1">Name *</label>
             <input value={form.name} onChange={e=>set("name",e.target.value)} className={inp("name")} placeholder="Dish name" />
             {errors.name && <p className="text-red-500 text-xs mt-0.5">{errors.name}</p>}
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Price (₹) *</label>
+              <label className="block text-sm font-semibold text-foreground mb-1">Price (₹) *</label>
               <input type="number" value={form.price} onChange={e=>set("price",e.target.value)} className={inp("price")} placeholder="199" />
               {errors.price && <p className="text-red-500 text-xs mt-0.5">{errors.price}</p>}
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Category *</label>
+              <label className="block text-sm font-semibold text-foreground mb-1">Category *</label>
               <input value={form.category} onChange={e=>set("category",e.target.value)} className={inp("category")} placeholder="Starters" />
               {errors.category && <p className="text-red-500 text-xs mt-0.5">{errors.category}</p>}
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-semibold text-foreground mb-1">Description</label>
             <textarea value={form.description} onChange={e=>set("description",e.target.value)} className={inp("description")+" resize-none"} rows={2} placeholder="Short description…" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Image URL</label>
+            <label className="block text-sm font-semibold text-foreground mb-1">Image URL</label>
             <input value={form.imageUrl} onChange={e=>set("imageUrl",e.target.value)} className={inp("imageUrl")} placeholder="https://…" />
           </div>
           <div className="flex items-center gap-3">
-            <label className="text-sm font-semibold text-gray-700">Type</label>
+            <label className="text-sm font-semibold text-foreground">Type</label>
             <button type="button" onClick={()=>set("isVeg",true)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all ${form.isVeg?"bg-green-500 border-green-500 text-white":"border-gray-200 text-gray-600"}`}>
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all ${form.isVeg?"bg-green-500 border-green-500 text-white":"border-border text-muted-foreground"}`}>
               🟢 Veg
             </button>
             <button type="button" onClick={()=>set("isVeg",false)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all ${!form.isVeg?"bg-red-500 border-red-500 text-white":"border-gray-200 text-gray-600"}`}>
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all ${!form.isVeg?"bg-red-500 border-red-500 text-white":"border-border text-muted-foreground"}`}>
               🔴 Non-Veg
             </button>
           </div>
           <div className="flex gap-3 pt-2">
-            <button onClick={onClose} className="flex-1 py-2.5 border-2 border-gray-200 rounded-xl text-gray-600 font-semibold hover:bg-gray-50 transition-all">Cancel</button>
-            <button onClick={submit} className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition-all">
+            <button onClick={onClose} className="flex-1 py-2.5 border-2 border-border rounded-xl text-muted-foreground font-semibold hover:bg-muted transition-all">Cancel</button>
+            <button onClick={submit} className="flex-1 py-2.5 bg-primary/50 hover:bg-primary-hover text-white rounded-xl font-semibold transition-all">
               {initial ? "Save Changes" : "Add Dish"}
             </button>
           </div>
@@ -270,41 +270,41 @@ const OwnerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin h-10 w-10 border-4 border-orange-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Top bar */}
-      <div className="bg-white shadow-sm border-b px-4 sm:px-6 py-4 flex items-center justify-between">
+      <div className="bg-card shadow-sm border-b px-4 sm:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link to="/home" className="text-orange-500 hover:text-orange-600 flex items-center gap-1.5 text-sm font-medium">
+          <Link to="/home" className="text-primary hover:text-primary flex items-center gap-1.5 text-sm font-medium">
             <FaArrowLeft /> Home
           </Link>
-          <h1 className="text-xl font-bold text-gray-800">🍽️ Owner Dashboard</h1>
+          <h1 className="text-xl font-bold text-foreground">🍽️ Owner Dashboard</h1>
         </div>
         <div className="flex items-center gap-3">
           {restaurants.length > 1 && (
             <select value={selectedId || ""} onChange={(e) => handleSelectRestaurant(e.target.value)}
-              className="border-2 border-gray-200 rounded-lg px-3 py-1.5 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none">
+              className="border-2 border-border rounded-lg px-3 py-1.5 text-sm font-medium text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none">
               {restaurants.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
             </select>
           )}
-          <span className="text-gray-600 text-sm font-medium hidden sm:block">{user?.name}</span>
+          <span className="text-muted-foreground text-sm font-medium hidden sm:block">{user?.name}</span>
         </div>
       </div>
 
       {/* No restaurant notice */}
       {restaurants.length === 0 ? (
         <div className="max-w-lg mx-auto mt-20 text-center px-4">
-          <FaStore className="text-orange-300 text-6xl mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">No restaurant yet</h2>
-          <p className="text-gray-500 mb-6">Set up your restaurant to start managing orders.</p>
+          <FaStore className="text-primary/80 text-6xl mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-foreground mb-2">No restaurant yet</h2>
+          <p className="text-muted-foreground mb-6">Set up your restaurant to start managing orders.</p>
           <button onClick={() => navigate("/owner/onboard")}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-all">
+            className="bg-primary/50 hover:bg-primary-hover text-white px-6 py-3 rounded-xl font-semibold transition-all">
             Set Up Restaurant
           </button>
         </div>
@@ -312,14 +312,14 @@ const OwnerDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           {/* Selected restaurant header */}
           {selected && (
-            <div className="bg-white rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="bg-card rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 {selected.imageUrl && (
                   <img src={selected.imageUrl} alt={selected.name} className="w-12 h-12 rounded-lg object-cover" />
                 )}
                 <div>
-                  <h2 className="font-bold text-gray-800">{selected.name}</h2>
-                  <p className="text-sm text-gray-500">{selected.city} • {selected.cuisines?.join(", ")}</p>
+                  <h2 className="font-bold text-foreground">{selected.name}</h2>
+                  <p className="text-sm text-muted-foreground">{selected.city} • {selected.cuisines?.join(", ")}</p>
                 </div>
               </div>
               <button onClick={handleToggle} disabled={toggling}
@@ -333,11 +333,11 @@ const OwnerDashboard = () => {
           )}
 
           {/* Tabs */}
-          <div className="flex overflow-x-auto gap-1 mb-6 bg-white rounded-xl shadow-sm border p-1">
+          <div className="flex overflow-x-auto gap-1 mb-6 bg-card rounded-xl shadow-sm border p-1">
             {TABS.map((t) => (
               <button key={t.id} onClick={() => setActiveTab(t.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-sm whitespace-nowrap transition-all flex-1 justify-center ${
-                  activeTab === t.id ? "bg-orange-500 text-white" : "text-gray-500 hover:bg-gray-50"
+                  activeTab === t.id ? "bg-primary/50 text-white" : "text-muted-foreground hover:bg-muted"
                 }`}>
                 {t.icon} {t.label}
               </button>
@@ -348,7 +348,7 @@ const OwnerDashboard = () => {
           {activeTab === "overview" && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: "My Restaurants", value: restaurants.length, color: "from-orange-400 to-orange-600" },
+                { label: "My Restaurants", value: restaurants.length, color: "from-primary to-primary-hover" },
                 { label: "Total Orders", value: totalOrders, color: "from-blue-400 to-blue-600" },
                 { label: "Menu Items", value: selected?._count?.menuItems ?? "—", color: "from-purple-400 to-purple-600" },
                 { label: "Revenue (delivered)", value: fmt(revenue), color: "from-green-400 to-green-600" },
@@ -360,7 +360,7 @@ const OwnerDashboard = () => {
               ))}
               <div className="col-span-2 md:col-span-4">
                 <button onClick={() => navigate("/owner/onboard")}
-                  className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl font-semibold transition-all text-sm">
+                  className="flex items-center gap-2 bg-primary/50 hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-semibold transition-all text-sm">
                   <FaPlus /> Add Another Restaurant
                 </button>
               </div>
@@ -369,7 +369,7 @@ const OwnerDashboard = () => {
 
           {/* ── Restaurant Tab ── */}
           {activeTab === "restaurant" && editRestaurant && (
-            <div className="bg-white rounded-xl shadow-sm border p-6 space-y-5">
+            <div className="bg-card rounded-xl shadow-sm border p-6 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {[
                   { label:"Restaurant Name", key:"name", type:"text" },
@@ -384,21 +384,21 @@ const OwnerDashboard = () => {
                   { label:"Phone", key:"phone", type:"text" },
                 ].map(({ label, key, type }) => (
                   <div key={key}>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+                    <label className="block text-sm font-semibold text-foreground mb-1">{label}</label>
                     <input type={type} value={editRestaurant[key] || ""}
                       onChange={(e) => setEditRestaurant((p) => ({ ...p, [key]: e.target.value }))}
-                      className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-gray-700" />
+                      className="w-full px-3 py-2.5 border-2 border-border rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-foreground" />
                   </div>
                 ))}
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Description</label>
                   <textarea value={editRestaurant.description || ""}
                     onChange={(e) => setEditRestaurant((p) => ({ ...p, description: e.target.value }))}
-                    className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-gray-700 resize-none"
+                    className="w-full px-3 py-2.5 border-2 border-border rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all text-foreground resize-none"
                     rows={3} />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Cuisines</label>
+                  <label className="block text-sm font-semibold text-foreground mb-2">Cuisines</label>
                   <div className="flex flex-wrap gap-2">
                     {CUISINE_OPTIONS.map((c) => (
                       <button key={c} type="button"
@@ -410,17 +410,17 @@ const OwnerDashboard = () => {
                         }))}
                         className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all ${
                           (editRestaurant.cuisines || []).includes(c)
-                            ? "bg-orange-500 border-orange-500 text-white"
-                            : "border-gray-200 text-gray-600 hover:border-orange-300"
+                            ? "bg-primary/50 border-primary text-white"
+                            : "border-border text-muted-foreground hover:border-primary/40"
                         }`}
                       >{c}</button>
                     ))}
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end pt-2 border-t border-gray-100">
+              <div className="flex justify-end pt-2 border-t border-border">
                 <button onClick={handleSaveRestaurant} disabled={saving}
-                  className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-xl font-semibold transition-all disabled:opacity-60">
+                  className="flex items-center gap-2 bg-primary/50 hover:bg-primary-hover text-white px-6 py-2.5 rounded-xl font-semibold transition-all disabled:opacity-60">
                   {saving ? <><div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full" /> Saving…</> : <><FaSave /> Save Changes</>}
                 </button>
               </div>
@@ -431,49 +431,49 @@ const OwnerDashboard = () => {
           {activeTab === "menu" && (
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-gray-800 text-lg">{menuItems.length} Items</h3>
+                <h3 className="font-bold text-foreground text-lg">{menuItems.length} Items</h3>
                 <button onClick={() => setDishModal({ open: true, item: null })}
-                  className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl font-semibold transition-all text-sm">
+                  className="flex items-center gap-2 bg-primary/50 hover:bg-primary-hover text-white px-4 py-2.5 rounded-xl font-semibold transition-all text-sm">
                   <FaAdd /> Add Dish
                 </button>
               </div>
-              <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+              <div className="bg-card rounded-xl shadow-sm border overflow-hidden">
                 {menuItems.length === 0 ? (
-                  <div className="text-center py-12 text-gray-400">
+                  <div className="text-center py-12 text-muted-foreground">
                     <FaUtensils className="text-4xl mx-auto mb-3 opacity-40" />
                     <p>No menu items yet. Add your first dish!</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
-                      <thead className="bg-gray-50 border-b">
+                      <thead className="bg-muted border-b">
                         <tr>
                           {["Dish","Category","Price","Type","Status","Actions"].map(h=>(
-                            <th key={h} className="px-4 py-3 text-left font-semibold text-gray-600">{h}</th>
+                            <th key={h} className="px-4 py-3 text-left font-semibold text-muted-foreground">{h}</th>
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-100">
+                      <tbody className="divide-y divide-border">
                         {menuItems.map((item) => (
-                          <tr key={item.id} className="hover:bg-gray-50">
+                          <tr key={item.id} className="hover:bg-muted">
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-3">
                                 {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="w-8 h-8 rounded object-cover" />}
                                 <div>
-                                  <p className="font-semibold text-gray-800">{item.name}</p>
-                                  {item.description && <p className="text-xs text-gray-400 truncate max-w-[160px]">{item.description}</p>}
+                                  <p className="font-semibold text-foreground">{item.name}</p>
+                                  {item.description && <p className="text-xs text-muted-foreground truncate max-w-[160px]">{item.description}</p>}
                                 </div>
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-gray-600">{item.category}</td>
-                            <td className="px-4 py-3 font-semibold text-gray-800">{fmt(item.price)}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{item.category}</td>
+                            <td className="px-4 py-3 font-semibold text-foreground">{fmt(item.price)}</td>
                             <td className="px-4 py-3">
                               <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.isVeg ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                                 {item.isVeg ? "🟢 Veg" : "🔴 Non-Veg"}
                               </span>
                             </td>
                             <td className="px-4 py-3">
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.isAvailable ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"}`}>
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${item.isAvailable ? "bg-blue-100 text-blue-700" : "bg-muted text-muted-foreground"}`}>
                                 {item.isAvailable ? "Available" : "Hidden"}
                               </span>
                             </td>
@@ -498,30 +498,30 @@ const OwnerDashboard = () => {
           {/* ── Orders Tab ── */}
           {activeTab === "orders" && (
             <div>
-              <h3 className="font-bold text-gray-800 text-lg mb-4">{orders.length} Orders</h3>
+              <h3 className="font-bold text-foreground text-lg mb-4">{orders.length} Orders</h3>
               <div className="space-y-3">
                 {orders.length === 0 ? (
-                  <div className="bg-white rounded-xl shadow-sm border text-center py-12 text-gray-400">
+                  <div className="bg-card rounded-xl shadow-sm border text-center py-12 text-muted-foreground">
                     <FaClipboardList className="text-4xl mx-auto mb-3 opacity-40" />
                     <p>No orders yet for this restaurant.</p>
                   </div>
                 ) : orders.map((order) => {
                   const nextStatuses = ALLOWED_TRANSITIONS[order.status] || [];
                   return (
-                    <div key={order.id} className="bg-white rounded-xl shadow-sm border p-4">
+                    <div key={order.id} className="bg-card rounded-xl shadow-sm border p-4">
                       <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                         <div>
-                          <p className="font-semibold text-gray-800">#{order.id.slice(-6).toUpperCase()}</p>
-                          <p className="text-sm text-gray-500">{order.user?.name} • {new Date(order.createdAt).toLocaleDateString("en-IN")}</p>
+                          <p className="font-semibold text-foreground">#{order.id.slice(-6).toUpperCase()}</p>
+                          <p className="text-sm text-muted-foreground">{order.user?.name} • {new Date(order.createdAt).toLocaleDateString("en-IN")}</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[order.status] || "bg-gray-100 text-gray-700"}`}>
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[order.status] || "bg-muted text-foreground"}`}>
                             {order.status}
                           </span>
-                          <p className="font-bold text-gray-800">{fmt(order.totalAmount)}</p>
+                          <p className="font-bold text-foreground">{fmt(order.totalAmount)}</p>
                         </div>
                       </div>
-                      <div className="text-sm text-gray-600 mb-3">
+                      <div className="text-sm text-muted-foreground mb-3">
                         {order.items?.map((i) => `${i.menuItem?.name || "Item"} ×${i.quantity}`).join(", ")}
                       </div>
                       {nextStatuses.length > 0 && (
@@ -530,7 +530,7 @@ const OwnerDashboard = () => {
                             <button key={s} onClick={() => handleStatusUpdate(order.id, s)}
                               disabled={statusUpdating === order.id}
                               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-2 ${
-                                s === "CANCELLED" ? "border-red-300 text-red-600 hover:bg-red-50" : "border-orange-300 text-orange-600 hover:bg-orange-50"
+                                s === "CANCELLED" ? "border-red-300 text-red-600 hover:bg-red-50" : "border-primary/40 text-primary hover:bg-primary/5"
                               } disabled:opacity-50`}>
                               {statusUpdating === order.id ? "…" : `→ ${s}`}
                             </button>

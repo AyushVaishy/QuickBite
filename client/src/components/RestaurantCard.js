@@ -69,7 +69,7 @@ const RestaurantCard = ({ resData }) => {
 
   return (
     <Link to={`/home/restaurants/${id}`} className="block">
-      <div className="m-2 bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="m-2 bg-card rounded-xl shadow hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-border overflow-hidden">
         {/* Image */}
         <div className="relative w-full h-[160px] overflow-hidden">
           <img
@@ -87,7 +87,7 @@ const RestaurantCard = ({ resData }) => {
           )}
           {/* Offer badge */}
           {isOpen !== false && offer && (
-            <span className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+            <span className="absolute top-2 left-2 bg-primary/50 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
               🏷 {offer}
             </span>
           )}
@@ -97,36 +97,36 @@ const RestaurantCard = ({ resData }) => {
           </span>
           {/* Closes soon pill */}
           {closingStatus.isOpen && closingStatus.closingIn !== null && closingStatus.closingIn < 60 && (
-            <span className="absolute bottom-2 right-2 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+            <span className="absolute bottom-2 right-2 bg-primary/50 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
               Closes in {closingStatus.closingIn}m
             </span>
           )}
           {/* Favourite heart button */}
           <button
             onClick={handleFavClick}
-            className="absolute top-2 right-2 w-8 h-8 bg-white/90 dark:bg-gray-800/90 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform z-10"
+            className="absolute top-2 right-2 w-8 h-8 bg-card/90 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform z-10"
             aria-label={isFav ? "Remove from favourites" : "Add to favourites"}
           >
             {isFav
               ? <FaHeart className="text-red-500" size={14} />
-              : <FaRegHeart className="text-gray-500" size={14} />
+              : <FaRegHeart className="text-muted-foreground" size={14} />
             }
           </button>
         </div>
 
         {/* Info */}
         <div className="p-3">
-          <h3 className="font-bold text-base text-gray-800 dark:text-gray-100 line-clamp-1 mb-1">{name}</h3>
+          <h3 className="font-bold text-base text-foreground line-clamp-1 mb-1">{name}</h3>
 
           {/* Cuisine chips */}
           <div className="flex flex-wrap gap-1 mb-2">
             {displayCuisines.map((c) => (
-              <span key={c} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded">
+              <span key={c} className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
                 {c}
               </span>
             ))}
             {extraCount > 0 && (
-              <span className="text-xs text-gray-400 dark:text-gray-500">+{extraCount} more</span>
+              <span className="text-xs text-muted-foreground">+{extraCount} more</span>
             )}
           </div>
 
@@ -136,7 +136,7 @@ const RestaurantCard = ({ resData }) => {
               <FaStar className="text-green-600 dark:text-green-400" size={11} />
               {avgRating || "New"}
             </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-muted-foreground">
               ₹{Math.round(costForTwo / 100)} for two
             </span>
           </div>

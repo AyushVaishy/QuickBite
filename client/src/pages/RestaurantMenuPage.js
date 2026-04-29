@@ -79,11 +79,11 @@ const RestaurantMenuPage = () => {
   if (loading) return <ShimmerMenu />;
   if (error)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 pt-24">
+      <div className="min-h-screen flex items-center justify-center bg-background pt-24">
         <div className="text-center">
           <div className="text-6xl mb-4">😞</div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Failed to load menu</h2>
-          <p className="text-gray-600 dark:text-gray-300">{error}</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Failed to load menu</h2>
+          <p className="text-muted-foreground">{error}</p>
         </div>
       </div>
     );
@@ -95,20 +95,20 @@ const RestaurantMenuPage = () => {
   const closingStatus = getClosingStatus(restaurant.openingTime, restaurant.closingTime);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* ── Sticky mini-header (appears on scroll) ── */}
       {scrolled && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 py-2 flex items-center justify-between">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border shadow-sm px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate(-1)} className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
-              <FaArrowLeft className="text-gray-600 dark:text-gray-300" />
+            <button onClick={() => navigate(-1)} className="p-1 rounded-full hover:bg-muted">
+              <FaArrowLeft className="text-muted-foreground" />
             </button>
-            <span className="font-bold text-gray-800 dark:text-gray-100 truncate max-w-[200px]">{restaurant.name}</span>
+            <span className="font-bold text-foreground truncate max-w-[200px]">{restaurant.name}</span>
           </div>
           {cartCount > 0 && (
             <Link
               to="/home/cart"
-              className="flex items-center gap-2 bg-orange-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-orange-600 transition"
+              className="flex items-center gap-2 bg-primary/50 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary-hover transition"
             >
               <MdShoppingCart size={16} />
               {cartCount} item{cartCount > 1 ? "s" : ""}
@@ -170,17 +170,17 @@ const RestaurantMenuPage = () => {
 
       {/* ── Closes Soon Banner ── */}
       {closingStatus.isOpen && closingStatus.closingIn !== null && closingStatus.closingIn < 60 && (
-        <div className="bg-orange-100 dark:bg-orange-900/30 border-l-4 border-orange-500 px-4 py-2.5 text-orange-800 dark:text-orange-300 text-sm font-semibold flex items-center gap-2">
+        <div className="bg-primary/10 border-l-4 border-primary px-4 py-2.5 text-primary text-sm font-semibold flex items-center gap-2">
           ⚠️ Closes in {closingStatus.closingIn} mins — order quickly!
         </div>
       )}
 
       {/* ── Menu ── */}
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-6">
           Menu
           {categories.length > 0 && (
-            <span className="ml-2 text-sm font-normal text-gray-400">
+            <span className="ml-2 text-sm font-normal text-muted-foreground">
               ({categories.reduce((s, [, items]) => s + items.length, 0)} items)
             </span>
           )}
@@ -189,16 +189,16 @@ const RestaurantMenuPage = () => {
         {/* Search + Veg filter */}
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <div className="relative flex-1 min-w-[200px]">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={13} />
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={13} />
             <input
               type="text"
               placeholder="Search in menu…"
               value={menuSearch}
               onChange={e => setMenuSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full pl-9 pr-4 py-2.5 border border-border rounded-xl bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
             {menuSearch && (
-              <button onClick={() => setMenuSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">✕</button>
+              <button onClick={() => setMenuSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground">✕</button>
             )}
           </div>
           <button
@@ -206,7 +206,7 @@ const RestaurantMenuPage = () => {
             className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border text-sm font-semibold transition-all flex-shrink-0 ${
               vegOnly
                 ? 'bg-green-600 border-green-600 text-white'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-green-400'
+                : 'bg-card border-border text-foreground hover:border-green-400'
             }`}
           >
             <span className={`w-3 h-3 rounded-sm border-2 flex items-center justify-center ${vegOnly ? 'border-white' : 'border-green-600'}`}>
@@ -215,14 +215,14 @@ const RestaurantMenuPage = () => {
             Veg Only
           </button>
           {(menuSearch || vegOnly) && (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {filteredCategories.reduce((s, [, items]) => s + items.length, 0)} items found
             </span>
           )}
         </div>
 
         {categories.length === 0 ? (
-          <p className="text-center text-gray-500 dark:text-gray-400 py-12">No menu items available.</p>
+          <p className="text-center text-muted-foreground py-12">No menu items available.</p>
         ) : (
           <div className="space-y-2">
             {filteredCategories.map(([title, items]) => (
@@ -235,8 +235,8 @@ const RestaurantMenuPage = () => {
             ))}
             {filteredCategories.length === 0 && (menuSearch || vegOnly) && (
               <div className="text-center py-12">
-                <p className="text-gray-500 dark:text-gray-400 mb-2">No items match your search</p>
-                <button onClick={() => { setMenuSearch(''); setVegOnly(false); }} className="text-orange-500 hover:underline text-sm">Clear filters</button>
+                <p className="text-muted-foreground mb-2">No items match your search</p>
+                <button onClick={() => { setMenuSearch(''); setVegOnly(false); }} className="text-primary hover:underline text-sm">Clear filters</button>
               </div>
             )}
           </div>
@@ -246,22 +246,22 @@ const RestaurantMenuPage = () => {
       {/* ── Reviews Section ── */}
       {restaurant.reviews && restaurant.reviews.length > 0 && (
         <div className="max-w-3xl mx-auto px-4 pb-8">
-          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
             <FaStar className="text-yellow-400" size={18} />
             Reviews
-            <span className="text-sm font-normal text-gray-400">({restaurant.reviews.length})</span>
+            <span className="text-sm font-normal text-muted-foreground">({restaurant.reviews.length})</span>
           </h2>
 
           {/* Rating breakdown */}
-          <div className="flex items-center gap-4 mb-5 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-4 mb-5 p-4 bg-card rounded-xl border border-border">
             <div className="text-center flex-shrink-0">
-              <p className="text-4xl font-extrabold text-gray-800 dark:text-gray-100">{restaurant.avgRating || "—"}</p>
+              <p className="text-4xl font-extrabold text-foreground">{restaurant.avgRating || "—"}</p>
               <div className="flex gap-0.5 justify-center mt-1">
                 {[1,2,3,4,5].map((n) => (
-                  <FaStar key={n} size={12} className={n <= Math.round(restaurant.avgRating || 0) ? "text-yellow-400" : "text-gray-300"} />
+                  <FaStar key={n} size={12} className={n <= Math.round(restaurant.avgRating || 0) ? "text-yellow-400" : "text-muted-foreground"} />
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-1">{restaurant.totalRatings || restaurant.reviews.length} ratings</p>
+              <p className="text-xs text-muted-foreground mt-1">{restaurant.totalRatings || restaurant.reviews.length} ratings</p>
             </div>
             <div className="flex-1 space-y-1">
               {[5,4,3,2,1].map((star) => {
@@ -269,12 +269,12 @@ const RestaurantMenuPage = () => {
                 const pct = restaurant.reviews.length ? (count / restaurant.reviews.length) * 100 : 0;
                 return (
                   <div key={star} className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 w-3">{star}</span>
+                    <span className="text-xs text-muted-foreground w-3">{star}</span>
                     <FaStar size={10} className="text-yellow-400 flex-shrink-0" />
-                    <div className="flex-1 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                       <div className="h-full bg-yellow-400 rounded-full transition-all" style={{ width: `${pct}%` }} />
                     </div>
-                    <span className="text-xs text-gray-400 w-4">{count}</span>
+                    <span className="text-xs text-muted-foreground w-4">{count}</span>
                   </div>
                 );
               })}
@@ -284,13 +284,13 @@ const RestaurantMenuPage = () => {
           {/* Review list */}
           <div className="space-y-3">
             {restaurant.reviews.slice(0, 5).map((review, idx) => (
-              <div key={idx} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4">
+              <div key={idx} className="bg-card rounded-xl border border-border p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-sm">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                       {(review.user?.name || "U").charAt(0).toUpperCase()}
                     </div>
-                    <span className="font-semibold text-sm text-gray-800 dark:text-gray-100">
+                    <span className="font-semibold text-sm text-foreground">
                       {review.user?.name || "Customer"}
                     </span>
                   </div>
@@ -299,9 +299,9 @@ const RestaurantMenuPage = () => {
                   </div>
                 </div>
                 {review.comment && (
-                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{review.comment}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
                 )}
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   {new Date(review.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                 </p>
               </div>
@@ -315,7 +315,7 @@ const RestaurantMenuPage = () => {
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
           <Link
             to="/home/cart"
-            className="flex items-center gap-3 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full shadow-xl font-semibold text-sm transition"
+            className="flex items-center gap-3 bg-primary/50 hover:bg-primary-hover text-white px-6 py-3 rounded-full shadow-xl font-semibold text-sm transition"
           >
             <MdShoppingCart size={18} />
             {cartCount} item{cartCount > 1 ? "s" : ""} in cart · View Cart →

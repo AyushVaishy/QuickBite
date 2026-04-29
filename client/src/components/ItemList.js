@@ -54,7 +54,7 @@ const ItemList = ({ items, restaurantName }) => {
 
   return (
     <>
-    <div className="divide-y divide-gray-100 dark:divide-gray-700">
+    <div className="divide-y divide-border">
       {items.map((item) => {
         const qty = getCartQty(item.id);
         return (
@@ -66,7 +66,7 @@ const ItemList = ({ items, restaurantName }) => {
             <div className="flex-1 min-w-0">
               {/* Bestseller badge */}
               {isBestseller(item.id) && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20 px-2 py-0.5 rounded-full mb-1">
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full mb-1">
                   🔥 Bestseller
                 </span>
               )}
@@ -83,21 +83,21 @@ const ItemList = ({ items, restaurantName }) => {
                     }`}
                   />
                 </span>
-                <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm sm:text-base line-clamp-1">
+                <h3 className="font-semibold text-foreground text-sm sm:text-base line-clamp-1">
                   {item.name}
                 </h3>
               </div>
-              <p className="text-orange-500 font-bold text-sm mb-1">
+              <p className="text-primary font-bold text-sm mb-1">
                 ₹{(item.price / 100).toFixed(0)}
               </p>
               {item.description && (
-                <p className="text-gray-500 dark:text-gray-400 text-xs line-clamp-2">{item.description}</p>
+                <p className="text-muted-foreground text-xs line-clamp-2">{item.description}</p>
               )}
             </div>
 
             {/* Right: image + add/qty control */}
             <div className="flex flex-col items-center flex-shrink-0 relative">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden shadow-md bg-gray-100 dark:bg-gray-700">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden shadow-md bg-muted">
                 {item.imageUrl ? (
                   <img
                     src={item.imageUrl}
@@ -114,7 +114,7 @@ const ItemList = ({ items, restaurantName }) => {
               {qty === 0 ? (
                 <button
                   onClick={() => setCustomizingItem(item)}
-                  className="absolute -bottom-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-green-600 dark:text-green-400 font-bold text-sm px-5 py-1 rounded-lg shadow hover:bg-green-50 dark:hover:bg-green-900/20 transition"
+                  className="absolute -bottom-3 bg-card border border-border text-green-600 dark:text-green-400 font-bold text-sm px-5 py-1 rounded-lg shadow hover:bg-green-50 dark:hover:bg-green-900/20 transition"
                 >
                   ADD
                 </button>

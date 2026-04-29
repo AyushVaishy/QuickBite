@@ -6,23 +6,23 @@ const RestaurantCategory = ({ title, items, restaurantName }) => {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-800">
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
       <button
-        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-gray-750 transition"
+        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted dark:hover:bg-gray-750 transition"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-100">
+        <span className="font-bold text-base sm:text-lg text-foreground">
           {title}
-          <span className="ml-2 text-sm font-normal text-gray-400">({items.length})</span>
+          <span className="ml-2 text-sm font-normal text-muted-foreground">({items.length})</span>
         </span>
         {open ? (
-          <FaChevronUp className="text-gray-400 flex-shrink-0" size={14} />
+          <FaChevronUp className="text-muted-foreground flex-shrink-0" size={14} />
         ) : (
-          <FaChevronDown className="text-gray-400 flex-shrink-0" size={14} />
+          <FaChevronDown className="text-muted-foreground flex-shrink-0" size={14} />
         )}
       </button>
       {open && (
-        <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-2">
+        <div className="border-t border-border px-4 py-2">
           <ItemList items={items} restaurantName={restaurantName} />
         </div>
       )}

@@ -34,11 +34,11 @@ const ArrowBtn = ({ direction, onClick, className = "" }) => (
   <button
     onClick={onClick}
     aria-label={`Scroll ${direction}`}
-    className={`w-9 h-9 sm:w-10 sm:h-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center shadow hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-all ${className}`}
+    className={`w-9 h-9 sm:w-10 sm:h-10 bg-card border border-border rounded-full flex items-center justify-center shadow hover:shadow-md hover:bg-muted transition-all ${className}`}
   >
     {direction === "left"
-      ? <FaChevronLeft className="text-gray-600 dark:text-gray-300" size={12} />
-      : <FaChevronRight className="text-gray-600 dark:text-gray-300" size={12} />}
+      ? <FaChevronLeft className="text-muted-foreground" size={12} />
+      : <FaChevronRight className="text-muted-foreground" size={12} />}
   </button>
 );
 
@@ -76,7 +76,7 @@ const useCarousel = () => {
 };
 
 // ── Section wrapper (consistent padding + heading) ────────────────────────
-const Section = ({ bg = "bg-white dark:bg-gray-900", children }) => (
+const Section = ({ bg = "bg-background", children }) => (
   <div className={`${bg} py-8 sm:py-10`}>
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">{children}</div>
   </div>
@@ -87,11 +87,11 @@ const SectionHeader = ({ title, subtitle, left, right }) => (
     <div>
       {left || (
         <>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{subtitle}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
           )}
         </>
       )}
@@ -109,7 +109,7 @@ const BrandCard = ({ restaurant }) => {
       onClick={() => navigate(`/home/restaurants/${restaurant.id}`)}
       className="flex flex-col items-center min-w-[110px] sm:min-w-[130px] group focus:outline-none"
     >
-      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden shadow-md mb-2.5 group-hover:shadow-xl transition-all duration-300 ring-2 ring-transparent group-hover:ring-orange-400">
+      <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden shadow-md mb-2.5 group-hover:shadow-xl transition-all duration-300 ring-2 ring-transparent group-hover:ring-primary/40">
         <img
           src={restaurant.imageUrl || PLACEHOLDER}
           alt={restaurant.name}
@@ -120,10 +120,10 @@ const BrandCard = ({ restaurant }) => {
         {/* subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
-      <p className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-100 text-center leading-tight line-clamp-1 group-hover:text-orange-500 transition-colors w-full px-1">
+      <p className="text-xs sm:text-sm font-semibold text-foreground text-center leading-tight line-clamp-1 group-hover:text-primary transition-colors w-full px-1">
         {restaurant.name}
       </p>
-      <p className="flex items-center gap-0.5 text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+      <p className="flex items-center gap-0.5 text-xs text-muted-foreground mt-0.5">
         <FaClock size={9} />
         {restaurant.deliveryTime ?? 30} min
       </p>
@@ -133,9 +133,9 @@ const BrandCard = ({ restaurant }) => {
 
 // ── Active filter tag pill (appears in the filter bar) ────────────────────
 const FilterTag = ({ label, onRemove }) => (
-  <span className="flex items-center gap-1 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
+  <span className="flex items-center gap-1 text-xs bg-primary/10 text-primary border border-primary/30 dark:border-primary/30 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
     {label}
-    <button onClick={onRemove} aria-label={`Remove ${label} filter`} className="ml-0.5 hover:text-orange-900 dark:hover:text-orange-100">
+    <button onClick={onRemove} aria-label={`Remove ${label} filter`} className="ml-0.5 hover:text-primary dark:hover:text-primary/80">
       ✕
     </button>
   </span>
@@ -328,15 +328,15 @@ const HomePage = () => {
           alt="Service not available"
           className="w-56 h-56 object-contain opacity-90 mb-6"
         />
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           We'll be there soon!
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 max-w-xl text-center mb-6">
+        <p className="text-muted-foreground max-w-xl text-center mb-6">
           {error || "Cravon is not serving this location yet. We're expanding rapidly and hope to serve your area soon."}
         </p>
         <button
           onClick={() => window.dispatchEvent(new Event("openLocationSidebar"))}
-          className="px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition-colors shadow"
+          className="px-5 py-3 bg-primary/50 hover:bg-primary-hover text-white rounded-xl font-semibold transition-colors shadow"
         >
           Choose a different location
         </button>
@@ -349,10 +349,10 @@ const HomePage = () => {
 
   // ── Render ──────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-[70px]">
+    <div className="min-h-screen bg-background pt-[70px]">
 
       {/* ── 1. WHAT'S ON YOUR MIND ───────────────────────────── */}
-      <Section bg="bg-white dark:bg-gray-900">
+      <Section bg="bg-background">
         <SectionHeader
           title={user ? `${user.name.split(" ")[0]}, what's on your mind?` : "What's on your mind?"}
           subtitle="Tap a category to explore"
@@ -374,7 +374,7 @@ const HomePage = () => {
               className="flex flex-col items-center min-w-[90px] sm:min-w-[110px] group focus:outline-none"
             >
               {/* Circular image */}
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-md mb-2.5 ring-2 ring-transparent group-hover:ring-orange-400 group-hover:shadow-lg transition-all duration-300">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-md mb-2.5 ring-2 ring-transparent group-hover:ring-primary/40 group-hover:shadow-lg transition-all duration-300">
                 <img
                   src={cat.imageUrl}
                   alt={cat.name}
@@ -383,7 +383,7 @@ const HomePage = () => {
                   onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop"; }}
                 />
               </div>
-              <span className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 text-center group-hover:text-orange-500 transition-colors leading-tight">
+              <span className="text-xs sm:text-sm font-semibold text-foreground text-center group-hover:text-primary transition-colors leading-tight">
                 {cat.name}
               </span>
             </button>
@@ -391,10 +391,10 @@ const HomePage = () => {
         </div>
       </Section>
 
-      <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
+      <div className="w-full h-px bg-section" />
 
       {/* ── 2. TOP BRANDS FOR YOU ─────────────────────────────── */}
-      <Section bg="bg-white dark:bg-gray-900">
+      <Section bg="bg-background">
         <SectionHeader
           title="Top brands for you"
           subtitle="Most loved restaurants near you"
@@ -419,10 +419,10 @@ const HomePage = () => {
         )}
       </Section>
 
-      <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
+      <div className="w-full h-px bg-section" />
 
       {/* ── 3. TOP RESTAURANTS CAROUSEL ──────────────────────── */}
-      <Section bg="bg-white dark:bg-gray-900">
+      <Section bg="bg-background">
         <SectionHeader
           title={`Top restaurants in ${locationName}`}
           subtitle="Best rated places to order from"
@@ -450,12 +450,12 @@ const HomePage = () => {
       </Section>
 
       {/* ── DIVIDER ───────────────────────────────────────────── */}
-      <div className="w-full h-2 bg-gray-100 dark:bg-gray-800" />
+      <div className="w-full h-2 bg-section" />
 
       {/* ── 3.5. RECENTLY VIEWED ──────────────────────────────── */}
       {recentlyViewed.length > 0 && (
         <>
-          <Section bg="bg-white dark:bg-gray-900">
+          <Section bg="bg-background">
             <SectionHeader
               title="Your recently viewed"
               subtitle="Pick up where you left off"
@@ -477,22 +477,22 @@ const HomePage = () => {
               ))}
             </div>
           </Section>
-          <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
+          <div className="w-full h-px bg-section" />
         </>
       )}
 
       {/* ── 4. ALL RESTAURANTS + FILTER BAR ──────────────────── */}
-      <Section bg="bg-gray-50 dark:bg-gray-950">
+      <Section bg="bg-background">
         {/* Section heading */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
           <div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
               All Restaurants Near Me
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               {total} restaurants in {locationName}
               {anyFilterActive && (
-                <span className="ml-2 text-orange-500 font-medium">
+                <span className="ml-2 text-primary font-medium">
                   · filtered from {fetchedRestaurants.length} loaded
                 </span>
               )}
@@ -508,7 +508,7 @@ const HomePage = () => {
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-sm font-semibold whitespace-nowrap transition-all ${
               filters.vegOnly
                 ? "bg-green-600 border-green-600 text-white shadow-md"
-                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-green-400"
+                : "bg-card border-border text-foreground hover:border-green-400"
             }`}
           >
             <FaLeaf className={filters.vegOnly ? "text-white" : "text-green-500"} size={11} />
@@ -520,14 +520,14 @@ const HomePage = () => {
             onClick={() => setFilterModalOpen(true)}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-sm font-semibold whitespace-nowrap transition-all ${
               modalFilterCount > 0
-                ? "bg-orange-500 border-orange-500 text-white shadow-md"
-                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-orange-400"
+                ? "bg-primary/50 border-primary text-white shadow-md"
+                : "bg-card border-border text-foreground hover:border-primary"
             }`}
           >
             <FaSlidersH size={13} />
             Filters
             {modalFilterCount > 0 && (
-              <span className="ml-0.5 bg-white text-orange-600 rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
+              <span className="ml-0.5 bg-white text-primary rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
                 {modalFilterCount}
               </span>
             )}
@@ -572,7 +572,7 @@ const HomePage = () => {
           {anyFilterActive && (
             <button
               onClick={handleClearAllFilters}
-              className="text-sm text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline underline-offset-2 font-medium whitespace-nowrap"
+              className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2 font-medium whitespace-nowrap"
             >
               Clear all
             </button>
@@ -583,15 +583,15 @@ const HomePage = () => {
         {filteredRestaurants.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">😕</div>
-            <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <p className="text-lg font-semibold text-foreground dark:text-muted-foreground mb-2">
               No restaurants match your filters
             </p>
-            <p className="text-sm text-gray-400 mb-5">
+            <p className="text-sm text-muted-foreground mb-5">
               Try adjusting or clearing filters to see more options.
             </p>
             <button
               onClick={handleClearAllFilters}
-              className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-semibold transition shadow text-sm"
+              className="px-6 py-2.5 bg-primary/50 hover:bg-primary-hover text-white rounded-full font-semibold transition shadow text-sm"
             >
               Clear all filters
             </button>
@@ -610,7 +610,7 @@ const HomePage = () => {
                 <button
                   onClick={() => fetchPage(page + 1)}
                   disabled={loadingMore}
-                  className="px-8 py-3 bg-white dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-500 text-gray-800 dark:text-gray-200 font-semibold rounded-full hover:bg-gray-900 hover:text-white dark:hover:bg-gray-200 dark:hover:text-gray-900 transition-all disabled:opacity-50 text-sm"
+                  className="px-8 py-3 bg-card border-2 border-gray-800 dark:border-gray-500 text-foreground font-semibold rounded-full hover:bg-gray-900 hover:text-white dark:hover:bg-gray-200 dark:hover:text-gray-900 transition-all disabled:opacity-50 text-sm"
                 >
                   {loadingMore ? (
                     <span className="flex items-center gap-2">

@@ -117,14 +117,14 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
       onClick={onClose}
     >
       <div
-        className="relative bg-white dark:bg-gray-800 w-full max-w-lg rounded-t-2xl p-5 pb-8 animate-slide-up max-h-[90vh] overflow-y-auto"
+        className="relative bg-card w-full max-w-lg rounded-t-2xl p-5 pb-8 animate-slide-up max-h-[90vh] overflow-y-auto"
         style={{ transform: "translateY(0)", transition: "transform 0.3s ease-out" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-muted-foreground dark:hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition"
         >
           ×
         </button>
@@ -148,11 +148,11 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${item.isVeg ? "bg-green-600" : "bg-red-500"}`} />
               </span>
-              <h2 className="font-bold text-gray-800 dark:text-gray-100 text-base line-clamp-1">{item.name}</h2>
+              <h2 className="font-bold text-foreground text-base line-clamp-1">{item.name}</h2>
             </div>
-            <p className="text-orange-500 font-bold text-sm">₹{(item.price / 100).toFixed(0)}</p>
+            <p className="text-primary font-bold text-sm">₹{(item.price / 100).toFixed(0)}</p>
             {restaurantName && (
-              <p className="text-xs text-gray-400 mt-0.5">{restaurantName}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{restaurantName}</p>
             )}
           </div>
         </div>
@@ -161,11 +161,11 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
         {groups.length > 0 && (
           <div className="space-y-4 mb-5 max-h-64 overflow-y-auto">
             {groups.map((group) => (
-              <div key={group.id} className="border border-gray-100 dark:border-gray-700 rounded-xl p-3">
+              <div key={group.id} className="border border-border rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-semibold text-gray-700 dark:text-gray-200 text-sm">{group.title}</h3>
+                  <h3 className="font-semibold text-foreground text-sm">{group.title}</h3>
                   {group.required && (
-                    <span className="text-[10px] font-bold text-white bg-orange-500 px-1.5 py-0.5 rounded-full">Required</span>
+                    <span className="text-[10px] font-bold text-white bg-primary/50 px-1.5 py-0.5 rounded-full">Required</span>
                   )}
                 </div>
 
@@ -180,24 +180,24 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
                           onClick={() => handleRadioChange(group.id, opt.id)}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm transition ${
                             selected
-                              ? "border-orange-400 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
+                              ? "border-primary bg-primary/5 dark:bg-primary/10"
+                              : "border-border hover:border-border dark:hover:border-gray-500"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <span
                               className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                selected ? "border-orange-500" : "border-gray-300 dark:border-gray-500"
+                                selected ? "border-primary" : "border-border dark:border-gray-500"
                               }`}
                             >
-                              {selected && <span className="w-2 h-2 rounded-full bg-orange-500" />}
+                              {selected && <span className="w-2 h-2 rounded-full bg-primary/50" />}
                             </span>
-                            <span className={`font-medium ${selected ? "text-orange-700 dark:text-orange-300" : "text-gray-700 dark:text-gray-300"}`}>
+                            <span className={`font-medium ${selected ? "text-primary" : "text-foreground dark:text-muted-foreground"}`}>
                               {opt.label}
                             </span>
                           </div>
                           {opt.extraPrice > 0 && (
-                            <span className="text-xs text-gray-500 dark:text-gray-400">+₹{opt.extraPrice / 100}</span>
+                            <span className="text-xs text-muted-foreground">+₹{opt.extraPrice / 100}</span>
                           )}
                         </button>
                       );
@@ -216,24 +216,24 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
                           onClick={() => handleCheckboxChange(group.id, opt.id)}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-lg border text-sm transition ${
                             checked
-                              ? "border-orange-400 bg-orange-50 dark:bg-orange-900/20"
-                              : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
+                              ? "border-primary bg-primary/5 dark:bg-primary/10"
+                              : "border-border hover:border-border dark:hover:border-gray-500"
                           }`}
                         >
                           <div className="flex items-center gap-2">
                             <span
                               className={`w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                                checked ? "border-orange-500 bg-orange-500" : "border-gray-300 dark:border-gray-500"
+                                checked ? "border-primary bg-primary/50" : "border-border dark:border-gray-500"
                               }`}
                             >
                               {checked && <span className="text-white text-[10px] font-bold">✓</span>}
                             </span>
-                            <span className={`font-medium ${checked ? "text-orange-700 dark:text-orange-300" : "text-gray-700 dark:text-gray-300"}`}>
+                            <span className={`font-medium ${checked ? "text-primary" : "text-foreground dark:text-muted-foreground"}`}>
                               {opt.label}
                             </span>
                           </div>
                           {opt.extraPrice > 0 && (
-                            <span className="text-xs text-gray-500 dark:text-gray-400">+₹{opt.extraPrice / 100}</span>
+                            <span className="text-xs text-muted-foreground">+₹{opt.extraPrice / 100}</span>
                           )}
                         </button>
                       );
@@ -247,18 +247,18 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
 
         {/* Quantity selector */}
         <div className="flex items-center justify-between mb-5">
-          <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Quantity</span>
+          <span className="text-sm font-semibold text-foreground">Quantity</span>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setQty((q) => Math.max(1, q - 1))}
-              className="w-8 h-8 rounded-full border-2 border-orange-400 text-orange-500 font-bold flex items-center justify-center hover:bg-orange-50 dark:hover:bg-orange-900/20 transition"
+              className="w-8 h-8 rounded-full border-2 border-primary text-primary font-bold flex items-center justify-center hover:bg-primary/5 dark:hover:bg-primary/10 transition"
             >
               −
             </button>
-            <span className="w-8 text-center font-bold text-gray-800 dark:text-gray-100 text-base">{qty}</span>
+            <span className="w-8 text-center font-bold text-foreground text-base">{qty}</span>
             <button
               onClick={() => setQty((q) => Math.min(10, q + 1))}
-              className="w-8 h-8 rounded-full border-2 border-orange-400 text-orange-500 font-bold flex items-center justify-center hover:bg-orange-50 dark:hover:bg-orange-900/20 transition"
+              className="w-8 h-8 rounded-full border-2 border-primary text-primary font-bold flex items-center justify-center hover:bg-primary/5 dark:hover:bg-primary/10 transition"
             >
               +
             </button>
@@ -268,7 +268,7 @@ const ItemCustomizationModal = ({ item, restaurantName, onClose, onConfirm }) =>
         {/* Add to cart button */}
         <button
           onClick={handleConfirm}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl text-base transition shadow-md shadow-orange-200 dark:shadow-orange-900/30"
+          className="w-full bg-primary/50 hover:bg-primary-hover text-white font-bold py-3.5 rounded-xl text-base transition shadow-md shadow-primary/20 dark:shadow-primary/30"
         >
           Add item · ₹{(total / 100).toFixed(0)}
         </button>

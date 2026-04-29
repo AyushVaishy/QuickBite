@@ -94,7 +94,7 @@ function TypingIndicator() {
             width: 8,
             height: 8,
             borderRadius: "50%",
-            background: "#fb923c",
+            background: "var(--color-primary)",
             display: "inline-block",
             animation: `qbDot 1s ease-in-out ${d}s infinite`,
           }}
@@ -123,12 +123,12 @@ function VegBadge({ isVeg }) {
 function RestaurantCard({ restaurant, idx, onAdd, cart }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-xl overflow-hidden border border-orange-100 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm mb-2">
+    <div className="rounded-xl overflow-hidden border border-border bg-card shadow-sm mb-2">
       <button
-        className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-orange-50 dark:hover:bg-gray-700 transition-colors text-left"
+        className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-primary/5 transition-colors text-left"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="w-7 h-7 rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-300 text-xs font-bold flex items-center justify-center shrink-0">
+        <span className="w-7 h-7 rounded-full bg-primary/10 text-primary dark:text-primary text-xs font-bold flex items-center justify-center shrink-0">
           {idx + 1}
         </span>
         {restaurant.imageUrl && (
@@ -139,21 +139,21 @@ function RestaurantCard({ restaurant, idx, onAdd, cart }) {
           />
         )}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+          <p className="text-sm font-semibold text-foreground truncate">
             {restaurant.name}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-muted-foreground">
             ⭐ {restaurant.rating?.toFixed(1)} · {restaurant.deliveryTime} min ·{" "}
             {fmtPrice(restaurant.costForTwo)} for 2
           </p>
         </div>
-        <span className="text-gray-400 text-xs">{open ? "▲" : "▼"}</span>
+        <span className="text-muted-foreground text-xs">{open ? "▲" : "▼"}</span>
       </button>
 
       {open && (
-        <div className="px-3 pb-3 pt-2 border-t border-gray-100 dark:border-gray-700 space-y-2">
+        <div className="px-3 pb-3 pt-2 border-t border-border space-y-2">
           {(restaurant.dishes || []).length === 0 ? (
-            <p className="text-xs text-gray-400 text-center py-1">
+            <p className="text-xs text-muted-foreground text-center py-1">
               No dishes listed
             </p>
           ) : (
@@ -162,10 +162,10 @@ function RestaurantCard({ restaurant, idx, onAdd, cart }) {
               return (
                 <div key={dish.id} className="flex items-center gap-2">
                   <VegBadge isVeg={dish.isVeg} />
-                  <span className="flex-1 text-xs text-gray-700 dark:text-gray-300 truncate">
+                  <span className="flex-1 text-xs text-foreground dark:text-muted-foreground truncate">
                     {dish.name}
                   </span>
-                  <span className="text-xs text-gray-500 shrink-0">
+                  <span className="text-xs text-muted-foreground shrink-0">
                     {fmtPrice(dish.price)}
                   </span>
                   <button
@@ -176,7 +176,7 @@ function RestaurantCard({ restaurant, idx, onAdd, cart }) {
                     className={`text-xs px-2.5 py-1 rounded-lg font-medium transition-all shrink-0 ${
                       added
                         ? "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300"
-                        : "bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 hover:bg-orange-200"
+                        : "bg-primary/10 text-primary hover:bg-primary/20"
                     }`}
                   >
                     {added ? "✓ Added" : "+ Add"}
@@ -193,7 +193,7 @@ function RestaurantCard({ restaurant, idx, onAdd, cart }) {
 
 function PriyaAvatar() {
   return (
-    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
+    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
       P
     </div>
   );
@@ -217,8 +217,8 @@ function ChatBubble({ msg, onAdd, cart }) {
           <div
             className={`text-sm leading-relaxed px-3.5 py-2.5 rounded-2xl ${
               isUser
-                ? "bg-gradient-to-br from-orange-500 to-pink-500 text-white rounded-tr-sm"
-                : "bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow-sm border border-gray-100 dark:border-gray-700 rounded-tl-sm"
+                ? "bg-gradient-to-br from-primary to-accent text-white rounded-tr-sm"
+                : "bg-card text-foreground shadow-sm border border-border rounded-tl-sm"
             }`}
           >
             {msg.content}
@@ -745,11 +745,11 @@ export default function ChatWidget() {
       {/* ── Chat panel ─────────────────────────────────────────────────── */}
       {isOpen && (
         <div
-          className="fixed bottom-20 right-4 sm:right-6 z-50 w-80 sm:w-96 flex flex-col bg-gray-50 dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+          className="fixed bottom-20 right-4 sm:right-6 z-50 w-80 sm:w-96 flex flex-col bg-background rounded-2xl shadow-2xl border border-border overflow-hidden"
           style={{ height: 585, animation: "qbSlide 0.2s ease both" }}
         >
           {/* Header */}
-          <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white shrink-0">
+          <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-primary to-accent text-white shrink-0">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-lg shrink-0">
               {speaking ? (
                 <Waveform cls="text-white" />
@@ -812,7 +812,7 @@ export default function ChatWidget() {
             {msgs.length === 0 && !thinking && (
               <div className="flex flex-col items-center justify-center h-full opacity-40 gap-3">
                 <span className="text-4xl">🤖</span>
-                <p className="text-sm text-gray-400">Starting conversation…</p>
+                <p className="text-sm text-muted-foreground">Starting conversation…</p>
               </div>
             )}
             {msgs.map((m) => (
@@ -821,7 +821,7 @@ export default function ChatWidget() {
             {thinking && (
               <div className="flex gap-2 items-center mb-2 qb-in">
                 <PriyaAvatar />
-                <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-tl-sm shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="bg-card rounded-2xl rounded-tl-sm shadow-sm border border-border">
                   <TypingIndicator />
                 </div>
               </div>
@@ -831,13 +831,13 @@ export default function ChatWidget() {
 
           {/* Listening indicator bar */}
           {listening && (
-            <div className="px-3 py-2 bg-orange-50 dark:bg-orange-900/20 border-t border-orange-100 dark:border-orange-800 flex items-center gap-2 shrink-0">
-              <Waveform cls="text-orange-500" />
-              <span className="text-xs text-orange-600 dark:text-orange-300 font-medium">
+            <div className="px-3 py-2 bg-primary/5 dark:bg-primary/10 border-t border-border dark:border-primary/30 flex items-center gap-2 shrink-0">
+              <Waveform cls="text-primary" />
+              <span className="text-xs text-primary dark:text-primary font-medium">
                 Listening… speak now
               </span>
               {inputText && (
-                <span className="text-xs text-gray-400 truncate max-w-[110px]">
+                <span className="text-xs text-muted-foreground truncate max-w-[110px]">
                   {inputText}
                 </span>
               )}
@@ -847,7 +847,7 @@ export default function ChatWidget() {
           {/* Input row */}
           <form
             onSubmit={handleSubmit}
-            className="px-3 py-2.5 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex items-center gap-2 shrink-0"
+            className="px-3 py-2.5 bg-card border-t border-border flex items-center gap-2 shrink-0"
           >
             <input
               type="text"
@@ -856,7 +856,7 @@ export default function ChatWidget() {
               onFocus={() => clearTimeout(autoListenTimer.current)}
               placeholder={listening ? "Listening…" : "Type or tap 🎤 to speak"}
               disabled={listening}
-              className="flex-1 text-sm bg-gray-100 dark:bg-gray-700 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 dark:text-white placeholder-gray-400 disabled:opacity-60"
+              className="flex-1 text-sm bg-muted rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-primary text-foreground placeholder-gray-400 disabled:opacity-60"
             />
             {voiceOk && (
               <button
@@ -866,7 +866,7 @@ export default function ChatWidget() {
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all shrink-0 ${
                   listening
                     ? "bg-red-500 text-white animate-pulse"
-                    : "bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-800"
+                    : "bg-primary/10 text-primary dark:text-primary hover:bg-primary/20 dark:hover:bg-primary/20"
                 }`}
               >
                 {listening ? <Waveform cls="text-white" /> : "🎤"}
@@ -875,7 +875,7 @@ export default function ChatWidget() {
             <button
               type="submit"
               disabled={!inputText.trim() || listening}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 text-white flex items-center justify-center disabled:opacity-40 hover:opacity-90 transition-opacity shrink-0"
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center disabled:opacity-40 hover:opacity-90 transition-opacity shrink-0"
             >
               ➤
             </button>
@@ -889,7 +889,7 @@ export default function ChatWidget() {
         className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 ${
           isOpen
             ? "bg-gray-700 dark:bg-gray-600 scale-90"
-            : "bg-gradient-to-br from-orange-500 to-pink-500 hover:scale-110"
+            : "bg-gradient-to-br from-primary to-accent hover:scale-110"
         }`}
         aria-label="Chat with Priya"
       >

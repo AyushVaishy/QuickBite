@@ -102,7 +102,7 @@ const DeliveryMap = ({ order, status }) => {
   return (
     <div className="mb-4">
       <div ref={containerRef} className="h-48 sm:h-56 rounded-xl overflow-hidden z-0" />
-      <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-2">
+      <p className="text-xs text-muted-foreground text-center mt-2">
         🍴 Restaurant · 🛵 Delivery Partner · 📍 Your location
       </p>
     </div>

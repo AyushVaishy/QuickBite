@@ -97,18 +97,18 @@ const OwnerOnboarding = () => {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all text-gray-700 placeholder-gray-400 bg-white ${
-      errors[field] ? "border-red-400" : "border-gray-200"
+    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-foreground placeholder-gray-400 bg-card ${
+      errors[field] ? "border-red-400" : "border-border"
     }`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b px-6 py-4 flex items-center gap-3">
-        <FaStore className="text-orange-500 text-2xl" />
+      <div className="bg-card shadow-sm border-b px-6 py-4 flex items-center gap-3">
+        <FaStore className="text-primary text-2xl" />
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Set Up Your Restaurant</h1>
-          <p className="text-sm text-gray-500">Complete your restaurant profile to start receiving orders</p>
+          <h1 className="text-xl font-bold text-foreground">Set Up Your Restaurant</h1>
+          <p className="text-sm text-muted-foreground">Complete your restaurant profile to start receiving orders</p>
         </div>
       </div>
 
@@ -119,11 +119,11 @@ const OwnerOnboarding = () => {
             <React.Fragment key={i}>
               <div className="flex items-center gap-2">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                  i < step ? "bg-green-500 text-white" : i === step ? "bg-orange-500 text-white" : "bg-gray-200 text-gray-500"
+                  i < step ? "bg-green-500 text-white" : i === step ? "bg-primary/50 text-white" : "bg-gray-200 text-muted-foreground"
                 }`}>
                   {i < step ? <FaCheck /> : i + 1}
                 </div>
-                <span className={`text-sm font-medium hidden sm:block ${i === step ? "text-orange-600" : "text-gray-400"}`}>
+                <span className={`text-sm font-medium hidden sm:block ${i === step ? "text-primary" : "text-muted-foreground"}`}>
                   {s}
                 </span>
               </div>
@@ -134,36 +134,36 @@ const OwnerOnboarding = () => {
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+        <div className="bg-card rounded-2xl shadow-md p-6 sm:p-8">
           {/* STEP 0: Restaurant Info */}
           {step === 0 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                <FaUtensils className="text-orange-500" /> Restaurant Details
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <FaUtensils className="text-primary" /> Restaurant Details
               </h2>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Restaurant Name *</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Restaurant Name *</label>
                 <input value={form.name} onChange={(e) => set("name", e.target.value)}
                   className={inputClass("name")} placeholder="e.g. Spice Garden" />
                 {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Description</label>
                 <textarea value={form.description} onChange={(e) => set("description", e.target.value)}
                   className={inputClass("description") + " resize-none"} rows={3}
                   placeholder="Tell customers about your restaurant…" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Cuisines * {form.cuisines.length > 0 && <span className="text-orange-500">({form.cuisines.length} selected)</span>}
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
+                  Cuisines * {form.cuisines.length > 0 && <span className="text-primary">({form.cuisines.length} selected)</span>}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {CUISINE_OPTIONS.map((c) => (
                     <button key={c} type="button" onClick={() => toggleCuisine(c)}
                       className={`px-3 py-1.5 rounded-full text-sm font-medium border-2 transition-all ${
                         form.cuisines.includes(c)
-                          ? "bg-orange-500 border-orange-500 text-white"
-                          : "border-gray-200 text-gray-600 hover:border-orange-300"
+                          ? "bg-primary/50 border-primary text-white"
+                          : "border-border text-muted-foreground hover:border-primary/40"
                       }`}
                     >{c}</button>
                   ))}
@@ -171,18 +171,18 @@ const OwnerOnboarding = () => {
                 {errors.cuisines && <p className="text-red-500 text-xs mt-1">{errors.cuisines}</p>}
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Restaurant Image URL</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Restaurant Image URL</label>
                 <input value={form.imageUrl} onChange={(e) => set("imageUrl", e.target.value)}
                   className={inputClass("imageUrl")} placeholder="https://…" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Cost for Two (₹)</label>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Cost for Two (₹)</label>
                   <input type="number" value={form.costForTwo} onChange={(e) => set("costForTwo", e.target.value)}
                     className={inputClass("costForTwo")} placeholder="350" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone</label>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Phone</label>
                   <input value={form.phone} onChange={(e) => set("phone", e.target.value)}
                     className={inputClass("phone")} placeholder="9876543210" />
                 </div>
@@ -193,30 +193,30 @@ const OwnerOnboarding = () => {
           {/* STEP 1: Location & Hours */}
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                <FaMapMarkerAlt className="text-orange-500" /> Location & Hours
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <FaMapMarkerAlt className="text-primary" /> Location & Hours
               </h2>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Street Address *</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Street Address *</label>
                 <input value={form.address} onChange={(e) => set("address", e.target.value)}
                   className={inputClass("address")} placeholder="123, MG Road" />
                 {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">City *</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">City *</label>
                 <input value={form.city} onChange={(e) => set("city", e.target.value)}
                   className={inputClass("city")} placeholder="Bangalore" />
                 {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Latitude</label>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Latitude</label>
                   <input value={form.lat} onChange={(e) => set("lat", e.target.value)}
                     className={inputClass("lat")} placeholder="12.9716" />
                   {errors.lat && <p className="text-red-500 text-xs mt-1">{errors.lat}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Longitude</label>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Longitude</label>
                   <input value={form.lng} onChange={(e) => set("lng", e.target.value)}
                     className={inputClass("lng")} placeholder="77.5946" />
                   {errors.lng && <p className="text-red-500 text-xs mt-1">{errors.lng}</p>}
@@ -227,22 +227,22 @@ const OwnerOnboarding = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    <FaClock className="inline mr-1 text-orange-500" />Opening Time
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">
+                    <FaClock className="inline mr-1 text-primary" />Opening Time
                   </label>
                   <input type="time" value={form.openingTime} onChange={(e) => set("openingTime", e.target.value)}
                     className={inputClass("openingTime")} />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    <FaClock className="inline mr-1 text-orange-500" />Closing Time
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">
+                    <FaClock className="inline mr-1 text-primary" />Closing Time
                   </label>
                   <input type="time" value={form.closingTime} onChange={(e) => set("closingTime", e.target.value)}
                     className={inputClass("closingTime")} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">FSSAI License Number</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">FSSAI License Number</label>
                 <input value={form.fssaiNumber} onChange={(e) => set("fssaiNumber", e.target.value)}
                   className={inputClass("fssaiNumber")} placeholder="12345678901234" />
               </div>
@@ -252,10 +252,10 @@ const OwnerOnboarding = () => {
           {/* STEP 2: Review */}
           {step === 2 && (
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <FaCheck className="text-green-500" /> Review & Submit
               </h2>
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-border">
                 {[
                   ["Restaurant Name", form.name],
                   ["Description", form.description || "—"],
@@ -267,8 +267,8 @@ const OwnerOnboarding = () => {
                   ["FSSAI", form.fssaiNumber || "—"],
                 ].map(([label, value]) => (
                   <div key={label} className="py-3 flex justify-between gap-4">
-                    <span className="text-sm text-gray-500 font-medium">{label}</span>
-                    <span className="text-sm text-gray-800 font-semibold text-right">{value}</span>
+                    <span className="text-sm text-muted-foreground font-medium">{label}</span>
+                    <span className="text-sm text-foreground font-semibold text-right">{value}</span>
                   </div>
                 ))}
               </div>
@@ -282,21 +282,21 @@ const OwnerOnboarding = () => {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between mt-8 pt-4 border-t border-gray-100">
+          <div className="flex justify-between mt-8 pt-4 border-t border-border">
             {step > 0 ? (
               <button onClick={back}
-                className="flex items-center gap-2 px-5 py-2.5 border-2 border-gray-200 rounded-xl text-gray-600 font-semibold hover:border-gray-300 transition-all">
+                className="flex items-center gap-2 px-5 py-2.5 border-2 border-border rounded-xl text-muted-foreground font-semibold hover:border-border transition-all">
                 <FaArrowLeft /> Back
               </button>
             ) : (
               <button onClick={() => navigate("/owner")}
-                className="px-5 py-2.5 border-2 border-gray-200 rounded-xl text-gray-500 font-semibold hover:border-gray-300 transition-all">
+                className="px-5 py-2.5 border-2 border-border rounded-xl text-muted-foreground font-semibold hover:border-border transition-all">
                 Skip for now
               </button>
             )}
             {step < 2 ? (
               <button onClick={next}
-                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-xl font-semibold transition-all">
+                className="flex items-center gap-2 bg-primary/50 hover:bg-primary-hover text-white px-6 py-2.5 rounded-xl font-semibold transition-all">
                 Next <FaArrowRight />
               </button>
             ) : (

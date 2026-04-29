@@ -4,122 +4,214 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap');
 
-/* Custom scrollbar hiding styles */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+/* ── Scrollbar hiding ──────────────────────────────────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Hide viewport scrollbar UI but keep scrolling functional */
-html,
-body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none;
-}
-
-/* Light/Dark base colors */
+/* ── CRAVON NEO-THEME Design Tokens ───────────────────────────────────────── */
 @layer base {
   :root {
-    --app-bg: #f8fafc;
-    --app-surface: #ffffff;
-    --app-text-primary: #0f172a;
-    --app-text-secondary: #475569;
-    --app-border: #dbe5f0;
-    --brand: #f15a24;
-    --brand-dark: #d1481b;
-    --brand-soft: #ffece4;
-    --shadow-soft: rgba(15, 23, 42, 0.08);
-    color-scheme: light;
-  }
+    --color-primary:          #7C3AED;
+    --color-primary-hover:    #6D28D9;
+    --color-primary-soft:     rgba(124, 58, 237, 0.12);
+    --color-secondary:        #10B981;
+    --color-secondary-hover:  #059669;
+    --color-accent:           #F59E0B;
+    --color-accent-hover:     #D97706;
 
-  :root {
+    --color-bg-main:          #FAF7FF;
+    --color-bg-section:       #FFFFFF;
+    --color-bg-card:          #FFFFFF;
+
+    --color-text-primary:     #1A1A2E;
+    --color-text-secondary:   #5B5B73;
+    --color-text-muted:       #9AA0B4;
+
+    --color-border:           #E9E4FF;
+    --color-input-bg:         #F3F0FF;
+    --color-hover-bg:         #F5F3FF;
+    --shadow-soft:            rgba(124, 58, 237, 0.10);
+    --shadow-card:            rgba(26, 26, 46, 0.08);
+
+    --app-bg:             var(--color-bg-main);
+    --app-surface:        var(--color-bg-card);
+    --app-text-primary:   var(--color-text-primary);
+    --app-text-secondary: var(--color-text-secondary);
+    --app-border:         var(--color-border);
+    --brand:              var(--color-primary);
+    --brand-dark:         var(--color-primary-hover);
+    --brand-soft:         var(--color-hover-bg);
+
+    color-scheme: light;
     font-family: "Manrope", system-ui, sans-serif;
   }
 
   .dark {
-    --app-bg: #0f1318;
-    --app-surface: #181f27;
-    --app-text-primary: #f8fafc;
-    --app-text-secondary: #9fb0c7;
-    --app-border: #293241;
-    --brand: #f9733f;
-    --brand-dark: #e36430;
-    --brand-soft: rgba(249, 115, 63, 0.14);
-    --shadow-soft: rgba(2, 6, 23, 0.45);
+    --color-primary:          #A78BFA;
+    --color-primary-hover:    #8B5CF6;
+    --color-primary-soft:     rgba(167, 139, 250, 0.15);
+    --color-secondary:        #34D399;
+    --color-secondary-hover:  #10B981;
+    --color-accent:           #FBBF24;
+    --color-accent-hover:     #F59E0B;
+
+    --color-bg-main:          #0B0B14;
+    --color-bg-section:       #12121E;
+    --color-bg-card:          #1A1A2B;
+
+    --color-text-primary:     #F8F7FF;
+    --color-text-secondary:   #B8B8D1;
+    --color-text-muted:       #7C7CA3;
+
+    --color-border:           #2A2A40;
+    --color-input-bg:         #141422;
+    --color-hover-bg:         #1F1F33;
+    --shadow-soft:            rgba(167, 139, 250, 0.12);
+    --shadow-card:            rgba(0, 0, 0, 0.40);
+
     color-scheme: dark;
   }
 
   body {
-    background: var(--app-bg);
-    color: var(--app-text-primary);
-    transition: background-color 240ms ease, color 240ms ease;
+    background-color: var(--color-bg-main);
+    color: var(--color-text-primary);
+    transition: background-color 250ms ease, color 250ms ease;
+    font-family: "Manrope", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    font-family: "Sora", "Manrope", system-ui, sans-serif;
   }
 }
 
+/* ── Utilities ─────────────────────────────────────────────────────────────── */
 @layer utilities {
-  .font-display {
-    font-family: "Sora", "Manrope", system-ui, sans-serif;
-  }
+  .font-display { font-family: "Sora", "Manrope", system-ui, sans-serif; }
 
   .transition-theme {
-    transition: all 240ms ease;
+    transition: background-color 250ms ease, color 250ms ease,
+                border-color 250ms ease, box-shadow 250ms ease;
   }
 
   .landing-glass {
-    background: color-mix(in srgb, var(--app-surface) 78%, transparent);
-    backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--color-bg-card) 82%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
 
-  .bg-app {
-    background-color: var(--app-bg);
+  .shadow-soft    { box-shadow: 0 4px 20px -4px var(--shadow-card); }
+  .shadow-glow    { box-shadow: 0 0 24px -4px var(--shadow-soft); }
+  .shadow-glow-md { box-shadow: 0 0 40px -6px var(--shadow-soft); }
+
+  .text-gradient-hero {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-cta {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  .bg-app-surface {
-    background-color: var(--app-surface);
+  .bg-radial-hero {
+    background-image: radial-gradient(ellipse at top right, var(--color-primary-soft) 0%, transparent 55%);
+  }
+  .bg-radial-hero-left {
+    background-image: radial-gradient(ellipse at top left, var(--color-primary-soft) 0%, transparent 55%);
   }
 
-  .bg-brand {
-    background-color: var(--brand);
+  .bg-primary-soft { background-color: var(--color-primary-soft); }
+
+  .hover-lift   { @apply transition-all duration-200 hover:-translate-y-0.5; }
+  .hover-scale  { @apply transition-transform duration-200 hover:scale-[1.02]; }
+  .active-press { @apply active:scale-[0.97] transition-transform duration-100; }
+
+  /* Legacy compat */
+  .bg-app             { background-color: var(--color-bg-main); }
+  .bg-app-surface     { background-color: var(--color-bg-card); }
+  .bg-brand           { background-color: var(--color-primary); }
+  .bg-brand-soft      { background-color: var(--color-hover-bg); }
+  .text-app-primary   { color: var(--color-text-primary); }
+  .text-app-secondary { color: var(--color-text-secondary); }
+  .text-brand         { color: var(--color-primary); }
+  .border-app-border  { border-color: var(--color-border); }
+  .border-brand       { border-color: var(--color-primary); }
+  .hover\:bg-brand-dark:hover { background-color: var(--color-primary-hover); }
+}
+
+/* ── Neo-Theme Component System ────────────────────────────────────────────── */
+@layer components {
+
+  /* BUTTONS */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-xl
+           px-5 py-2.5 text-sm transition-all duration-200 focus:outline-none
+           focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+           focus-visible:ring-offset-background
+           disabled:opacity-50 disabled:pointer-events-none select-none cursor-pointer;
+  }
+  .btn-primary {
+    @apply btn bg-primary text-white hover:bg-primary-hover active:scale-[0.97];
+    box-shadow: 0 4px 14px -2px var(--shadow-soft);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 20px -2px var(--shadow-soft); }
+  .btn-secondary {
+    @apply btn bg-secondary text-white hover:bg-secondary-hover active:scale-[0.97] shadow-sm;
+  }
+  .btn-accent {
+    @apply btn bg-accent text-accent-foreground hover:bg-accent-hover active:scale-[0.97] shadow-sm;
+  }
+  .btn-outline {
+    @apply btn border-2 border-primary text-primary bg-transparent
+           hover:bg-primary hover:text-white active:scale-[0.97] transition-all;
+  }
+  .btn-ghost {
+    @apply btn text-foreground hover:bg-muted active:scale-[0.97];
+  }
+  .btn-danger {
+    @apply btn bg-red-500 text-white hover:bg-red-600 active:scale-[0.97];
   }
 
-  .bg-brand-soft {
-    background-color: var(--brand-soft);
+  /* INPUTS */
+  .input-base {
+    @apply w-full bg-input border border-border rounded-xl px-4 py-2.5 text-sm
+           text-foreground placeholder:text-muted-foreground
+           focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
+           transition-all duration-200;
+  }
+  .input-base:focus { box-shadow: 0 0 0 3px var(--color-primary-soft); }
+
+  /* CARDS */
+  .card {
+    @apply bg-card rounded-2xl border border-border transition-all duration-200;
+    box-shadow: 0 2px 16px -4px var(--shadow-card);
+  }
+  .card-hover {
+    @apply card hover:-translate-y-0.5 cursor-pointer;
+  }
+  .card-hover:hover {
+    box-shadow: 0 8px 32px -8px var(--shadow-card), 0 0 0 1px var(--color-border);
   }
 
-  .text-app-primary {
-    color: var(--app-text-primary);
-  }
+  /* BADGES */
+  .badge        { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-primary { @apply badge bg-primary-soft text-primary; }
+  .badge-success { @apply badge bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400; }
+  .badge-warning { @apply badge bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400; }
+  .badge-danger  { @apply badge bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400; }
 
-  .text-app-secondary {
-    color: var(--app-text-secondary);
-  }
+  /* SECTIONS */
+  .section-wrapper { @apply bg-section py-10 sm:py-14; }
+  .section-inner   { @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-12; }
 
-  .text-brand {
-    color: var(--brand);
-  }
-
-  .border-app-border {
-    border-color: var(--app-border);
-  }
-
-  .border-brand {
-    border-color: var(--brand);
-  }
-
-  .hover\:bg-brand-dark:hover {
-    background-color: var(--brand-dark);
-  }
-
-  .shadow-soft {
-    box-shadow: 0 16px 45px -16px var(--shadow-soft);
-  }
+  /* NAV */
+  .nav-item        { @apply text-sm font-semibold transition-colors duration-200 text-muted-foreground hover:text-primary; }
+  .nav-item-active { @apply text-sm font-semibold text-primary; }
 }

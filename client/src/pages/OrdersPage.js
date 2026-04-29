@@ -12,7 +12,7 @@ const STATUS_COLORS = {
   PLACED:           "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   CONFIRMED:        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
   PREPARING:        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-  OUT_FOR_DELIVERY: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+  OUT_FOR_DELIVERY: "bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary",
   DELIVERED:        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
   CANCELLED:        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
@@ -77,25 +77,25 @@ const OrdersPage = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-gray-500 dark:text-gray-400 text-lg animate-pulse">Loading orders…</div>
+      <div className="min-h-screen pt-24 flex items-center justify-center bg-background">
+        <div className="text-muted-foreground text-lg animate-pulse">Loading orders…</div>
       </div>
     );
 
   if (error)
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen pt-24 flex items-center justify-center bg-background">
         <p className="text-red-500">{error}</p>
       </div>
     );
 
   if (orders.length === 0)
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 flex flex-col items-center justify-center px-4">
-        <FaBoxOpen className="text-6xl text-gray-300 dark:text-gray-600 mb-4" />
-        <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-200 mb-2">No orders yet</h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">Place your first order and track it here.</p>
-        <Link to="/home" className="bg-orange-500 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-orange-600 transition flex items-center gap-2">
+      <div className="min-h-screen bg-background pt-24 flex flex-col items-center justify-center px-4">
+        <FaBoxOpen className="text-6xl text-muted-foreground mb-4" />
+        <h2 className="text-2xl font-bold text-foreground mb-2">No orders yet</h2>
+        <p className="text-muted-foreground mb-6">Place your first order and track it here.</p>
+        <Link to="/home" className="bg-primary/50 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-primary-hover transition flex items-center gap-2">
           <FaUtensils /> Browse Restaurants
         </Link>
       </div>
@@ -105,18 +105,18 @@ const OrdersPage = () => {
   const paginatedOrders = orders.slice((currentPage - 1) * ORDERS_PER_PAGE, currentPage * ORDERS_PER_PAGE);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-4">
+    <div className="min-h-screen bg-background pt-24 pb-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Your Orders</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-6">Your Orders</h1>
 
         <div className="space-y-4">
           {paginatedOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 overflow-hidden"
+              className="bg-card rounded-xl shadow border border-border overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border">
                 <div className="flex items-center gap-3">
                   <img
                     src={
@@ -127,10 +127,10 @@ const OrdersPage = () => {
                     className="w-10 h-10 rounded-lg object-cover"
                   />
                   <div>
-                    <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm">
+                    <p className="font-semibold text-foreground text-sm">
                       {order.restaurant?.name || "Restaurant"}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       {new Date(order.createdAt).toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",
@@ -141,26 +141,26 @@ const OrdersPage = () => {
                     </p>
                   </div>
                 </div>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_COLORS[order.status] || "bg-gray-100 text-gray-600"}`}>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_COLORS[order.status] || "bg-muted text-muted-foreground"}`}>
                   {STATUS_LABELS[order.status] || order.status}
                 </span>
               </div>
 
               {/* Items */}
               <div className="px-4 py-3">
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                <p className="text-sm text-muted-foreground mb-2">
                   {order.items
                     .map((i) => `${i.menuItem?.name || "Item"} × ${i.quantity}`)
                     .join(", ")}
                 </p>
                 {order.notes && (
-                  <p className="text-xs text-gray-400 dark:text-gray-500 truncate">📍 {order.notes}</p>
+                  <p className="text-xs text-muted-foreground truncate">📍 {order.notes}</p>
                 )}
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-700/50">
-                <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+              <div className="flex items-center justify-between px-4 py-3 bg-muted/50">
+                <span className="text-sm font-semibold text-foreground">
                   ₹{Math.round(order.totalAmount / 100)}
                 </span>
                 <div className="flex items-center gap-2">
@@ -175,13 +175,13 @@ const OrdersPage = () => {
                   )}
                   <Link
                     to={`/home/orders/${order.id}`}
-                    className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 font-medium"
+                    className="text-xs text-muted-foreground hover:text-foreground dark:text-muted-foreground dark:hover:text-gray-200 font-medium"
                   >
                     View Details
                   </Link>
                   <button
                     onClick={() => handleReorder(order)}
-                    className="text-xs bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-lg font-semibold transition"
+                    className="text-xs bg-primary/50 hover:bg-primary-hover text-white px-3 py-1.5 rounded-lg font-semibold transition"
                   >
                     Reorder
                   </button>
@@ -197,17 +197,17 @@ const OrdersPage = () => {
             <button
               onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               disabled={currentPage === 1}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 transition"
+              className="px-4 py-2 rounded-lg border border-border text-sm font-semibold text-foreground bg-card hover:bg-muted disabled:opacity-40 transition"
             >
               ← Previous
             </button>
-            <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+            <span className="text-sm text-muted-foreground font-medium">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 transition"
+              className="px-4 py-2 rounded-lg border border-border text-sm font-semibold text-foreground bg-card hover:bg-muted disabled:opacity-40 transition"
             >
               Next →
             </button>

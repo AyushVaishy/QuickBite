@@ -6,7 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <title>CRAVON - Best Food Delivery</title>
-    <meta name="theme-color" content="#0f172a" />
+    <meta name="theme-color" content="#FF7A1A" />
+
+    <!-- Anti-flicker: apply saved theme before React hydrates to prevent FOUC -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (t === 'dark' || (!t && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="icon" type="image/png" href="/cravon_light_mode_icon.png?v=2" />
     <link rel="shortcut icon" type="image/png" href="/cravon_light_mode_icon.png?v=2" />
     <link rel="icon" type="image/png" media="(prefers-color-scheme: dark)" href="/cravon_dark_mode_icon.png?v=2" />

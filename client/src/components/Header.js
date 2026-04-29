@@ -388,23 +388,23 @@ const Header = ({ location, setLocation }) => {
 
   // Sidebar for address selection (inlined to avoid remount + focus loss)
   const addressSidebarContent = (
-    <div className={`fixed top-0 left-0 h-full w-[400px] bg-white dark:bg-gray-800 shadow-2xl z-[9999] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+    <div className={`fixed top-0 left-0 h-full w-[400px] bg-card shadow-2xl z-[9999] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="bg-orange-500 text-white p-6">
+        <div className="bg-primary/50 text-white p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold flex items-center gap-3">
               <FaMapMarkerAlt className="text-3xl" />
               Choose Location
             </h2>
             <button
-              className="text-2xl hover:text-orange-200 transition-colors duration-300"
+              className="text-2xl hover:text-primary/70 transition-colors duration-300"
               onClick={() => setSidebarOpen(false)}
             >
               &times;
             </button>
           </div>
-          <p className="text-orange-100 text-sm">Select your delivery address to see available restaurants</p>
+          <p className="text-primary/80 text-sm">Select your delivery address to see available restaurants</p>
         </div>
 
         {/* Content */}
@@ -412,31 +412,31 @@ const Header = ({ location, setLocation }) => {
           {/* GPS detect */}
           <button
             onClick={handleDetectLocation}
-            className="w-full flex items-center gap-3 px-4 py-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-xl text-orange-600 dark:text-orange-400 font-semibold text-sm hover:bg-orange-100 dark:hover:bg-orange-900/30 transition mb-4"
+            className="w-full flex items-center gap-3 px-4 py-3 bg-primary/5 dark:bg-primary/10 border border-primary/30 dark:border-primary/30 rounded-xl text-primary font-semibold text-sm hover:bg-primary/10 dark:hover:bg-primary/20 transition mb-4"
           >
             <span className="text-lg">📍</span>
             <div className="text-left">
               <div className="font-semibold">Use my current location</div>
-              <div className="text-xs font-normal text-orange-500 dark:text-orange-400">Using GPS</div>
+              <div className="text-xs font-normal text-primary">Using GPS</div>
             </div>
           </button>
 
           {/* Search Input */}
           <div className="mb-6">
             <div className="relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <input
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search for area, city, landmark..."
-                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-300 text-gray-700 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900"
+                className="w-full pl-10 pr-4 py-3 border-2 border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all duration-300 text-foreground placeholder-gray-500 dark:placeholder-gray-400 bg-background"
                 value={searchAddress}
                 onChange={e => setSearchAddress(e.target.value)}
               />
             </div>
             {loading && (
-              <div className="text-center text-orange-500 text-sm mt-3 flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
+              <div className="text-center text-primary text-sm mt-3 flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                 Searching for locations...
               </div>
             )}
@@ -451,26 +451,26 @@ const Header = ({ location, setLocation }) => {
           {/* Show search results */}
           {searchResults.length > 0 && (
             <div className="mb-6">
-              <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
-                <FaSearch className="text-orange-500" />
+              <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                <FaSearch className="text-primary" />
                 SEARCH RESULTS ({searchResults.length})
               </div>
               <div className="space-y-2">
                 {searchResults.map((result, idx) => (
                   <div
                     key={result.place_id}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-orange-50 dark:hover:bg-gray-700 hover:border-orange-300 transition-all duration-300 group bg-white dark:bg-gray-800"
+                    className="border border-border rounded-lg p-4 cursor-pointer hover:bg-primary/5 hover:border-primary/40 transition-all duration-300 group bg-card"
                     onClick={() => handleAddressSelect(result)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <FaMapMarkerAlt className="text-orange-500 text-sm" />
+                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <FaMapMarkerAlt className="text-primary text-sm" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
+                        <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
                           {result.display_name.split(",")[0]}
                         </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
+                        <div className="text-xs text-muted-foreground mt-1 leading-relaxed">
                           {cleanDisplayName(result.display_name)}
                         </div>
                       </div>
@@ -483,18 +483,18 @@ const Header = ({ location, setLocation }) => {
 
           {/* Saved Addresses */}
           <div className="mb-6">
-            <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
-              <FaMapMarkerAlt className="text-orange-500" />
+            <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+              <FaMapMarkerAlt className="text-primary" />
               SAVED ADDRESSES ({savedAddresses.length})
             </div>
             <div className="space-y-2">
               {savedAddresses.map((addr, idx) => (
                 <div
                   key={addr.label + idx}
-                  className={`border-2 rounded-lg p-4 transition-all duration-300 bg-white dark:bg-gray-800 ${
+                  className={`border-2 rounded-lg p-4 transition-all duration-300 bg-card ${
                     location.address === addr.address 
-                      ? "border-orange-500 bg-orange-50 dark:bg-gray-700 shadow-md" 
-                      : "border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:bg-orange-50 dark:hover:bg-gray-700"
+                      ? "border-primary bg-primary/5 shadow-md" 
+                      : "border-border hover:border-primary/40 hover:bg-primary/5"
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -508,19 +508,19 @@ const Header = ({ location, setLocation }) => {
                       <div className="flex items-center gap-3 mb-2">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                           addr.label === "Home" ? "bg-blue-100" : 
-                          addr.label === "Work" ? "bg-green-100" : "bg-orange-100"
+                          addr.label === "Work" ? "bg-green-100" : "bg-primary/10"
                         }`}>
                           {addr.label === "Home" ? (
                             <span className="text-blue-600 text-sm">🏠</span>
                           ) : addr.label === "Work" ? (
                             <span className="text-green-600 text-sm">💼</span>
                           ) : (
-                            <span className="text-orange-600 text-sm">📍</span>
+                            <span className="text-primary text-sm">📍</span>
                           )}
                         </div>
                         {editIdx === idx ? (
                           <input
-                            className="border px-2 py-1 rounded text-sm font-semibold w-24 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100"
+                            className="border px-2 py-1 rounded text-sm font-semibold w-24 bg-background border-border text-foreground"
                             value={editLabel}
                             onChange={e => setEditLabel(e.target.value)}
                             onBlur={() => saveEditLabel(idx)}
@@ -528,16 +528,16 @@ const Header = ({ location, setLocation }) => {
                             autoFocus
                           />
                         ) : (
-                          <span className="font-semibold text-gray-800 dark:text-gray-100">{addr.label}</span>
+                          <span className="font-semibold text-foreground">{addr.label}</span>
                         )}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed ml-11">
+                      <div className="text-xs text-muted-foreground leading-relaxed ml-11">
                         {addr.address}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 ml-3">
                       <button
-                        className="text-orange-500 hover:text-orange-700 p-2 hover:bg-orange-100 rounded-full transition-all duration-300"
+                        className="text-primary hover:text-primary p-2 hover:bg-primary/10 rounded-full transition-all duration-300"
                         title="Edit label"
                         onClick={() => startEditLabel(idx, addr.label)}
                       >
@@ -560,13 +560,13 @@ const Header = ({ location, setLocation }) => {
           
           {/* Recent Searches */}
           <div>
-            <div className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center gap-2">
-              <FaMapMarkerAlt className="text-orange-500" />
+            <div className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+              <FaMapMarkerAlt className="text-primary" />
               RECENT SEARCHES ({recentSearches.length})
             </div>
             {recentSearches.length === 0 ? (
-              <div className="text-center text-gray-400 dark:text-gray-300 text-sm py-8">
-                <FaMapMarkerAlt className="text-4xl mx-auto mb-2 text-gray-300 dark:text-gray-500" />
+              <div className="text-center text-muted-foreground dark:text-muted-foreground text-sm py-8">
+                <FaMapMarkerAlt className="text-4xl mx-auto mb-2 text-muted-foreground dark:text-muted-foreground" />
                 <p>No recent searches yet</p>
                 <p className="text-xs">Your recent location searches will appear here</p>
               </div>
@@ -575,18 +575,18 @@ const Header = ({ location, setLocation }) => {
                 {recentSearches.map((result, idx) => (
                   <div
                     key={result.place_id + idx}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 cursor-pointer hover:bg-orange-50 dark:hover:bg-gray-700 hover:border-orange-300 transition-all duration-300 group bg-white dark:bg-gray-800"
+                    className="border border-border rounded-lg p-4 cursor-pointer hover:bg-primary/5 hover:border-primary/40 transition-all duration-300 group bg-card"
                     onClick={() => handleAddressSelect(result)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <FaMapMarkerAlt className="text-gray-500 dark:text-gray-300 text-sm" />
+                      <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                        <FaMapMarkerAlt className="text-muted-foreground dark:text-muted-foreground text-sm" />
                       </div>
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-orange-600 transition-colors">
+                        <div className="font-semibold text-foreground group-hover:text-primary transition-colors">
                           {result.display_name.split(",")[0]}
                         </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-300 mt-1 leading-relaxed">
+                        <div className="text-xs text-muted-foreground mt-1 leading-relaxed">
                           {cleanDisplayName(result.display_name)}
                         </div>
                       </div>
@@ -618,32 +618,32 @@ const Header = ({ location, setLocation }) => {
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9997]" onClick={() => setIsSearchOpen(false)}></div>
       )}
       {isSearchOpen && (
-        <div ref={searchPanelRef} className="fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-3xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-[9998]">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div ref={searchPanelRef} className="fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-3xl bg-background border border-border rounded-2xl shadow-2xl z-[9998]">
+          <div className="p-4 border-b border-border">
             <div className="relative">
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 autoFocus
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for restaurants or dishes"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 dark:text-gray-100"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-card border border-border outline-none focus:ring-2 focus:ring-primary text-foreground"
               />
             </div>
           </div>
           <div className="max-h-[60vh] overflow-y-auto p-2">
             {searchLoading && (
-              <div className="p-4 text-gray-500">Searching…</div>
+              <div className="p-4 text-muted-foreground">Searching…</div>
             )}
             {!searchLoading && searchSuggest.length === 0 && (
-              <div className="p-6 text-gray-500">Type to search restaurants or dishes</div>
+              <div className="p-6 text-muted-foreground">Type to search restaurants or dishes</div>
             )}
             {!searchLoading && searchSuggest.length > 0 && (
               <ul>
                 {searchSuggest.map((s, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted cursor-pointer"
                     onMouseDown={(e) => e.stopPropagation()}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -668,17 +668,17 @@ const Header = ({ location, setLocation }) => {
                         className="w-10 h-10 rounded object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded bg-orange-100 text-orange-600 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded bg-primary/10 text-primary flex items-center justify-center">
                         {(s?.type === 'DISH' ? '🍽' : '🏬')}
                       </div>
                     )}
                     <div className="min-w-0">
-                      <div className="font-medium text-gray-800 dark:text-gray-100 truncate">{s?.text || 'Result'}</div>
+                      <div className="font-medium text-foreground truncate">{s?.text || 'Result'}</div>
                       {s?.subTitle && (
-                        <div className="text-xs text-gray-500 truncate">{s.subTitle}</div>
+                        <div className="text-xs text-muted-foreground truncate">{s.subTitle}</div>
                       )}
                     </div>
-                    <div className="ml-auto text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+                    <div className="ml-auto text-xs px-2 py-1 rounded bg-section text-muted-foreground">
                       {(s?.type || '').toString().toLowerCase()}
                     </div>
                   </li>
@@ -690,7 +690,7 @@ const Header = ({ location, setLocation }) => {
       )}
       
       {/* Simple & Beautiful Header */}
-      <header className="bg-white dark:bg-gray-900 shadow-lg fixed w-full top-0 z-50">
+      <header className="bg-background shadow-lg fixed w-full top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             {/* Logo & Address Section */}
@@ -703,26 +703,26 @@ const Header = ({ location, setLocation }) => {
                   className="w-12 h-12 rounded-full"
                 />
                 <div className="hidden md:block">
-                  <h1 className="text-2xl font-bold text-orange-600">CRAVON</h1>
-                  {/* <p className="text-sm text-gray-500">Food Delivery</p> */}
+                  <h1 className="text-2xl font-bold text-primary">CRAVON</h1>
+                  {/* <p className="text-sm text-muted-foreground">Food Delivery</p> */}
                 </div>
               </Link>
 
               {/* Simple & Beautiful Address Selector */}
               <button
-                className="flex items-center gap-3 bg-orange-50 dark:bg-gray-800 hover:bg-orange-100 dark:hover:bg-gray-700 text-orange-700 dark:text-orange-400 px-4 py-3 rounded-lg border border-orange-200 dark:border-gray-700 hover:border-orange-300 transition-all duration-300 min-w-0 sm:min-w-[240px] max-w-[350px]"
+                className="flex items-center gap-3 bg-primary/5 hover:bg-primary/10 text-primary dark:text-primary px-4 py-3 rounded-lg border border-primary/30 hover:border-primary/40 transition-all duration-300 min-w-0 sm:min-w-[240px] max-w-[350px]"
                 onClick={() => setSidebarOpen(true)}
               >
-                <FaMapMarkerAlt className="text-orange-500 text-lg flex-shrink-0" />
+                <FaMapMarkerAlt className="text-primary text-lg flex-shrink-0" />
                 <div className="text-left flex-1 min-w-0">
-                  <div className="font-semibold text-orange-700 dark:text-orange-400 truncate">
+                  <div className="font-semibold text-primary dark:text-primary truncate">
                     {location.address ? location.address.split(",")[0] : "Select Location"}
                   </div>
-                  <div className="text-xs text-orange-600 dark:text-orange-300 truncate">
+                  <div className="text-xs text-primary dark:text-primary truncate">
                     {location.address || "Choose your delivery address"}
                   </div>
                 </div>
-                <svg className="w-4 h-4 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -733,18 +733,18 @@ const Header = ({ location, setLocation }) => {
               {/* Dark mode toggle */}
               <button
                 aria-label="Toggle dark mode"
-                className="w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center border border-border bg-card hover:bg-muted transition-colors"
                 onClick={toggleTheme}
                 title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               >
-                {isDark ? <FiSun className="text-yellow-400 text-xl" /> : <FiMoon className="text-gray-600 dark:text-gray-300 text-xl" />}
+                {isDark ? <FiSun className="text-yellow-400 text-xl" /> : <FiMoon className="text-muted-foreground text-xl" />}
               </button>
 
               {/* Notification Bell */}
               <div ref={notifRef} className="relative">
                 <button
                   onClick={() => { setNotifOpen(v => !v); if (!notifOpen) dispatch(markAllRead()); }}
-                  className="relative w-10 h-10 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center border border-border bg-card hover:bg-muted transition-colors"
                   aria-label="Notifications"
                 >
                   <span className="text-lg">🔔</span>
@@ -757,13 +757,13 @@ const Header = ({ location, setLocation }) => {
 
                 {/* Notification Dropdown */}
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-[9999] overflow-hidden">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                      <h3 className="font-bold text-gray-800 dark:text-gray-100 text-sm">Notifications</h3>
+                  <div className="absolute right-0 mt-2 w-80 bg-background border border-border rounded-2xl shadow-2xl z-[9999] overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                      <h3 className="font-bold text-foreground text-sm">Notifications</h3>
                       {notifications.length > 0 && (
                         <button
                           onClick={() => dispatch(clearNotifications())}
-                          className="text-xs text-orange-500 hover:underline"
+                          className="text-xs text-primary hover:underline"
                         >
                           Clear all
                         </button>
@@ -771,7 +771,7 @@ const Header = ({ location, setLocation }) => {
                     </div>
                     <div className="max-h-72 overflow-y-auto">
                       {notifications.length === 0 ? (
-                        <div className="px-4 py-8 text-center text-gray-400">
+                        <div className="px-4 py-8 text-center text-muted-foreground">
                           <div className="text-3xl mb-2">🔔</div>
                           <p className="text-sm">No notifications yet</p>
                         </div>
@@ -779,7 +779,7 @@ const Header = ({ location, setLocation }) => {
                         notifications.map((n) => (
                           <div
                             key={n.id}
-                            className={`px-4 py-3 border-b border-gray-50 dark:border-gray-800 last:border-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${!n.read ? 'bg-orange-50/60 dark:bg-orange-900/10' : ''}`}
+                            className={`px-4 py-3 border-b border-border/50 dark:border-border last:border-0 cursor-pointer hover:bg-muted transition-colors ${!n.read ? 'bg-primary/5/60 dark:bg-primary/10' : ''}`}
                             onClick={() => { if (n.orderId) { setNotifOpen(false); navigate(`/home/orders/${n.orderId}`); } }}
                           >
                             <div className="flex items-start gap-2">
@@ -787,13 +787,13 @@ const Header = ({ location, setLocation }) => {
                                 {n.type === 'PLACED' ? '📋' : n.type === 'CONFIRMED' ? '✅' : n.type === 'PREPARING' ? '🍳' : n.type === 'OUT_FOR_DELIVERY' ? '🚚' : n.type === 'DELIVERED' ? '🎉' : n.type === 'CANCELLED' ? '❌' : '🔔'}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="font-semibold text-gray-800 dark:text-gray-100 text-xs leading-tight">{n.title}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{n.message}</p>
-                                <p className="text-[10px] text-gray-400 mt-1">
+                                <p className="font-semibold text-foreground text-xs leading-tight">{n.title}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{n.message}</p>
+                                <p className="text-[10px] text-muted-foreground mt-1">
                                   {new Date(n.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                                 </p>
                               </div>
-                              {!n.read && <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0 mt-1" />}
+                              {!n.read && <div className="w-2 h-2 bg-primary/50 rounded-full flex-shrink-0 mt-1" />}
                             </div>
                           </div>
                         ))
@@ -807,21 +807,21 @@ const Header = ({ location, setLocation }) => {
                              <nav className="hidden lg:flex items-center gap-4">
                  <Link
                    to="help"
-                   className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors duration-300"
+                   className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary transition-colors duration-300"
                  >
                    <span>❓</span>
                    <span className="font-medium">Help</span>
                  </Link>
                  <Link
                    to="contact"
-                   className="flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 transition-colors duration-300"
+                   className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary transition-colors duration-300"
                  >
                    <span>📞</span>
                    <span className="font-medium">Contact</span>
                  </Link>
                </nav>
               <button
-                className="hidden md:flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-orange-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className="hidden md:flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-lg transition-colors"
                 onClick={() => setIsSearchOpen(true)}
               >
                 <FaSearch />
@@ -831,8 +831,8 @@ const Header = ({ location, setLocation }) => {
                {/* Cart Icon with restaurant indicator */}
                <div className="flex flex-col items-center">
                  <Link to="/home/cart" className="relative">
-                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center hover:bg-orange-200 transition-colors duration-300">
-                    <FaShoppingCart className="text-xl text-orange-600" />
+                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center hover:bg-primary/20 transition-colors duration-300">
+                    <FaShoppingCart className="text-xl text-primary" />
                   </div>
                   {cartTotalQty > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
@@ -841,7 +841,7 @@ const Header = ({ location, setLocation }) => {
                   )}
                 </Link>
                 {cartItems.length > 0 && (
-                  <span className="hidden lg:block text-xs text-orange-600 dark:text-orange-400 font-medium truncate max-w-[120px]">
+                  <span className="hidden lg:block text-xs text-primary font-medium truncate max-w-[120px]">
                     {cartItems[0]?.restaurantName}
                   </span>
                 )}
@@ -851,58 +851,58 @@ const Header = ({ location, setLocation }) => {
                {displayUser ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
                     onClick={() => setIsUserMenuOpen((prev) => !prev)}
                     aria-haspopup="menu"
                     aria-expanded={isUserMenuOpen}
                   >
-                    <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-primary/50 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                       {(displayUser.name || '').split(' ').filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('')}
                     </div>
-                    <span className="font-medium text-gray-700 dark:text-gray-200 max-w-[120px] truncate hidden md:block">
+                    <span className="font-medium text-foreground max-w-[120px] truncate hidden md:block">
                       {displayUser.name?.split(" ")[0] || "Account"}
                     </span>
-                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden z-50" role="menu">
-                      <div className="px-4 py-3 bg-orange-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-                        <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm truncate">{displayUser.name}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{displayUser.email}</p>
+                    <div className="absolute right-0 mt-2 w-56 bg-background border border-border rounded-xl shadow-xl overflow-hidden z-50" role="menu">
+                      <div className="px-4 py-3 bg-primary/5 border-b border-border">
+                        <p className="font-semibold text-foreground text-sm truncate">{displayUser.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{displayUser.email}</p>
                       </div>
-                      <Link to="/home/profile" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
-                        <FaUserCircle className="text-orange-500 flex-shrink-0" size={15} />
+                      <Link to="/home/profile" className="flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-primary/5 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
+                        <FaUserCircle className="text-primary flex-shrink-0" size={15} />
                         <span className="text-sm">My Profile</span>
                       </Link>
-                      <Link to="/home/orders" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
+                      <Link to="/home/orders" className="flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-primary/5 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
                         <span className="text-base w-4 text-center flex-shrink-0">📦</span>
                         <span className="text-sm">My Orders</span>
                       </Link>
-                      <Link to="/home/profile?tab=reviews" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
+                      <Link to="/home/profile?tab=reviews" className="flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-primary/5 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
                         <span className="text-base w-4 text-center flex-shrink-0">⭐</span>
                         <span className="text-sm">My Reviews</span>
                       </Link>
-                      <Link to="/home/profile?tab=settings" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
+                      <Link to="/home/profile?tab=settings" className="flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-primary/5 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
                         <span className="text-base w-4 text-center flex-shrink-0">⚙️</span>
                         <span className="text-sm">Settings</span>
                       </Link>
                       {(displayUser.role === 'RESTAURANT_OWNER' || displayUser.role === 'ADMIN') && (
-                        <Link to="/owner" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
-                          <FaStore className="text-orange-500 flex-shrink-0" size={14} />
+                        <Link to="/owner" className="flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-primary/5 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
+                          <FaStore className="text-primary flex-shrink-0" size={14} />
                           <span className="text-sm">Owner Dashboard</span>
                         </Link>
                       )}
                       {displayUser.role === 'ADMIN' && (
-                        <Link to="/admin" className="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-orange-50 dark:hover:bg-gray-800 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
+                        <Link to="/admin" className="flex items-center gap-3 px-4 py-2.5 text-foreground hover:bg-primary/5 transition-colors" role="menuitem" onClick={() => setIsUserMenuOpen(false)}>
                           <span className="text-base w-4 text-center flex-shrink-0">🛡️</span>
                           <span className="text-sm">Admin Panel</span>
                         </Link>
                       )}
-                      <div className="border-t border-gray-100 dark:border-gray-700" />
-                      <button className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-red-50 dark:hover:bg-gray-800 transition-colors" onClick={handleLogout} role="menuitem">
+                      <div className="border-t border-border" />
+                      <button className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-red-50 transition-colors" onClick={handleLogout} role="menuitem">
                         <FiLogOut size={14} className="flex-shrink-0" />
                         <span className="text-sm">Logout</span>
                       </button>
@@ -912,7 +912,7 @@ const Header = ({ location, setLocation }) => {
               ) : (
                 <button
                   onClick={() => setSignInOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-all shadow text-sm"
+                  className="flex items-center gap-2 px-4 py-2 bg-primary/50 hover:bg-primary-hover text-white font-semibold rounded-xl transition-all shadow text-sm"
                 >
                   <FiLogIn />
                   Sign In

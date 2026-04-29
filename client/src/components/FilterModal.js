@@ -76,24 +76,24 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white dark:bg-gray-900 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[82vh]">
+      <div className="bg-background rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[82vh]">
 
         {/* ── Header ─────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-gray-900 dark:text-white">Filters</h2>
+            <h2 className="text-base font-bold text-foreground">Filters</h2>
             {activeCount > 0 && (
-              <span className="bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">
+              <span className="bg-primary/50 text-white text-xs font-bold px-1.5 py-0.5 rounded-full leading-none">
                 {activeCount}
               </span>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+            className="p-2 rounded-full hover:bg-muted transition"
             aria-label="Close filters"
           >
-            <FaTimes className="text-gray-500 dark:text-gray-400" size={14} />
+            <FaTimes className="text-muted-foreground" size={14} />
           </button>
         </div>
 
@@ -101,7 +101,7 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
         <div className="flex flex-1 overflow-hidden min-h-0">
 
           {/* Left nav panel */}
-          <div className="w-36 sm:w-44 border-r border-gray-100 dark:border-gray-700 flex flex-col overflow-y-auto flex-shrink-0">
+          <div className="w-36 sm:w-44 border-r border-border flex flex-col overflow-y-auto flex-shrink-0">
             {LEFT_PANELS.map((panel) => {
               const isActive  = activePanel === panel.id;
               const hasValue  = panelHasValue(panel.id, pending);
@@ -111,13 +111,13 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                   onClick={() => setActivePanel(panel.id)}
                   className={`relative px-4 py-4 text-left text-sm font-medium border-l-[3px] transition-all ${
                     isActive
-                      ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400'
-                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                      ? 'border-primary bg-primary/5 dark:bg-primary/10 text-primary'
+                      : 'border-transparent text-muted-foreground hover:bg-muted/60'
                   }`}
                 >
                   {panel.label}
                   {hasValue && (
-                    <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                    <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-primary/50 flex-shrink-0" />
                   )}
                 </button>
               );
@@ -141,13 +141,13 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                           selected
-                            ? 'border-orange-500 bg-orange-500'
-                            : 'border-gray-300 dark:border-gray-600 group-hover:border-orange-300'
+                            ? 'border-primary bg-primary/50'
+                            : 'border-border group-hover:border-primary/40'
                         }`}
                       >
                         {selected && <div className="w-2 h-2 rounded-full bg-white" />}
                       </div>
-                      <span className={`text-sm ${selected ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}>
+                      <span className={`text-sm ${selected ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>
                         {opt.label}
                       </span>
                     </label>
@@ -160,13 +160,13 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
             {activePanel === 'cuisines' && (
               <div>
                 <div className="relative mb-3">
-                  <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
+                  <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={12} />
                   <input
                     type="text"
                     placeholder="Search cuisines…"
                     value={cuisineSearch}
                     onChange={(e) => setCuisineSearch(e.target.value)}
-                    className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 {pending.cuisines.length > 0 && (
@@ -175,7 +175,7 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                       <button
                         key={c}
                         onClick={() => toggleCuisine(c)}
-                        className="flex items-center gap-1 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-2 py-1 rounded-full font-medium"
+                        className="flex items-center gap-1 text-xs bg-primary/10 text-primary dark:text-primary px-2 py-1 rounded-full font-medium"
                       >
                         {c} <FaTimes size={9} />
                       </button>
@@ -184,7 +184,7 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                 )}
                 <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                   {filteredCuisines.length === 0 ? (
-                    <p className="text-gray-400 text-sm text-center py-6">No cuisines found</p>
+                    <p className="text-muted-foreground text-sm text-center py-6">No cuisines found</p>
                   ) : (
                     filteredCuisines.map((c) => {
                       const checked = pending.cuisines.includes(c);
@@ -197,8 +197,8 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                           <div
                             className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                               checked
-                                ? 'border-orange-500 bg-orange-500'
-                                : 'border-gray-300 dark:border-gray-600 group-hover:border-orange-300'
+                                ? 'border-primary bg-primary/50'
+                                : 'border-border group-hover:border-primary/40'
                             }`}
                           >
                             {checked && (
@@ -207,7 +207,7 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                               </svg>
                             )}
                           </div>
-                          <span className={`text-sm ${checked ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white'}`}>
+                          <span className={`text-sm ${checked ? 'font-semibold text-foreground' : 'text-muted-foreground group-hover:text-gray-900 dark:group-hover:text-white'}`}>
                             {c}
                           </span>
                         </label>
@@ -229,8 +229,8 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                       onClick={() => setPending((p) => ({ ...p, rating: opt.value }))}
                       className={`px-5 py-2.5 rounded-full border-2 text-sm font-semibold transition-all ${
                         selected
-                          ? 'border-orange-500 bg-orange-500 text-white shadow-md'
-                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-orange-300'
+                          ? 'border-primary bg-primary/50 text-white shadow-md'
+                          : 'border-border text-muted-foreground hover:border-primary/40'
                       }`}
                     >
                       {opt.label !== 'Any' && '⭐ '}{opt.label}
@@ -251,13 +251,13 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                       onClick={() => setPending((p) => ({ ...p, costRange: opt.value }))}
                       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all text-left ${
                         selected
-                          ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400'
-                          : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-orange-200 dark:hover:border-orange-700'
+                          ? 'border-primary bg-primary/5 dark:bg-primary/10 text-primary dark:text-primary'
+                          : 'border-border text-muted-foreground hover:border-primary/30 dark:hover:border-primary/30'
                       }`}
                     >
                       <span>{opt.label}</span>
                       {selected && (
-                        <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
+                        <div className="w-5 h-5 rounded-full bg-primary/50 flex items-center justify-center flex-shrink-0">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
@@ -283,13 +283,13 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                           selected
-                            ? 'border-orange-500 bg-orange-500'
-                            : 'border-gray-300 dark:border-gray-600 group-hover:border-orange-300'
+                            ? 'border-primary bg-primary/50'
+                            : 'border-border group-hover:border-primary/40'
                         }`}
                       >
                         {selected && <div className="w-2 h-2 rounded-full bg-white" />}
                       </div>
-                      <span className={`text-sm ${selected ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}>
+                      <span className={`text-sm ${selected ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>
                         {opt.label}
                       </span>
                     </label>
@@ -302,16 +302,16 @@ const FilterModal = ({ isOpen, onClose, onApply, current, allCuisines }) => {
         </div>
 
         {/* ── Footer ─────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
+        <div className="flex items-center justify-between px-5 py-4 border-t border-border bg-card/60">
           <button
             onClick={handleClear}
-            className="text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition underline-offset-2 hover:underline"
+            className="text-sm font-semibold text-muted-foreground hover:text-foreground transition underline-offset-2 hover:underline"
           >
             Clear all
           </button>
           <button
             onClick={handleApply}
-            className="px-8 py-2.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold rounded-full transition shadow-md text-sm"
+            className="px-8 py-2.5 bg-primary/50 hover:bg-primary-hover active:bg-primary-hover text-white font-bold rounded-full transition shadow-md text-sm"
           >
             Apply{activeCount > 0 ? ` (${activeCount})` : ''}
           </button>

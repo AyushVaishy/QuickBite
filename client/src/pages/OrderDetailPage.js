@@ -21,7 +21,7 @@ const STATUS_COLORS = {
   PLACED:           "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   CONFIRMED:        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
   PREPARING:        "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-  OUT_FOR_DELIVERY: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+  OUT_FOR_DELIVERY: "bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary",
   DELIVERED:        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
   CANCELLED:        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 };
@@ -47,7 +47,7 @@ const StarPicker = ({ value, onChange }) => (
       <button key={n} type="button" onClick={() => onChange(n)} className="focus:outline-none">
         <FaStar
           size={24}
-          className={`transition-colors ${n <= value ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}`}
+          className={`transition-colors ${n <= value ? "text-yellow-400" : "text-muted-foreground"}`}
         />
       </button>
     ))}
@@ -89,19 +89,19 @@ const ReviewForm = ({ restaurantId, restaurantName, onReviewed }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="font-bold text-gray-800 dark:text-gray-100">Rate your experience at {restaurantName}</h3>
+      <h3 className="font-bold text-foreground">Rate your experience at {restaurantName}</h3>
       <StarPicker value={rating} onChange={setRating} />
       <textarea
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Share what you loved (optional)…"
         rows={3}
-        className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-orange-400 outline-none resize-none"
+        className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:ring-2 focus:ring-primary outline-none resize-none"
       />
       <button
         type="submit"
         disabled={submitting || rating === 0}
-        className="px-5 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white rounded-lg font-semibold text-sm transition"
+        className="px-5 py-2 bg-primary/50 hover:bg-primary-hover disabled:opacity-60 text-white rounded-lg font-semibold text-sm transition"
       >
         {submitting ? "Submitting…" : "Submit Review"}
       </button>
@@ -116,10 +116,10 @@ const ProgressTracker = ({ status }) => {
   return (
     <div className="relative px-2">
       {/* Connecting line background */}
-      <div className="absolute top-5 left-7 right-7 h-0.5 bg-gray-200 dark:bg-gray-700" />
+      <div className="absolute top-5 left-7 right-7 h-0.5 bg-gray-200" />
       {/* Connecting line fill */}
       <div
-        className="absolute top-5 left-7 h-0.5 bg-orange-500 transition-all duration-700"
+        className="absolute top-5 left-7 h-0.5 bg-primary/50 transition-all duration-700"
         style={{ width: currentIdx >= 0 ? `calc(${(currentIdx / (STEPS.length - 1)) * 100}% - 14px)` : "0%" }}
       />
       <div className="relative flex justify-between">
@@ -130,14 +130,14 @@ const ProgressTracker = ({ status }) => {
             <div key={step.key} className="flex flex-col items-center gap-1.5 flex-1">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 z-10 transition-all ${
                 done
-                  ? "bg-orange-500 border-orange-500 shadow-md shadow-orange-200 dark:shadow-orange-900"
-                  : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600"
-              } ${active ? "scale-110 ring-4 ring-orange-200 dark:ring-orange-900/50" : ""}`}
+                  ? "bg-primary/50 border-primary shadow-md shadow-primary/20 dark:shadow-primary/30"
+                  : "bg-card border-border"
+              } ${active ? "scale-110 ring-4 ring-primary/20 dark:ring-primary/10" : ""}`}
               >
                 {step.icon}
               </div>
               <span className={`text-[10px] text-center font-medium leading-tight ${
-                done ? "text-orange-600 dark:text-orange-400" : "text-gray-400"
+                done ? "text-primary" : "text-muted-foreground"
               }`}>
                 {step.label}
               </span>
@@ -180,7 +180,7 @@ const LiveTrackingCard = ({ order }) => {
       <div className="text-center py-6 px-4">
         <div className="text-5xl mb-3">🎉</div>
         <p className="text-xl font-bold text-green-600 dark:text-green-400">Order Delivered!</p>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Hope you enjoyed your meal 😋</p>
+        <p className="text-sm text-muted-foreground mt-1">Hope you enjoyed your meal 😋</p>
       </div>
     );
   }
@@ -196,24 +196,24 @@ const LiveTrackingCard = ({ order }) => {
         <DeliveryMap order={order} status={order.status} />
       )}
       {/* ETA Banner */}
-      <div className={`rounded-xl p-4 text-center ${isArriving ? "bg-orange-50 dark:bg-orange-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}>
+      <div className={`rounded-xl p-4 text-center ${isArriving ? "bg-primary/5 dark:bg-primary/10" : "bg-blue-50 dark:bg-blue-900/20"}`}>
         {timeLeft > 0 ? (
           <>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
               {isArriving ? "Arriving in" : "Estimated Delivery"}
             </p>
-            <p className={`text-4xl font-extrabold tabular-nums ${isArriving ? "text-orange-500" : "text-blue-600 dark:text-blue-400"}`}>
+            <p className={`text-4xl font-extrabold tabular-nums ${isArriving ? "text-primary" : "text-blue-600 dark:text-blue-400"}`}>
               {mins}:{secs.toString().padStart(2, "0")}
             </p>
-            <p className="text-xs text-gray-400 mt-1">minutes</p>
+            <p className="text-xs text-muted-foreground mt-1">minutes</p>
           </>
         ) : (
-          <p className="text-sm font-medium text-gray-500">Delivery imminent…</p>
+          <p className="text-sm font-medium text-muted-foreground">Delivery imminent…</p>
         )}
       </div>
 
       {/* Status message */}
-      <p className="text-center text-sm text-gray-600 dark:text-gray-300 font-medium">
+      <p className="text-center text-sm text-muted-foreground font-medium">
         {STATUS_MESSAGES[order.status]}
       </p>
 
@@ -222,13 +222,13 @@ const LiveTrackingCard = ({ order }) => {
 
       {/* Dummy delivery partner (only when out for delivery) */}
       {order.status === "OUT_FOR_DELIVERY" && (
-        <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700">
-          <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-            <MdDeliveryDining size={22} className="text-orange-500" />
+        <div className="mt-4 flex items-center gap-3 p-3 bg-muted/50 rounded-xl border border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <MdDeliveryDining size={22} className="text-primary" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">Raju Kumar</p>
-            <p className="text-xs text-gray-400">Delivery Partner · ⭐ 4.8</p>
+            <p className="text-sm font-semibold text-foreground">Raju Kumar</p>
+            <p className="text-xs text-muted-foreground">Delivery Partner · ⭐ 4.8</p>
           </div>
           <button className="p-2 rounded-full bg-green-500 hover:bg-green-600 text-white transition">
             <FaPhoneAlt size={12} />
@@ -330,17 +330,17 @@ const OrderDetailPage = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center dark:bg-gray-900">
-        <div className="animate-pulse text-gray-400">Loading order…</div>
+      <div className="min-h-screen pt-24 flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Loading order…</div>
       </div>
     );
 
   if (!order)
     return (
-      <div className="min-h-screen pt-24 flex flex-col items-center justify-center gap-4 dark:bg-gray-900">
-        <FaBoxOpen size={48} className="text-gray-300" />
-        <p className="text-gray-500">Order not found.</p>
-        <Link to="/home/orders" className="text-orange-500 hover:underline text-sm">← Back to Orders</Link>
+      <div className="min-h-screen pt-24 flex flex-col items-center justify-center gap-4">
+        <FaBoxOpen size={48} className="text-muted-foreground" />
+        <p className="text-muted-foreground">Order not found.</p>
+        <Link to="/home/orders" className="text-primary hover:underline text-sm">← Back to Orders</Link>
       </div>
     );
 
@@ -350,17 +350,17 @@ const OrderDetailPage = () => {
   const deliveryAddress = order.notes || order.deliveryAddress || "";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16 px-4">
+    <div className="min-h-screen bg-background pt-24 pb-16 px-4">
       <div className="max-w-2xl mx-auto space-y-5">
 
         {/* Back + Header */}
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition">
+          <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground dark:hover:text-gray-200 transition">
             <FaArrowLeft />
           </button>
           <div className="flex-1">
-            <h1 className="font-bold text-xl text-gray-800 dark:text-gray-100">Order Details</h1>
-            <p className="text-xs text-gray-400">#{order.id.slice(0, 8).toUpperCase()}</p>
+            <h1 className="font-bold text-xl text-foreground">Order Details</h1>
+            <p className="text-xs text-muted-foreground">#{order.id.slice(0, 8).toUpperCase()}</p>
           </div>
           <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${STATUS_COLORS[order.status]}`}>
             {STATUS_LABELS[order.status] || order.status}
@@ -368,15 +368,15 @@ const OrderDetailPage = () => {
         </div>
 
         {/* Restaurant */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-4">
+        <div className="bg-card rounded-xl shadow border border-border p-4">
           <Link to={`/home/restaurants/${order.restaurantId}`} className="flex items-center gap-3 hover:opacity-80 transition">
             <img
               src={order.restaurant?.imageUrl || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=80&h=80&fit=crop"}
               alt="" className="w-12 h-12 rounded-xl object-cover"
             />
             <div>
-              <p className="font-bold text-gray-800 dark:text-gray-100">{order.restaurant?.name}</p>
-              <p className="text-xs text-gray-400">
+              <p className="font-bold text-foreground">{order.restaurant?.name}</p>
+              <p className="text-xs text-muted-foreground">
                 {new Date(order.createdAt).toLocaleDateString("en-IN", {
                   day: "numeric", month: "long", year: "numeric",
                   hour: "2-digit", minute: "2-digit",
@@ -387,32 +387,32 @@ const OrderDetailPage = () => {
         </div>
 
         {/* Live Tracking Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
-          <h2 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-            <FaMotorcycle className="text-orange-500" /> Live Tracking
+        <div className="bg-card rounded-xl shadow border border-border p-5">
+          <h2 className="font-bold text-foreground mb-4 flex items-center gap-2">
+            <FaMotorcycle className="text-primary" /> Live Tracking
           </h2>
           <LiveTrackingCard order={order} />
         </div>
 
         {/* Delivery Address */}
         {deliveryAddress && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-4">
+          <div className="bg-card rounded-xl shadow border border-border p-4">
             <div className="flex items-start gap-3">
-              <FaMapMarkerAlt className="text-orange-500 flex-shrink-0 mt-0.5" size={14} />
+              <FaMapMarkerAlt className="text-primary flex-shrink-0 mt-0.5" size={14} />
               <div>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Delivery Address</p>
-                <p className="text-sm text-gray-800 dark:text-gray-200">{deliveryAddress}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Delivery Address</p>
+                <p className="text-sm text-foreground">{deliveryAddress}</p>
               </div>
             </div>
           </div>
         )}
 
         {/* Items */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-            <h2 className="font-bold text-gray-800 dark:text-gray-100">Order Items</h2>
+        <div className="bg-card rounded-xl shadow border border-border overflow-hidden">
+          <div className="px-4 py-3 border-b border-border">
+            <h2 className="font-bold text-foreground">Order Items</h2>
           </div>
-          <div className="divide-y divide-gray-50 dark:divide-gray-700">
+          <div className="divide-y divide-gray-50">
             {order.items.map((item, idx) => (
               <div key={idx} className="flex items-center justify-between px-4 py-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -420,13 +420,13 @@ const OrderDetailPage = () => {
                     <img src={item.menuItem.imageUrl} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                   )}
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-gray-800 dark:text-gray-100 line-clamp-1">
+                    <p className="text-sm font-medium text-foreground line-clamp-1">
                       {item.menuItem?.name || "Item"}
                     </p>
-                    <p className="text-xs text-gray-400">×{item.quantity}</p>
+                    <p className="text-xs text-muted-foreground">×{item.quantity}</p>
                   </div>
                 </div>
-                <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 flex-shrink-0 ml-4">
+                <span className="text-sm font-semibold text-foreground flex-shrink-0 ml-4">
                   ₹{Math.round((item.priceAtTime * item.quantity) / 100)}
                 </span>
               </div>
@@ -434,17 +434,17 @@ const OrderDetailPage = () => {
           </div>
 
           {/* Bill */}
-          <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-3 bg-gray-50 dark:bg-gray-800/60 space-y-1.5">
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+          <div className="border-t border-border px-4 py-3 bg-card/60 space-y-1.5">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>Item total</span><span>₹{itemTotal.toFixed(0)}</span>
             </div>
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>Delivery fee</span><span>₹{deliveryFee}</span>
             </div>
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-sm text-muted-foreground">
               <span>GST (5%)</span><span>₹{gst}</span>
             </div>
-            <div className="flex justify-between text-base font-bold text-gray-800 dark:text-gray-100 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-between text-base font-bold text-foreground pt-2 border-t border-border">
               <span>Total Paid</span><span>₹{Math.round(order.totalAmount / 100)}</span>
             </div>
           </div>
@@ -464,7 +464,7 @@ const OrderDetailPage = () => {
           {["DELIVERED", "CANCELLED"].includes(order.status) && (
             <button
               onClick={handleReorder}
-              className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold text-sm transition shadow"
+              className="flex-1 py-2.5 bg-primary/50 hover:bg-primary-hover text-white rounded-xl font-semibold text-sm transition shadow"
             >
               🔄 Reorder
             </button>
@@ -473,7 +473,7 @@ const OrderDetailPage = () => {
 
         {/* Review (only after delivery) */}
         {order.status === "DELIVERED" && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-100 dark:border-gray-700 p-5">
+          <div className="bg-card rounded-xl shadow border border-border p-5">
             <ReviewForm
               restaurantId={order.restaurantId}
               restaurantName={order.restaurant?.name}

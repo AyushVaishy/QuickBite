@@ -91,7 +91,7 @@ const SearchResultsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-950 pt-24">
+    <div className="min-h-screen bg-background pt-24">
       <div className="max-w-6xl mx-auto px-6">
         {error && (
           <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300">
@@ -101,21 +101,21 @@ const SearchResultsPage = () => {
         {/* Search Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <FaSearch className="text-orange-500 text-xl" />
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            <FaSearch className="text-primary text-xl" />
+            <h1 className="text-2xl font-bold text-foreground">
               Search Results for "{query}"
             </h1>
           </div>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-muted-foreground">
             Found {restaurants.length} restaurant{restaurants.length !== 1 ? 's' : ''}
           </p>
         </div>
 
         {/* Filters and Sorting */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 mb-6">
+        <div className="bg-section rounded-2xl shadow-sm border border-border p-4 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div>
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Sort by</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Sort by</p>
               <div className="flex flex-wrap gap-2">
                 {[
                   { value: 'relevance', label: 'Relevance' },
@@ -129,8 +129,8 @@ const SearchResultsPage = () => {
                     onClick={() => handleSortChange(opt.value)}
                     className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
                       sortBy === opt.value
-                        ? 'bg-orange-500 border-orange-500 text-white'
-                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-orange-400'
+                        ? 'bg-primary border-primary text-white'
+                        : 'bg-card border-border text-foreground hover:border-primary'
                     }`}
                   >
                     {opt.label}
@@ -139,7 +139,7 @@ const SearchResultsPage = () => {
               </div>
             </div>
             <div className="sm:border-l sm:border-gray-200 sm:dark:border-gray-700 sm:pl-4">
-              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Filter</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Filter</p>
               <div className="flex flex-wrap gap-2">
                 {[
                   { value: 'all', label: 'All' },
@@ -152,7 +152,7 @@ const SearchResultsPage = () => {
                     className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
                       filterBy === opt.value
                         ? 'bg-gray-800 dark:bg-gray-200 border-gray-800 dark:border-gray-200 text-white dark:text-gray-900'
-                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-500'
+                        : 'bg-card border-border text-foreground hover:border-gray-500'
                     }`}
                   >
                     {opt.label}
@@ -175,15 +175,15 @@ const SearchResultsPage = () => {
         ) : (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
               No restaurants found
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-muted-foreground mb-6">
               We couldn't find any restaurants matching "{query}". Try searching for something else.
             </p>
             <Link
               to="/home"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors"
             >
               <FaSearch />
               Browse All Restaurants

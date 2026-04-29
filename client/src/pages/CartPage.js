@@ -145,16 +145,16 @@ const CartPage = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 dark:from-gray-900 dark:to-gray-950 pt-24 pb-10 px-4">
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted pt-24 pb-10 px-4">
         <div className="max-w-lg mx-auto text-center">
-          <div className="w-28 h-28 bg-white dark:bg-gray-800 rounded-full shadow-lg mx-auto flex items-center justify-center mb-6">
-            <FaShoppingCart className="text-5xl text-orange-400" />
+          <div className="w-28 h-28 bg-card rounded-full shadow-lg mx-auto flex items-center justify-center mb-6">
+            <FaShoppingCart className="text-5xl text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-3">Your Cart is Empty</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-3">Your Cart is Empty</h1>
           <p className="text-gray-500 dark:text-gray-300 mb-8">Add some delicious food to get started!</p>
           <Link
             to="/home"
-            className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition shadow"
+            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-hover transition shadow"
           >
             <FaUtensils /> Explore Restaurants
           </Link>
@@ -164,24 +164,24 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-24 pb-16 px-4 md:px-8">
+    <div className="min-h-screen bg-background pt-24 pb-16 px-4 md:px-8">
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-6">
 
         {/* ── Left: Address + Payment ─────────────────────────── */}
         <div className="flex-1 space-y-4">
 
           {/* Delivery Address */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-5">
+          <div className="bg-card rounded-xl shadow p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <span className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-                  <FaMapMarkerAlt className="text-orange-500" size={14} />
+                <span className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                  <FaMapMarkerAlt className="text-primary" size={14} />
                 </span>
-                <h2 className="font-bold text-lg text-gray-800 dark:text-gray-100">Delivery Address</h2>
+                <h2 className="font-bold text-lg text-foreground">Delivery Address</h2>
               </div>
               <button
                 onClick={() => setShowNewForm((v) => !v)}
-                className="flex items-center gap-1.5 text-xs text-orange-500 hover:text-orange-600 font-semibold"
+                className="flex items-center gap-1.5 text-xs text-primary hover:text-primary font-semibold"
               >
                 <FaPlus size={10} /> Add New
               </button>
@@ -195,8 +195,8 @@ const CartPage = () => {
                     key={addr.id}
                     className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
                       selectedAddressId === addr.id
-                        ? "border-orange-400 bg-orange-50 dark:bg-orange-900/10"
-                        : "border-gray-200 dark:border-gray-700 hover:border-orange-300"
+                        ? "border-primary bg-muted"
+                        : "border-border hover:border-primary"
                     }`}
                   >
                     <input
@@ -205,11 +205,11 @@ const CartPage = () => {
                       value={addr.id}
                       checked={selectedAddressId === addr.id}
                       onChange={() => { setSelectedAddressId(addr.id); setShowNewForm(false); }}
-                      className="mt-0.5 accent-orange-500"
+                      className="mt-0.5 accent-primary"
                     />
                     <div>
-                      <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm">{addr.label}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{addr.street}, {addr.city}, {addr.state} {addr.pincode}</p>
+                      <p className="font-semibold text-foreground text-sm">{addr.label}</p>
+                      <p className="text-xs text-muted-foreground">{addr.street}, {addr.city}, {addr.state} {addr.pincode}</p>
                     </div>
                   </label>
                 ))}
@@ -218,7 +218,7 @@ const CartPage = () => {
 
             {/* Add new address form */}
             {showNewForm && (
-              <div className="border border-dashed border-orange-300 rounded-lg p-3 space-y-2">
+              <div className="border border-dashed border-primary rounded-lg p-3 space-y-2">
                 <div className="flex gap-2">
                   {["Home", "Work", "Other"].map((l) => (
                     <button
@@ -226,8 +226,8 @@ const CartPage = () => {
                       onClick={() => setNewAddress((p) => ({ ...p, label: l }))}
                       className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${
                         newAddress.label === l
-                          ? "bg-orange-500 text-white border-orange-500"
-                          : "bg-white dark:bg-gray-900 border-gray-300 text-gray-600 dark:text-gray-300"
+                          ? "bg-primary text-white border-primary"
+                          : "bg-section border-gray-300 text-muted-foreground"
                       }`}
                     >
                       {l}
@@ -239,7 +239,7 @@ const CartPage = () => {
                   placeholder="Street / Area *"
                   value={newAddress.street}
                   onChange={(e) => setNewAddress((p) => ({ ...p, street: e.target.value }))}
-                  className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-section text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <div className="flex gap-2">
                   <input
@@ -247,20 +247,20 @@ const CartPage = () => {
                     placeholder="City *"
                     value={newAddress.city}
                     onChange={(e) => setNewAddress((p) => ({ ...p, city: e.target.value }))}
-                    className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    className="flex-1 border border-border rounded-lg px-3 py-2 text-sm bg-section text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   <input
                     type="text"
                     placeholder="Pincode"
                     value={newAddress.pincode}
                     onChange={(e) => setNewAddress((p) => ({ ...p, pincode: e.target.value }))}
-                    className="w-28 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    className="w-28 border border-border rounded-lg px-3 py-2 text-sm bg-section text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <button
                   onClick={handleSaveNewAddress}
                   disabled={savingAddress}
-                  className="w-full py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition disabled:opacity-60"
+                  className="w-full py-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-lg transition disabled:opacity-60"
                 >
                   {savingAddress ? "Saving…" : "Save Address"}
                 </button>
@@ -269,29 +269,29 @@ const CartPage = () => {
 
             {/* Fallback: no saved addresses and form hidden */}
             {savedAddresses.length === 0 && !showNewForm && (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 No saved addresses.{" "}
-                <button onClick={() => setShowNewForm(true)} className="text-orange-500 hover:underline">Add one</button>
+                <button onClick={() => setShowNewForm(true)} className="text-primary hover:underline">Add one</button>
               </p>
             )}
           </div>
 
           {/* Instructions */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-5">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-sm">Cooking instructions (optional)</h3>
+          <div className="bg-card rounded-xl shadow p-5">
+            <h3 className="font-semibold text-foreground mb-2 text-sm">Cooking instructions (optional)</h3>
             <input
               type="text"
               placeholder="e.g. Less spicy, no onion…"
-              className="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-section text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               value={suggestion}
               onChange={(e) => setSuggestion(e.target.value)}
             />
           </div>
 
           {/* Coupon */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-5">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 text-sm flex items-center gap-2">
-              <FaTag className="text-orange-500" size={13} /> Apply Coupon
+          <div className="bg-card rounded-xl shadow p-5">
+            <h3 className="font-semibold text-foreground mb-3 text-sm flex items-center gap-2">
+              <FaTag className="text-primary" size={13} /> Apply Coupon
             </h3>
             {!appliedCoupon ? (
               <div className="flex gap-2">
@@ -301,11 +301,11 @@ const CartPage = () => {
                   value={couponInput}
                   onChange={(e) => { setCouponInput(e.target.value); setCouponError(""); }}
                   onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
-                  className="flex-1 min-w-0 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400 uppercase"
+                  className="flex-1 min-w-0 border border-border rounded-lg px-3 py-2 text-sm bg-section text-foreground focus:outline-none focus:ring-2 focus:ring-primary uppercase"
                 />
                 <button
                   onClick={handleApplyCoupon}
-                  className="flex-shrink-0 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition"
+                  className="flex-shrink-0 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold rounded-lg transition"
                 >
                   Apply
                 </button>
@@ -327,16 +327,16 @@ const CartPage = () => {
           </div>
 
           {/* Payment */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-5">
-            <h2 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-4">Payment</h2>
-            <div className="flex items-center gap-3 p-3 border-2 border-orange-400 rounded-lg bg-orange-50 dark:bg-orange-900/10">
-              <div className="w-4 h-4 rounded-full border-2 border-orange-500 flex items-center justify-center">
-                <div className="w-2 h-2 bg-orange-500 rounded-full" />
+          <div className="bg-card rounded-xl shadow p-5">
+            <h2 className="font-bold text-lg text-foreground mb-4">Payment</h2>
+            <div className="flex items-center gap-3 p-3 border-2 border-primary rounded-lg bg-muted">
+              <div className="w-4 h-4 rounded-full border-2 border-primary flex items-center justify-center">
+                <div className="w-2 h-2 bg-primary rounded-full" />
               </div>
-              <span className="font-medium text-gray-800 dark:text-gray-100">Cash on Delivery</span>
+              <span className="font-medium text-foreground">Cash on Delivery</span>
             </div>
             <button
-              className="mt-4 w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white py-3 rounded-xl font-bold text-base transition shadow"
+              className="mt-4 w-full bg-primary hover:bg-primary-hover disabled:opacity-60 text-white py-3 rounded-xl font-bold text-base transition shadow"
               onClick={handlePlaceOrder}
               disabled={placing || (!selectedAddressId && !address.trim())}
             >
@@ -347,16 +347,16 @@ const CartPage = () => {
 
         {/* ── Right: Cart Summary ──────────────────────────────── */}
         <div className="w-full md:w-[360px] flex-shrink-0">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-5 sticky top-24">
+          <div className="bg-card rounded-xl shadow p-5 sticky top-24">
             {/* Restaurant name */}
-            <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+            <div className="flex items-center gap-3 mb-4 pb-4 border-b border-border">
               <img
                 src={cartItems[0]?.imageUrl || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=80&h=80&fit=crop"}
                 alt="Restaurant"
                 className="w-12 h-12 rounded-lg object-cover"
               />
               <div>
-                <div className="font-bold text-gray-800 dark:text-gray-100">{cartItems[0]?.restaurantName || "Restaurant"}</div>
+                <div className="font-bold text-foreground">{cartItems[0]?.restaurantName || "Restaurant"}</div>
                 <div className="text-xs text-gray-400">Your order</div>
               </div>
             </div>
@@ -365,21 +365,21 @@ const CartPage = () => {
             <div className="space-y-3 mb-4">
               {cartItems.map((item) => (
                 <div key={item.id} className="flex items-center justify-between gap-2">
-                  <span className="text-sm text-gray-800 dark:text-gray-100 flex-1 line-clamp-1">{item.name}</span>
+                  <span className="text-sm text-foreground flex-1 line-clamp-1">{item.name}</span>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     <button
                       onClick={() => {
                         if (item.quantity <= 1) dispatch(removeItem(item.id));
                         else dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
                       }}
-                      className="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 font-bold hover:bg-gray-200 transition flex items-center justify-center text-sm"
+                      className="w-6 h-6 rounded-full bg-muted text-gray-600 font-bold hover:bg-gray-200 transition flex items-center justify-center text-sm"
                     >−</button>
-                    <span className="w-5 text-center text-sm font-semibold text-gray-800 dark:text-gray-100">{item.quantity}</span>
+                    <span className="w-5 text-center text-sm font-semibold text-foreground">{item.quantity}</span>
                     <button
                       onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
-                      className="w-6 h-6 rounded-full bg-orange-500 text-white font-bold hover:bg-orange-600 transition flex items-center justify-center text-sm"
+                      className="w-6 h-6 rounded-full bg-primary text-white font-bold hover:bg-primary-hover transition flex items-center justify-center text-sm"
                     >+</button>
-                    <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 w-14 text-right">
+                    <span className="text-sm font-semibold text-foreground w-14 text-right">
                       ₹{Math.round((item.price * item.quantity) / 100)}
                     </span>
                   </div>
@@ -388,14 +388,14 @@ const CartPage = () => {
             </div>
 
             {/* Bill */}
-            <div className="border-t border-gray-100 dark:border-gray-700 pt-3 space-y-2 text-sm">
-              <div className="flex justify-between text-gray-600 dark:text-gray-300">
+            <div className="border-t border-border pt-3 space-y-2 text-sm">
+              <div className="flex justify-between text-muted-foreground">
                 <span>Item total</span><span>₹{itemTotal.toFixed(0)}</span>
               </div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-300">
+              <div className="flex justify-between text-muted-foreground">
                 <span>Delivery fee</span><span>₹{effectiveDeliveryFee}</span>
               </div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-300">
+              <div className="flex justify-between text-muted-foreground">
                 <span>GST (5%)</span><span>₹{gst}</span>
               </div>
               {appliedCoupon && appliedCoupon !== "FREEDEL" && (
@@ -408,7 +408,7 @@ const CartPage = () => {
                   <span>Discount (FREEDEL)</span><span>-₹{baseDeliveryFee}</span>
                 </div>
               )}
-              <div className="flex justify-between font-bold text-base text-gray-800 dark:text-gray-100 pt-2 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex justify-between font-bold text-base text-foreground pt-2 border-t border-border">
                 <span>To Pay</span><span>₹{Math.round(toPay)}</span>
               </div>
             </div>

@@ -29,53 +29,53 @@ const HelpPage = () => {
   }, [activeFAQs, searchTerm]);
 
   return (
-    <div className="mt-20 min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+    <div className="mt-20 min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Hero */}
         <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg rounded-3xl shadow-2xl px-8 md:px-16 py-12 text-center">
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-orange-100 text-orange-600 text-sm font-semibold mb-4">
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
             <FaLifeRing className="text-base" />
             We’re one tap away—24 / 7 support
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground leading-tight">
             Help & Support
           </h1>
-          <p className="mt-4 text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Whether it’s tracking an order or partnering with us, get the answers you need faster than you can say “I’m hungry”.
           </p>
         </div>
 
         {/* Quick Contact Cards */}
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="rounded-3xl bg-white dark:bg-gray-900 shadow-xl border border-orange-100 dark:border-gray-800 p-6 flex items-start gap-4">
-            <span className="p-3 rounded-2xl bg-orange-100 text-orange-600">
+          <div className="rounded-3xl bg-background shadow-xl border border-border dark:border-gray-800 p-6 flex items-start gap-4">
+            <span className="p-3 rounded-2xl bg-primary/10 text-primary">
               <FaHeadset />
             </span>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Live Chat Support</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <h3 className="text-lg font-semibold text-foreground">Live Chat Support</h3>
+              <p className="text-sm text-muted-foreground">
                 Tap the chat bubble in the app for instant help from a Cravon expert.
               </p>
             </div>
           </div>
-          <div className="rounded-3xl bg-white dark:bg-gray-900 shadow-xl border border-orange-100 dark:border-gray-800 p-6 flex items-start gap-4">
-            <span className="p-3 rounded-2xl bg-orange-100 text-orange-600">
+          <div className="rounded-3xl bg-background shadow-xl border border-border dark:border-gray-800 p-6 flex items-start gap-4">
+            <span className="p-3 rounded-2xl bg-primary/10 text-primary">
               <FaEnvelopeOpenText />
             </span>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Email Assistance</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Write to <span className="font-semibold text-orange-600 dark:text-orange-400">support@cravon.in</span> for order queries.
+              <h3 className="text-lg font-semibold text-foreground">Email Assistance</h3>
+              <p className="text-sm text-muted-foreground">
+                Write to <span className="font-semibold text-primary">support@cravon.in</span> for order queries.
               </p>
             </div>
           </div>
-          <div className="rounded-3xl bg-white dark:bg-gray-900 shadow-xl border border-orange-100 dark:border-gray-800 p-6 flex items-start gap-4">
-            <span className="p-3 rounded-2xl bg-orange-100 text-orange-600">
+          <div className="rounded-3xl bg-background shadow-xl border border-border dark:border-gray-800 p-6 flex items-start gap-4">
+            <span className="p-3 rounded-2xl bg-primary/10 text-primary">
               <FaPhoneAlt />
             </span>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Partner Hotline</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <h3 className="text-lg font-semibold text-foreground">Partner Hotline</h3>
+              <p className="text-sm text-muted-foreground">
                 Restaurant & delivery partners call us at <span className="font-semibold">080-67466777</span>.
               </p>
             </div>
@@ -83,11 +83,11 @@ const HelpPage = () => {
         </div>
 
         {/* Knowledge Base */}
-        <div className="mt-12 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-orange-100 dark:border-gray-800 p-6 md:p-10">
+        <div className="mt-12 bg-background rounded-3xl shadow-2xl border border-border dark:border-gray-800 p-6 md:p-10">
           <div className="flex flex-col lg:flex-row gap-10">
             {/* Sidebar Navigation */}
-            <aside className="lg:w-72 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-5 shadow-inner">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-orange-600 dark:text-orange-400 mb-4">
+            <aside className="lg:w-72 bg-muted rounded-3xl p-5 shadow-inner">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-primary mb-4">
                 Browse by topic
               </h3>
               <div className="space-y-2">
@@ -102,8 +102,8 @@ const HelpPage = () => {
                       }}
                       className={`w-full text-left px-4 py-3 rounded-2xl font-medium flex items-center justify-between gap-3 transition-all duration-300 ${
                         isActive
-                          ? "bg-orange-500 text-white shadow-lg"
-                          : "bg-white/70 dark:bg-gray-900/60 text-gray-700 dark:text-gray-200 hover:bg-orange-100 hover:text-orange-600"
+                          ? "bg-primary/50 text-white shadow-lg"
+                          : "bg-white/70 dark:bg-gray-900/60 text-foreground hover:bg-primary/10 hover:text-primary"
                       }`}
                     >
                       <span className="truncate">{curr}</span>
@@ -120,30 +120,30 @@ const HelpPage = () => {
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h2 className="text-2xl font-bold text-foreground">
                     {activeSection?.title}
                   </h2>
                   {activeSection?.description && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 max-w-xl">
+                    <p className="text-sm text-muted-foreground mt-1 max-w-xl">
                       {activeSection.description}
                     </p>
                   )}
                 </div>
                 <div className="relative w-full sm:w-80">
-                  <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder="Search in this category..."
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
-                    className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 pl-10 pr-4 py-3 shadow-sm focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                    className="w-full rounded-xl border border-border bg-background text-foreground pl-10 pr-4 py-3 shadow-sm focus:ring-2 focus:ring-primary focus:border-primary"
                   />
                 </div>
               </div>
 
-              <div className="mt-8 bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-3xl shadow-inner px-6 py-4">
+              <div className="mt-8 bg-section border border-border dark:border-gray-800 rounded-3xl shadow-inner px-6 py-4">
                 {filteredFAQs.length === 0 ? (
-                  <div className="text-center text-gray-500 dark:text-gray-400 py-16">
+                  <div className="text-center text-muted-foreground py-16">
                     No results found. Try another keyword or pick a different topic.
                   </div>
                 ) : (

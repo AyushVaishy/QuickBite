@@ -119,8 +119,8 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
   };
 
   const inputClass = (field) =>
-    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all text-gray-700 placeholder-gray-400 bg-white ${
-      errors[field] ? "border-red-400" : "border-gray-200"
+    `w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-foreground placeholder-gray-400 bg-white ${
+      errors[field] ? "border-red-400" : "border-border"
     }`;
 
   return (
@@ -139,12 +139,12 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="bg-orange-500 text-white p-6">
+          <div className="bg-primary/50 text-white p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <FaSignInAlt /> Welcome to Cravon
               </h2>
-              <button onClick={onClose} className="text-2xl hover:text-orange-200">
+              <button onClick={onClose} className="text-2xl hover:text-primary/70">
                 <FaTimes />
               </button>
             </div>
@@ -154,7 +154,7 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
                   key={tab}
                   onClick={() => switchTab(tab)}
                   className={`flex-1 py-2 rounded-lg font-semibold capitalize transition-all ${
-                    activeTab === tab ? "bg-white text-orange-600" : "bg-orange-600 text-white hover:bg-orange-700"
+                    activeTab === tab ? "bg-white text-primary" : "bg-primary-hover text-white hover:bg-primary-hover"
                   }`}
                 >
                   {tab === "login" ? "Login" : "Sign Up"}
@@ -174,23 +174,23 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
             {activeTab === "login" && (
               <form onSubmit={handleLogin} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    <FaEnvelope className="inline mr-2 text-orange-500" />Email
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">
+                    <FaEnvelope className="inline mr-2 text-primary" />Email
                   </label>
                   <input type="email" name="email" value={formData.email} onChange={handleInputChange}
                     className={inputClass("email")} placeholder="you@example.com" />
                   {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    <FaLock className="inline mr-2 text-orange-500" />Password
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">
+                    <FaLock className="inline mr-2 text-primary" />Password
                   </label>
                   <input type="password" name="password" value={formData.password} onChange={handleInputChange}
                     className={inputClass("password")} placeholder="Your password" />
                   {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                 </div>
                 <button type="submit" disabled={isSubmitting}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                  className="w-full bg-primary/50 hover:bg-primary-hover text-white py-3.5 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                   {isSubmitting ? (
                     <><div className="animate-spin h-5 w-5 border-b-2 border-white rounded-full" /> Signing in...</>
                   ) : "Sign In"}
@@ -204,26 +204,26 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
                 {/* Step 1: Role selection */}
                 {!selectedRole && (
                   <div>
-                    <p className="text-gray-600 text-sm mb-4 font-medium">I want to join as a…</p>
+                    <p className="text-muted-foreground text-sm mb-4 font-medium">I want to join as a…</p>
                     <div className="grid grid-cols-1 gap-4">
                       <button onClick={() => setSelectedRole("USER")}
-                        className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl hover:border-orange-400 hover:bg-orange-50 transition-all text-left group">
-                        <div className="bg-orange-100 group-hover:bg-orange-200 p-3 rounded-lg">
-                          <FaUser className="text-orange-500 text-xl" />
+                        className="flex items-center gap-4 p-5 border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all text-left group">
+                        <div className="bg-primary/10 group-hover:bg-primary/20 p-3 rounded-lg">
+                          <FaUser className="text-primary text-xl" />
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800">Customer</p>
-                          <p className="text-sm text-gray-500">Order food from nearby restaurants</p>
+                          <p className="font-semibold text-foreground">Customer</p>
+                          <p className="text-sm text-muted-foreground">Order food from nearby restaurants</p>
                         </div>
                       </button>
                       <button onClick={() => setSelectedRole("RESTAURANT_OWNER")}
-                        className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl hover:border-orange-400 hover:bg-orange-50 transition-all text-left group">
-                        <div className="bg-orange-100 group-hover:bg-orange-200 p-3 rounded-lg">
-                          <FaStore className="text-orange-500 text-xl" />
+                        className="flex items-center gap-4 p-5 border-2 border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all text-left group">
+                        <div className="bg-primary/10 group-hover:bg-primary/20 p-3 rounded-lg">
+                          <FaStore className="text-primary text-xl" />
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-800">Restaurant Owner</p>
-                          <p className="text-sm text-gray-500">List your restaurant and manage orders</p>
+                          <p className="font-semibold text-foreground">Restaurant Owner</p>
+                          <p className="text-sm text-muted-foreground">List your restaurant and manage orders</p>
                         </div>
                       </button>
                     </div>
@@ -234,14 +234,14 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
                 {selectedRole && (
                   <form onSubmit={handleSignup} className="space-y-4">
                     <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg">
-                        {selectedRole === "USER" ? <FaUser className="text-orange-500 text-sm" /> : <FaStore className="text-orange-500 text-sm" />}
-                        <span className="text-sm font-medium text-orange-700">
+                      <div className="flex items-center gap-2 bg-primary/5 border border-primary/30 px-3 py-1.5 rounded-lg">
+                        {selectedRole === "USER" ? <FaUser className="text-primary text-sm" /> : <FaStore className="text-primary text-sm" />}
+                        <span className="text-sm font-medium text-primary">
                           {selectedRole === "USER" ? "Customer" : "Restaurant Owner"}
                         </span>
                       </div>
                       <button type="button" onClick={() => setSelectedRole(null)}
-                        className="text-xs text-gray-400 hover:text-gray-600 underline">Change</button>
+                        className="text-xs text-muted-foreground hover:text-muted-foreground underline">Change</button>
                     </div>
 
                     {selectedRole === "RESTAURANT_OWNER" && (
@@ -252,40 +252,40 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
                     )}
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                        <FaUser className="inline mr-2 text-orange-500" />Full Name
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">
+                        <FaUser className="inline mr-2 text-primary" />Full Name
                       </label>
                       <input type="text" name="name" value={formData.name} onChange={handleInputChange}
                         className={inputClass("name")} placeholder="Your full name" />
                       {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                        <FaEnvelope className="inline mr-2 text-orange-500" />Email
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">
+                        <FaEnvelope className="inline mr-2 text-primary" />Email
                       </label>
                       <input type="email" name="email" value={formData.email} onChange={handleInputChange}
                         className={inputClass("email")} placeholder="you@example.com" />
                       {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                        <FaLock className="inline mr-2 text-orange-500" />Password
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">
+                        <FaLock className="inline mr-2 text-primary" />Password
                       </label>
                       <input type="password" name="password" value={formData.password} onChange={handleInputChange}
                         className={inputClass("password")} placeholder="Min. 8 chars, 1 uppercase, 1 digit" />
                       {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                        <FaPhone className="inline mr-2 text-orange-500" />Phone
-                        <span className="font-normal text-gray-400 ml-1">(optional)</span>
+                      <label className="block text-sm font-semibold text-foreground mb-1.5">
+                        <FaPhone className="inline mr-2 text-primary" />Phone
+                        <span className="font-normal text-muted-foreground ml-1">(optional)</span>
                       </label>
                       <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange}
                         className={inputClass("phone")} placeholder="10-digit mobile number" />
                     </div>
 
                     <button type="submit" disabled={isSubmitting}
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                      className="w-full bg-primary/50 hover:bg-primary-hover text-white py-3.5 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60">
                       {isSubmitting ? (
                         <><div className="animate-spin h-5 w-5 border-b-2 border-white rounded-full" /> Creating account...</>
                       ) : selectedRole === "RESTAURANT_OWNER" ? (
@@ -297,7 +297,7 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
               </>
             )}
 
-            <p className="mt-6 text-xs text-gray-400 text-center">
+            <p className="mt-6 text-xs text-muted-foreground text-center">
               By continuing, you agree to our Terms of Service and Privacy Policy.
             </p>
           </div>

@@ -14,14 +14,14 @@ import { FaUsers, FaStore, FaClipboardList, FaRupeeSign } from 'react-icons/fa';
 const ORDER_STATUSES = ['PENDING', 'CONFIRMED', 'PREPARING', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'];
 
 const ROLE_BADGES = {
-  USER: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+  USER: 'bg-muted text-foreground dark:text-muted-foreground',
   RESTAURANT_OWNER: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
   ADMIN: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
 };
 
 const Spinner = () => (
   <div className="flex items-center justify-center py-16">
-    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-500"></div>
+    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
   </div>
 );
 
@@ -125,11 +125,11 @@ const AdminPanel = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-gray-900 dark:bg-gray-950 px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-4">
-          <Link to="/home" className="text-orange-400 hover:text-orange-300 font-medium flex items-center gap-1 text-sm">
+          <Link to="/home" className="text-primary hover:text-primary/80 font-medium flex items-center gap-1 text-sm">
             ← Back to App
           </Link>
           <h1 className="text-2xl font-bold text-white">🛡️ Admin Panel</h1>
@@ -148,13 +148,13 @@ const AdminPanel = () => {
               <FaUsers className="text-4xl text-blue-200 opacity-70" />
             </div>
           </div>
-          <div className="bg-orange-500 rounded-xl p-5 text-white shadow-lg">
+          <div className="bg-primary/50 rounded-xl p-5 text-white shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-orange-100 text-xs font-medium uppercase tracking-wide">Restaurants</p>
+                <p className="text-primary/80 text-xs font-medium uppercase tracking-wide">Restaurants</p>
                 <p className="text-3xl font-bold mt-1">{stats?.restaurants ?? '—'}</p>
               </div>
-              <FaStore className="text-4xl text-orange-200 opacity-70" />
+              <FaStore className="text-4xl text-primary/70 opacity-70" />
             </div>
           </div>
           <div className="bg-purple-500 rounded-xl p-5 text-white shadow-lg">
@@ -180,16 +180,16 @@ const AdminPanel = () => {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-card rounded-xl shadow-sm border border-border">
+          <div className="flex border-b border-border">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => handleTabChange(tab.key)}
                 className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 -mb-px ${
                   activeTab === tab.key
-                    ? 'border-orange-500 text-orange-600 dark:text-orange-400'
-                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {tab.icon} {tab.label}
@@ -201,30 +201,30 @@ const AdminPanel = () => {
           {activeTab === 'users' && (
             <div className="overflow-x-auto">
               {usersLoading ? <Spinner /> : !users ? null : users.length === 0 ? (
-                <p className="text-center py-12 text-gray-500">No users found</p>
+                <p className="text-center py-12 text-muted-foreground">No users found</p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Name</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Email</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Role</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Phone</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Joined</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Name</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Email</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Role</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Phone</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Joined</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <tbody className="divide-y divide-border">
                     {users.map((u) => (
-                      <tr key={u.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                        <td className="px-6 py-4 font-medium text-gray-800 dark:text-gray-200">{u.name}</td>
-                        <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{u.email}</td>
+                      <tr key={u.id} className="hover:bg-muted">
+                        <td className="px-6 py-4 font-medium text-foreground">{u.name}</td>
+                        <td className="px-6 py-4 text-muted-foreground">{u.email}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${ROLE_BADGES[u.role] || ROLE_BADGES.USER}`}>
                             {u.role}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{u.phone || '—'}</td>
-                        <td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-xs">
+                        <td className="px-6 py-4 text-muted-foreground">{u.phone || '—'}</td>
+                        <td className="px-6 py-4 text-muted-foreground text-xs">
                           {new Date(u.createdAt).toLocaleDateString('en-IN')}
                         </td>
                       </tr>
@@ -239,27 +239,27 @@ const AdminPanel = () => {
           {activeTab === 'restaurants' && (
             <div className="overflow-x-auto">
               {restaurantsLoading ? <Spinner /> : !restaurants ? null : restaurants.length === 0 ? (
-                <p className="text-center py-12 text-gray-500">No restaurants found</p>
+                <p className="text-center py-12 text-muted-foreground">No restaurants found</p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Name</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">City</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Owner</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Orders</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Approved</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Open</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Actions</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Name</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">City</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Owner</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Orders</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Approved</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Open</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <tbody className="divide-y divide-border">
                     {restaurants.map((r) => (
-                      <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                        <td className="px-6 py-4 font-medium text-gray-800 dark:text-gray-200">{r.name}</td>
-                        <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{r.city}</td>
-                        <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{r.owner?.name || '—'}</td>
-                        <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{r._count?.orders || 0}</td>
+                      <tr key={r.id} className="hover:bg-muted">
+                        <td className="px-6 py-4 font-medium text-foreground">{r.name}</td>
+                        <td className="px-6 py-4 text-muted-foreground">{r.city}</td>
+                        <td className="px-6 py-4 text-muted-foreground">{r.owner?.name || '—'}</td>
+                        <td className="px-6 py-4 text-muted-foreground">{r._count?.orders || 0}</td>
                         <td className="px-6 py-4">
                           {r.isApproved ? (
                             <span className="text-green-600 font-semibold text-xs">✓ Approved</span>
@@ -268,7 +268,7 @@ const AdminPanel = () => {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${r.isOpen ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${r.isOpen ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : 'bg-muted text-muted-foreground dark:text-muted-foreground'}`}>
                             {r.isOpen ? 'Open' : 'Closed'}
                           </span>
                         </td>
@@ -303,30 +303,30 @@ const AdminPanel = () => {
           {activeTab === 'orders' && (
             <div className="overflow-x-auto">
               {ordersLoading ? <Spinner /> : !orders ? null : orders.length === 0 ? (
-                <p className="text-center py-12 text-gray-500">No orders found</p>
+                <p className="text-center py-12 text-muted-foreground">No orders found</p>
               ) : (
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Order ID</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Customer</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Restaurant</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Items</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Total</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Status</th>
-                      <th className="text-left px-6 py-3 text-gray-600 dark:text-gray-300 font-medium">Update</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Order ID</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Customer</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Restaurant</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Items</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Total</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Status</th>
+                      <th className="text-left px-6 py-3 text-muted-foreground font-medium">Update</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <tbody className="divide-y divide-border">
                     {orders.map((o) => (
-                      <tr key={o.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                        <td className="px-6 py-4 font-mono text-xs text-gray-600 dark:text-gray-400">{o.id.slice(0, 8)}</td>
-                        <td className="px-6 py-4 text-gray-800 dark:text-gray-200">{o.user?.name || '—'}</td>
-                        <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{o.restaurant?.name || '—'}</td>
-                        <td className="px-6 py-4 text-gray-600 dark:text-gray-400 max-w-[160px] truncate">
+                      <tr key={o.id} className="hover:bg-muted">
+                        <td className="px-6 py-4 font-mono text-xs text-muted-foreground">{o.id.slice(0, 8)}</td>
+                        <td className="px-6 py-4 text-foreground">{o.user?.name || '—'}</td>
+                        <td className="px-6 py-4 text-muted-foreground">{o.restaurant?.name || '—'}</td>
+                        <td className="px-6 py-4 text-muted-foreground max-w-[160px] truncate">
                           {o.items?.map((i) => `${i.menuItem?.name} ×${i.quantity}`).join(', ')}
                         </td>
-                        <td className="px-6 py-4 font-medium text-gray-800 dark:text-gray-200">
+                        <td className="px-6 py-4 font-medium text-foreground">
                           ₹{(o.totalAmount / 100).toLocaleString('en-IN')}
                         </td>
                         <td className="px-6 py-4">
@@ -335,7 +335,7 @@ const AdminPanel = () => {
                             : o.status === 'CANCELLED' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                             : o.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                             : o.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                            : o.status === 'PREPARING' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+                            : o.status === 'PREPARING' ? 'bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary/70'
                             : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                           }`}>
                             {o.status}
@@ -346,7 +346,7 @@ const AdminPanel = () => {
                             value={o.status}
                             onChange={(e) => handleStatusChange(o.id, e.target.value)}
                             disabled={updatingOrderId === o.id}
-                            className="text-xs border border-gray-200 dark:border-gray-600 rounded-lg px-2 py-1.5 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-orange-500 focus:outline-none disabled:opacity-50"
+                            className="text-xs border border-border rounded-lg px-2 py-1.5 bg-card text-foreground focus:ring-2 focus:ring-primary focus:outline-none disabled:opacity-50"
                           >
                             {ORDER_STATUSES.map((s) => (
                               <option key={s} value={s}>{s}</option>
