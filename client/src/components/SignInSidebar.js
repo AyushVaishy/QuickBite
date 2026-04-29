@@ -100,7 +100,7 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
       const res = await signup(payload);
       const { user, accessToken } = res.data;
       persistAuth(user, accessToken);
-      toast.success(`Welcome to QuickBite, ${user.name}!`);
+      toast.success(`Welcome to Cravon, ${user.name}!`);
       if (onSignIn) onSignIn(user);
       onClose();
       navigate(selectedRole === "RESTAURANT_OWNER" ? "/owner/onboard" : (ROLE_REDIRECT[user.role] || "/home"));
@@ -142,7 +142,7 @@ const SignInSidebar = ({ isOpen, onClose, onSignIn }) => {
           <div className="bg-orange-500 text-white p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
-                <FaSignInAlt /> Welcome to QuickBite
+                <FaSignInAlt /> Welcome to Cravon
               </h2>
               <button onClick={onClose} className="text-2xl hover:text-orange-200">
                 <FaTimes />

@@ -31,7 +31,7 @@ function buildSystemPrompt(userName, savedAddress, shownRestaurants, userLanguag
     ? `LANGUAGE LOCK: The user is writing in Hindi (Devanagari script). You MUST reply ONLY in Hindi (Devanagari). Do NOT use English or Roman script at all.`
     : `LANGUAGE LOCK: The user is writing in English or Hinglish (Roman script). You MUST reply ONLY in English or Hinglish (Roman script). Do NOT use Hindi Devanagari characters at all.`;
 
-  return `You are Priya, a warm and sweet female food-ordering assistant for QuickBite (Indian food delivery app).
+  return `You are Priya, a warm and sweet female food-ordering assistant for Cravon (Indian food delivery app).
 
 ## CONTEXT
 - Time: ${timePeriod}

@@ -98,7 +98,7 @@ async function generateFoodResponse(userMessage, intent, restaurants) {
     intent.isVeg === false         ? 'Non-vegetarian'                          : null,
   ].filter(Boolean).join(' | ');
 
-  const prompt = `You are QuickBite's empathetic AI food assistant. A user sent this message:
+  const prompt = `You are Cravon's empathetic AI food assistant. A user sent this message:
 "${userMessage}"
 
 Understood intent: ${intentSummary || 'general food query'}

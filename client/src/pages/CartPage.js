@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 const COUPONS = {
   WELCOME50: { type: "percent", label: "50% OFF", compute: (total) => Math.min(Math.round(total * 0.5), 100) },
-  QUICKBITE20: { type: "percent", label: "20% OFF", compute: (total) => Math.round(total * 0.2) },
+  CRAVON20: { type: "percent", label: "20% OFF", compute: (total) => Math.round(total * 0.2) },
   FREEDEL: { type: "delivery", label: "Free Delivery", compute: () => 0 },
 };
 

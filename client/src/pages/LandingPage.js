@@ -101,7 +101,7 @@ const LandingHomeContent = () => {
                     className="h-10 w-10 overflow-hidden rounded-full border-2 border-app-surface bg-app-border"
                   >
                     <img
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=quickbite-${i}`}
+                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=cravon-${i}`}
                       alt="Customer"
                     />
                   </div>
@@ -221,7 +221,7 @@ const LandingHomeContent = () => {
               </div>
               <h3 className="mb-3 text-3xl font-bold text-app-primary">Let AI pick your meal</h3>
               <p className="mb-6 text-app-secondary">
-                Tell us your mood, budget, and cravings. QuickBite AI returns high-confidence meal matches in seconds.
+                Tell us your mood, budget, and cravings. Cravon AI returns high-confidence meal matches in seconds.
               </p>
               <div className="space-y-3">
                 <div className="rounded-2xl border border-app-border bg-app p-4 text-sm text-app-primary">
@@ -293,7 +293,7 @@ const LandingHomeContent = () => {
           <div className="mt-20 rounded-[2.6rem] bg-slate-900 px-8 py-14 text-left text-white md:px-14">
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
               <div>
-                <h3 className="mb-4 text-4xl font-bold">Grow Your Restaurant with QuickBite</h3>
+                <h3 className="mb-4 text-4xl font-bold">Grow Your Restaurant with Cravon</h3>
                 <p className="mb-7 text-slate-300">
                   Reach more customers, unlock performance analytics, and manage orders with confidence.
                 </p>

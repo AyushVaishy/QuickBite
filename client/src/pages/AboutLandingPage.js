@@ -12,7 +12,7 @@ const AboutLandingPage = () => {
                 Our mission is to <span className="text-brand">simplify</span> how the world eats.
               </h1>
               <p className="text-lg leading-relaxed text-app-secondary">
-                We started QuickBite to reduce decision fatigue in food ordering. Instead of endless scrolling,
+                We started Cravon to reduce decision fatigue in food ordering. Instead of endless scrolling,
                 we use intelligence and product design to make choosing what to eat feel effortless.
               </p>
 
@@ -35,7 +35,7 @@ const AboutLandingPage = () => {
             <div className="relative">
               <img
                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=1000&fit=crop"
-                alt="QuickBite team"
+                alt="Cravon team"
                 className="rounded-3xl shadow-2xl opacity-90"
               />
               <div className="absolute -bottom-10 -left-8 hidden rounded-[2.2rem] bg-brand p-10 shadow-2xl md:block">

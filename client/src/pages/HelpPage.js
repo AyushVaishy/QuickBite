@@ -54,7 +54,7 @@ const HelpPage = () => {
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Live Chat Support</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Tap the chat bubble in the app for instant help from a QuickBite expert.
+                Tap the chat bubble in the app for instant help from a Cravon expert.
               </p>
             </div>
           </div>
@@ -65,7 +65,7 @@ const HelpPage = () => {
             <div>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Email Assistance</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Write to <span className="font-semibold text-orange-600 dark:text-orange-400">support@quickbite.in</span> for order queries.
+                Write to <span className="font-semibold text-orange-600 dark:text-orange-400">support@cravon.in</span> for order queries.
               </p>
             </div>
           </div>

@@ -1,8 +1,8 @@
-# 🍽️ QuickBite
+# 🍽️ Cravon
 
-**QuickBite** is a modern, Swiggy-like food ordering web application built with **React**.  
+**Cravon** is a modern, Swiggy-like food ordering web application built with **React**.  
 It allows users to search and order from restaurants based on their **location** or by searching for **restaurant names** or **dishes**.  
-With features like top restaurants, location-based filtering, and cart management, QuickBite offers a smooth and intuitive food ordering experience.
+With features like top restaurants, location-based filtering, and cart management, Cravon offers a smooth and intuitive food ordering experience.
 
 ---
 
@@ -54,15 +54,15 @@ With features like top restaurants, location-based filtering, and cart managemen
 *(Add images from your `/screenshots` folder or GitHub assets)*
 
 **Homepage**  
-![Homepage Screenshot](https://via.placeholder.com/800x400?text=QuickBite+Homepage)
+![Homepage Screenshot](https://via.placeholder.com/800x400?text=Cravon+Homepage)
 
 **Search & Location**  
-![Search Screenshot](https://via.placeholder.com/800x400?text=QuickBite+Search)
+![Search Screenshot](https://via.placeholder.com/800x400?text=Cravon+Search)
 
 ---
-# 🚀 QuickBite — Installation & Setup
+# 🚀 Cravon — Installation & Setup
 
-Follow these steps to set up and run **QuickBite** locally.
+Follow these steps to set up and run **Cravon** locally.
 
 ---
 
@@ -77,10 +77,10 @@ Make sure you have the following installed:
 
 ```bash
 # 1️⃣ Clone the repository
-git clone https://github.com/AyushVaishy/QuickBite.git
+git clone https://github.com/AyushVaishy/Cravon.git
 
 # 2️⃣ Navigate into the project folder
-cd QuickBite
+cd Cravon
 
 # 3️⃣ Install dependencies
 npm install

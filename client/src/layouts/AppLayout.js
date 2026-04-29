@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -9,14 +9,16 @@ const DEFAULT_LOCATION = { lat: 12.9716, lng: 77.5946, address: "Bengaluru, Karn
 const AppLayout = () => {
   const [location, setLocation] = useState(() => {
     try {
-      const saved = localStorage.getItem('quickbite_location');
-      return saved ? JSON.parse(saved) : DEFAULT_LOCATION;
+      const saved = localStorage.getItem('cravon_location') || localStorage.getItem('quickbite_location');
+      const parsed = saved ? JSON.parse(saved) : DEFAULT_LOCATION;
+      localStorage.setItem('cravon_location', JSON.stringify(parsed));
+      return parsed;
     } catch { return DEFAULT_LOCATION; }
   });
 
   const handleSetLocation = (loc) => {
     setLocation(loc);
-    try { localStorage.setItem('quickbite_location', JSON.stringify(loc)); } catch {}
+    try { localStorage.setItem('cravon_location', JSON.stringify(loc)); } catch {}
   };
 
   return (

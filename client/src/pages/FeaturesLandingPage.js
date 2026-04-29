@@ -14,7 +14,7 @@ const features = [
   {
     title: "Location Intelligence",
     description:
-      "QuickBite prioritizes places with high ratings and faster current prep windows around your exact location.",
+      "Cravon prioritizes places with high ratings and faster current prep windows around your exact location.",
     image:
       "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=800&h=600&fit=crop",
     icon: <FaMapMarkerAlt className="text-brand" size={20} />,
@@ -50,7 +50,7 @@ const FeaturesLandingPage = () => {
             <span className="font-display text-brand">Smarter Ordering</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-app-secondary">
-            Explore the product capabilities making QuickBite one of the fastest-growing food platforms.
+            Explore the product capabilities making Cravon one of the fastest-growing food platforms.
           </p>
         </div>
 

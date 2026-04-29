@@ -39,7 +39,7 @@ export const support_data = [
     data: [
       {
         id: 11500,
-        title: "What is QuickBite Customer Care Number?",
+        title: "What is Cravon Customer Care Number?",
         description:
           "We value our customer’s time and hence moved away from a single customer care number to a comprehensive chat-based support system for quick and easy resolution. You no longer have to go through the maze of an IVRS call support. Just search for your issue in the help section on this page and initiate a chat with us. A customer care executive will be assigned to you shortly. ",
         conversationId: null,
@@ -76,7 +76,7 @@ export const support_data = [
       },
       {
         id: 212,
-        title: "I am unable to log in on QuickBite",
+        title: "I am unable to log in on Cravon",
         description: null,
         conversationId: null,
         layerConversationId: null,
@@ -171,7 +171,7 @@ export const support_data = [
       },
       {
         id: 228,
-        title: "I want to unsubscribe from QuickBite communications",
+        title: "I want to unsubscribe from Cravon communications",
         description:
           "Please drop us an email mentioning the channels you would like to be unsubscribed from. We will take an action and confirm within 24-48 hours",
         conversationId: null,
@@ -186,7 +186,7 @@ export const support_data = [
             phoneNumber: null,
             provider: null,
             waitTime: "We will revert within 24-48 hrs",
-            emailId: "support@QuickBite.in",
+            emailId: "support@Cravon.in",
           },
         ],
         hyperLinkText: null,
@@ -202,7 +202,7 @@ export const support_data = [
     data: [
       {
         id: 492,
-        title: "I want to partner my restaurant with QuickBite",
+        title: "I want to partner my restaurant with Cravon",
         description: null,
         conversationId: null,
         layerConversationId: null,
@@ -216,16 +216,16 @@ export const support_data = [
             phoneNumber: null,
             provider: null,
             waitTime: "We will revert within 24-48 hrs",
-            emailId: "partnersupport@QuickBite.in",
+            emailId: "partnersupport@Cravon.in",
           },
         ],
         hyperLinkText: "Partner with us",
-        hyperLink: "https://www.QuickBite.com/partner-with-us",
+        hyperLink: "https://www.Cravon.com/partner-with-us",
       },
       {
         id: 100175,
         title:
-          "What are the mandatory documents needed to list my restaurant on QuickBite?",
+          "What are the mandatory documents needed to list my restaurant on Cravon?",
         description:
           "- Copies of the below documents are mandatory\n- FSSAI Licence OR FSSAI Acknowledgement\n- Pan Card\n- GSTIN Certificate\n- Cancelled Cheque OR bank Passbook\n- Menu",
         conversationId: null,
@@ -241,7 +241,7 @@ export const support_data = [
       {
         id: 100176,
         title:
-          "After I submit all documents, how long will it take for my restaurant to go live on QuickBite?",
+          "After I submit all documents, how long will it take for my restaurant to go live on Cravon?",
         description:
           "After all mandatory documents have been received and verified it takes upto 7-10 working days for the onboarding to be completed and make your restaurant live on the platform.",
         conversationId: null,
@@ -259,7 +259,7 @@ export const support_data = [
         title:
           "What is this one time Onboarding fees? Do I have to pay for it while registering?",
         description:
-          "This is a one-time fee charged towards the system & admin costs incurred during the onboarding process. It is deducted from the weekly payouts after you start receiving orders from QuickBite.",
+          "This is a one-time fee charged towards the system & admin costs incurred during the onboarding process. It is deducted from the weekly payouts after you start receiving orders from Cravon.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -275,7 +275,7 @@ export const support_data = [
         title:
           "Who should I contact if I need help & support in getting onboarded?",
         description:
-          "You can connect with Partner Support on 080-67466777/68179777 or write to onboarding@QuickBite.in",
+          "You can connect with Partner Support on 080-67466777/68179777 or write to onboarding@Cravon.in",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -288,7 +288,7 @@ export const support_data = [
       },
       {
         id: 100179,
-        title: "How much commission will I be charged by QuickBite?",
+        title: "How much commission will I be charged by Cravon?",
         description:
           "The commission charges vary for different cities. You will be able to see the commission applicable for you once the preliminary onboarding details have been filled.",
         conversationId: null,
@@ -329,7 +329,7 @@ export const support_data = [
         id: 100043,
         title: "Terms of Use",
         description:
-          'These terms of use (the "Terms of Use") govern your use of our website www.QuickBite.in (the "Website") and our "QuickBite" application for mobile and handheld devices (the "App"). The Website and the App are jointly referred to as the "Services"). Please read these Terms of Use carefully before you download, install or use the Services. If you do not agree to these Terms of Use, you may not install, download or use the Services. By installing, downloading or using the Services, you signify your acceptance to the Terms of Use and Privacy Policy (being hereby incorporated by reference herein) which takes effect on the date on which you download, install or use the Services, and create a legally binding arrangement to abide by the same.',
+          'These terms of use (the "Terms of Use") govern your use of our website www.Cravon.in (the "Website") and our "Cravon" application for mobile and handheld devices (the "App"). The Website and the App are jointly referred to as the "Services"). Please read these Terms of Use carefully before you download, install or use the Services. If you do not agree to these Terms of Use, you may not install, download or use the Services. By installing, downloading or using the Services, you signify your acceptance to the Terms of Use and Privacy Policy (being hereby incorporated by reference herein) which takes effect on the date on which you download, install or use the Services, and create a legally binding arrangement to abide by the same.',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -338,13 +338,13 @@ export const support_data = [
         isResolutionNode: false,
         options: [],
         hyperLinkText: "Read More",
-        hyperLink: "https://www.QuickBite.com/terms-and-conditions",
+        hyperLink: "https://www.Cravon.com/terms-and-conditions",
       },
       {
         id: 100044,
         title: "Privacy Policy",
         description:
-          'We ( Bundl Technologies Private Limited, alias "QuickBite" ) are fully committed to respecting your privacy and shall ensure that your personal information is safe with us. This privacy policy sets out the information practices of www.QuickBite.com ("Website") including the type of information is collected, how the information is collected, how the information is used and with whom it is shared. Reference to "you" in this Privacy Policy refers to the users of this Website whether or not you access the services available on the Website or consummate a transaction on the Website. By using or accessing this Website, you agree to the terms and conditions of this Privacy Policy. You also expressly consent to our use and disclosure of your Personal Information (as defined below) in any manner as described in this Privacy Policy and further signify your agreement to this Privacy Policy and the Terms of Use (being incorporated by reference herein). If you do not agree with the terms and conditions of this Privacy Policy, please do not proceed further or use or access this Website. ',
+          'We ( Bundl Technologies Private Limited, alias "Cravon" ) are fully committed to respecting your privacy and shall ensure that your personal information is safe with us. This privacy policy sets out the information practices of www.Cravon.com ("Website") including the type of information is collected, how the information is collected, how the information is used and with whom it is shared. Reference to "you" in this Privacy Policy refers to the users of this Website whether or not you access the services available on the Website or consummate a transaction on the Website. By using or accessing this Website, you agree to the terms and conditions of this Privacy Policy. You also expressly consent to our use and disclosure of your Personal Information (as defined below) in any manner as described in this Privacy Policy and further signify your agreement to this Privacy Policy and the Terms of Use (being incorporated by reference herein). If you do not agree with the terms and conditions of this Privacy Policy, please do not proceed further or use or access this Website. ',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -353,13 +353,13 @@ export const support_data = [
         isResolutionNode: false,
         options: [],
         hyperLinkText: "Read More",
-        hyperLink: "https://www.QuickBite.com/privacy-policy",
+        hyperLink: "https://www.Cravon.com/privacy-policy",
       },
       {
         id: 100045,
         title: "Cancellations and Refunds",
         description:
-          "a)As a general rule you shall not be entitled to cancel your order once placed. You may choose to cancel your order only within one-minute of the order being placed by you. However, subject to your previous cancellation history, QuickBite reserves the right to deny any refund to you pursuant to a cancellation initiated by you even if the same is within one-minute. b)If you cancel your order after one minute of placing it, QuickBite shall have a right to charge you 100% of the order amount as the cancellation fee , with a right to either not to refund the order value in case your order is prepaid or recover from your subsequent order in case your order is postpaid, to compensate our restaurant/merchants and delivery partners. c)QuickBite reserves the right to charge you cancellation fee for the orders constrained to be cancelled by QuickBite for reasons not attributable to QuickBite, including but not limited to: i)in the event if the address provided by you is either wrong or falls outside the delivery zone; ii) failure to contact you by phone or email at the time of delivering the order booking; iii) failure to deliver your order due to lack of information, direction or authorization from you at the time of delivery; or iv) unavailability of all the items ordered by you at the time of booking the order. However, in the unlikely event of an item on your order being unavailable, QuickBite will contact you on the phone number provided to us at the time of placing the order and inform you of such unavailability. In such an event you will be entitled to cancel the entire order and shall be entitled to a refund to an amount upto 100% of the order value. d)In case of cancellations for the reasons attributable to QuickBite or the restaurant partner or delivery partners, QuickBite shall not charge you any cancellation fee.",
+          "a)As a general rule you shall not be entitled to cancel your order once placed. You may choose to cancel your order only within one-minute of the order being placed by you. However, subject to your previous cancellation history, Cravon reserves the right to deny any refund to you pursuant to a cancellation initiated by you even if the same is within one-minute. b)If you cancel your order after one minute of placing it, Cravon shall have a right to charge you 100% of the order amount as the cancellation fee , with a right to either not to refund the order value in case your order is prepaid or recover from your subsequent order in case your order is postpaid, to compensate our restaurant/merchants and delivery partners. c)Cravon reserves the right to charge you cancellation fee for the orders constrained to be cancelled by Cravon for reasons not attributable to Cravon, including but not limited to: i)in the event if the address provided by you is either wrong or falls outside the delivery zone; ii) failure to contact you by phone or email at the time of delivering the order booking; iii) failure to deliver your order due to lack of information, direction or authorization from you at the time of delivery; or iv) unavailability of all the items ordered by you at the time of booking the order. However, in the unlikely event of an item on your order being unavailable, Cravon will contact you on the phone number provided to us at the time of placing the order and inform you of such unavailability. In such an event you will be entitled to cancel the entire order and shall be entitled to a refund to an amount upto 100% of the order value. d)In case of cancellations for the reasons attributable to Cravon or the restaurant partner or delivery partners, Cravon shall not charge you any cancellation fee.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -368,13 +368,13 @@ export const support_data = [
         isResolutionNode: false,
         options: [],
         hyperLinkText: "Read More",
-        hyperLink: "https://www.QuickBite.com/refund-policy",
+        hyperLink: "https://www.Cravon.com/refund-policy",
       },
       {
         id: 100046,
-        title: "Terms of Use for QuickBite ON-TIME / Assured",
+        title: "Terms of Use for Cravon ON-TIME / Assured",
         description:
-          'These terms of use (the "Terms of Use") that govern your use of our service QuickBite ON-TIME / Assured  ("ON-TIME" / "Assured") on our website www.QuickBite.in (the "Website") and our QuickBite application for mobile and handheld devices (the "App"). The services on ON-TIME / Assured  available on our Website and the App are jointly referred to as the "On-Time Delivery". Please read these Terms of Use carefully before you use the Services. If you do not agree to these Terms of Use, you may not use the Services. By using the Services, you signify your acceptance to the Terms of Use and Privacy Policy (incorporated by reference herein) and creates a legally binding arrangement to abide by the same. ',
+          'These terms of use (the "Terms of Use") that govern your use of our service Cravon ON-TIME / Assured  ("ON-TIME" / "Assured") on our website www.Cravon.in (the "Website") and our Cravon application for mobile and handheld devices (the "App"). The services on ON-TIME / Assured  available on our Website and the App are jointly referred to as the "On-Time Delivery". Please read these Terms of Use carefully before you use the Services. If you do not agree to these Terms of Use, you may not use the Services. By using the Services, you signify your acceptance to the Terms of Use and Privacy Policy (incorporated by reference herein) and creates a legally binding arrangement to abide by the same. ',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -383,13 +383,13 @@ export const support_data = [
         isResolutionNode: false,
         options: [],
         hyperLinkText: "Read More",
-        hyperLink: "https://www.QuickBite.com/terms-and-conditions",
+        hyperLink: "https://www.Cravon.com/terms-and-conditions",
       },
       {
         id: 100323,
         title: "T&C for TBC Matchday offer",
         description:
-          "By participating to avail this offer, all participant User(s)(defined below) agree to be bound by these terms and conditions (“T&Cs”), the Terms of Use, Privacy Policy and other relevant QuickBite policies and documentations that are available on www.QuickBite.com and on its mobile application (“Platform”) including any modifications, alterations or updates that We make (collectively referred to as “FoodVilla T&C’s”).",
+          "By participating to avail this offer, all participant User(s)(defined below) agree to be bound by these terms and conditions (“T&Cs”), the Terms of Use, Privacy Policy and other relevant Cravon policies and documentations that are available on www.Cravon.com and on its mobile application (“Platform”) including any modifications, alterations or updates that We make (collectively referred to as “FoodVilla T&C’s”).",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -399,13 +399,13 @@ export const support_data = [
         options: [],
         hyperLinkText: "Read More",
         hyperLink:
-          "https://promos.QuickBite.com/tnc-tbc-matchday/v3/index.html",
+          "https://promos.Cravon.com/tnc-tbc-matchday/v3/index.html",
       },
       {
         id: 100344,
         title: "Terms and Conditions for Gourmet Mother's Day Campaign",
         description:
-          'By participating to avail this Offer, all User(s) agree to be bound by the Terms of Use (https://www.QuickBite.com/terms-and-conditions), Privacy Policy (https://www.QuickBite.com/privacy-policy) and other relevant QuickBite policies and documentations that are available on the Platform  including any modifications, alterations or updates that QuickBite (hereinafter referred to as “We” “Us”, or “FoodVilla”)  make (collectively referred to as "QuickBite T&Cs")',
+          'By participating to avail this Offer, all User(s) agree to be bound by the Terms of Use (https://www.Cravon.com/terms-and-conditions), Privacy Policy (https://www.Cravon.com/privacy-policy) and other relevant Cravon policies and documentations that are available on the Platform  including any modifications, alterations or updates that Cravon (hereinafter referred to as “We” “Us”, or “FoodVilla”)  make (collectively referred to as "Cravon T&Cs")',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -415,13 +415,13 @@ export const support_data = [
         options: [],
         hyperLinkText: "READ MORE",
         hyperLink:
-          "https://webviews.QuickBite.com/portal-static-page/gourmet_mothers_day_campaign/",
+          "https://webviews.Cravon.com/portal-static-page/gourmet_mothers_day_campaign/",
       },
       {
         id: 100489,
         title: "Terms and Conditions for Guiltfree Monday",
         description:
-          'By participating to avail this Offer, all User(s) agree to be bound by the Terms of Use (https://www.QuickBite.com/terms-and-conditions), Privacy Policy (https://www.QuickBite.com/privacy-policy) and other relevant QuickBite policies and documentations that are available on the Platform including any modifications, alterations or updates that QuickBite (hereinafter referred to as “We” “Us”, or “FoodVilla”) make (collectively referred to as "QuickBite T&Cs")',
+          'By participating to avail this Offer, all User(s) agree to be bound by the Terms of Use (https://www.Cravon.com/terms-and-conditions), Privacy Policy (https://www.Cravon.com/privacy-policy) and other relevant Cravon policies and documentations that are available on the Platform including any modifications, alterations or updates that Cravon (hereinafter referred to as “We” “Us”, or “FoodVilla”) make (collectively referred to as "Cravon T&Cs")',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -431,13 +431,13 @@ export const support_data = [
         options: [],
         hyperLinkText: "READ MORE",
         hyperLink:
-          "https://webviews.QuickBite.com/portal-static-page/guiltfree_monday_campaign/",
+          "https://webviews.Cravon.com/portal-static-page/guiltfree_monday_campaign/",
       },
       {
         id: 100394,
         title: "T&C for Mega Savings Festival Order & Win Daily",
         description:
-          " By participating in this activity, all participant User(s)(defined below) agree to be bound by these terms and conditions (“T&Cs”), the Terms of Use, Privacy Policy and other relevant QuickBite policies and documentations that are available on www.QuickBite.com and on its mobile application (“Platform”) including any modifications, alterations or updates that We make (together “FoodVilla T&C’s”).",
+          " By participating in this activity, all participant User(s)(defined below) agree to be bound by these terms and conditions (“T&Cs”), the Terms of Use, Privacy Policy and other relevant Cravon policies and documentations that are available on www.Cravon.com and on its mobile application (“Platform”) including any modifications, alterations or updates that We make (together “FoodVilla T&C’s”).",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -446,13 +446,13 @@ export const support_data = [
         isResolutionNode: true,
         options: [],
         hyperLinkText: "READ MORE",
-        hyperLink: "https://promos.QuickBite.com/tnc-raffle/v1/index.html",
+        hyperLink: "https://promos.Cravon.com/tnc-raffle/v1/index.html",
       },
       {
         id: 100485,
         title: "T&C for Instamart Weekend Supermarket Dineout Vouchers",
         description:
-          'Details of the Offer:  \n\nThis offer (“Offer”) commences at 12:01 A.M on 15th of April 2023 and will remain live until 11:59 PM on 16th of April, 2023 (“Offer Period”) on the Platform . Eligibility of this Offer is only of Instamart users (hereinafter referred to as “You”, “Your” or “User”) subject to and in accordance with the T&Cs mentioned below -\n\nEligibility criteria:\n\nThe minimum order value (of one order) on Instamart shall be of INR 599/- (Rupees Five Hundred and Ninety Nine only) and the order must be successfully delivered (“Order”).\n\nEvery three hundredth User (300th, 600th, 900th……75000th) upto 250 such Users each day i.e. on 15th and 16th April, 2023, who successfully places the Order during the Offer Period, will be eligible to get a Dineout discount voucher* (of 20% upto INR 400 off) (“Voucher”) which they can avail exclusively on the restaurants listed on the Dineout application subject to the terms and conditions of the said Voucher (each a "Voucher Recipient”) . \nWe reserve the right to suspend the Offer for/on a particular day during the Offer Period, or if and when the Voucher Recipients for the day have been selected basis the terms herein.     \n\nRelevant terms and conditions:\n\nThe minimum order value of the Order shall be INR 599/- (Rupees Five Hundred and Ninety Nineonly) which shall be a sum of on the selling price of the products offered on Instamart without discounts, handling fee, delivery fee, any coupon application etc.\nThis Offer is valid in the following cities only: Ahmedabad, Bangalore, Goa, Chandigarh, Dehradun, Delhi, Hyderabad, Indore, Jaipur, Kochi, Kolkata, Lucknow, Ludhiana, Mumbai, Pune, Surat, Vadodara, Gurgaon and Noida.\n\nThe Voucher Recipients will be contacted via Our customer care team on their registered mobile numbers on Whatsapp or on their registered email id’s.  Notwithstanding anything contained herein, it shall be the sole responsibility of the Voucher Recipients to check their messages (including spam). \nNo responsibility is accepted for entries that are late, lost, misdirected or not received by Us during the Offer Period. Any operating or ancillary costs, if any, associated with the Vouchers is the sole responsibility of the Voucher Recipients.\n\nThe Users understand that We do not make any assurances as to the probability of winning in this Offer. \n\nThe User understands and agrees that a User can be a Voucher Recipient only once during this Offer.\nWe do not collect any participation fees for the Offer. \nParticipation in the Offer is entirely voluntary and participation will be construed as an acceptance of the QuickBite T&C’s.',
+          'Details of the Offer:  \n\nThis offer (“Offer”) commences at 12:01 A.M on 15th of April 2023 and will remain live until 11:59 PM on 16th of April, 2023 (“Offer Period”) on the Platform . Eligibility of this Offer is only of Instamart users (hereinafter referred to as “You”, “Your” or “User”) subject to and in accordance with the T&Cs mentioned below -\n\nEligibility criteria:\n\nThe minimum order value (of one order) on Instamart shall be of INR 599/- (Rupees Five Hundred and Ninety Nine only) and the order must be successfully delivered (“Order”).\n\nEvery three hundredth User (300th, 600th, 900th……75000th) upto 250 such Users each day i.e. on 15th and 16th April, 2023, who successfully places the Order during the Offer Period, will be eligible to get a Dineout discount voucher* (of 20% upto INR 400 off) (“Voucher”) which they can avail exclusively on the restaurants listed on the Dineout application subject to the terms and conditions of the said Voucher (each a "Voucher Recipient”) . \nWe reserve the right to suspend the Offer for/on a particular day during the Offer Period, or if and when the Voucher Recipients for the day have been selected basis the terms herein.     \n\nRelevant terms and conditions:\n\nThe minimum order value of the Order shall be INR 599/- (Rupees Five Hundred and Ninety Nineonly) which shall be a sum of on the selling price of the products offered on Instamart without discounts, handling fee, delivery fee, any coupon application etc.\nThis Offer is valid in the following cities only: Ahmedabad, Bangalore, Goa, Chandigarh, Dehradun, Delhi, Hyderabad, Indore, Jaipur, Kochi, Kolkata, Lucknow, Ludhiana, Mumbai, Pune, Surat, Vadodara, Gurgaon and Noida.\n\nThe Voucher Recipients will be contacted via Our customer care team on their registered mobile numbers on Whatsapp or on their registered email id’s.  Notwithstanding anything contained herein, it shall be the sole responsibility of the Voucher Recipients to check their messages (including spam). \nNo responsibility is accepted for entries that are late, lost, misdirected or not received by Us during the Offer Period. Any operating or ancillary costs, if any, associated with the Vouchers is the sole responsibility of the Voucher Recipients.\n\nThe Users understand that We do not make any assurances as to the probability of winning in this Offer. \n\nThe User understands and agrees that a User can be a Voucher Recipient only once during this Offer.\nWe do not collect any participation fees for the Offer. \nParticipation in the Offer is entirely voluntary and participation will be construed as an acceptance of the Cravon T&C’s.',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -473,7 +473,7 @@ export const support_data = [
     data: [
       {
         id: 11501,
-        title: "What is QuickBite Customer Care Number?",
+        title: "What is Cravon Customer Care Number?",
         description:
           "We value our customer’s time and hence moved away from a single customer care number to a comprehensive chat-based support system for quick and easy resolution. You no longer have to go through the maze of an IVRS call support. Just search for your issue in the help section on this page and initiate a chat with us. A customer care executive will be assigned to you shortly. ",
         conversationId: null,
@@ -491,7 +491,7 @@ export const support_data = [
         title:
           "I entered the wrong CVV, why did my transaction still go through?",
         description:
-          "The logic of validations of CVV resides with either payment gateways or banks. It is absolutely the choice of banks to have CVV as a mandatory input field or not. As per RBI guidelines, 2-Factor-Authentication is not mandatory for less than Rs 2000 rupees transaction. It is not in control of QuickBite. As an organization, we don't store any card information.",
+          "The logic of validations of CVV resides with either payment gateways or banks. It is absolutely the choice of banks to have CVV as a mandatory input field or not. As per RBI guidelines, 2-Factor-Authentication is not mandatory for less than Rs 2000 rupees transaction. It is not in control of Cravon. As an organization, we don't store any card information.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -504,7 +504,7 @@ export const support_data = [
       },
       {
         id: 494,
-        title: "I want to explore career opportunities with QuickBite",
+        title: "I want to explore career opportunities with Cravon",
         description: null,
         conversationId: null,
         layerConversationId: null,
@@ -518,11 +518,11 @@ export const support_data = [
             phoneNumber: null,
             provider: null,
             waitTime: "We will revert within 24 hrs",
-            emailId: "email-support@QuickBite.in",
+            emailId: "email-support@Cravon.in",
           },
         ],
         hyperLinkText: "Join our team",
-        hyperLink: "https://www.QuickBite.com/careers?hide_header=ios_android",
+        hyperLink: "https://www.Cravon.com/careers?hide_header=ios_android",
       },
       {
         id: 495,
@@ -540,7 +540,7 @@ export const support_data = [
             phoneNumber: null,
             provider: null,
             waitTime: "We will revert within 24 hrs",
-            emailId: "support@QuickBite.in",
+            emailId: "support@Cravon.in",
           },
         ],
         hyperLinkText: null,
@@ -592,7 +592,7 @@ export const support_data = [
             phoneNumber: null,
             provider: null,
             waitTime: "We will revert within 24 hrs",
-            emailId: "support@QuickBite.in",
+            emailId: "support@Cravon.in",
           },
         ],
         hyperLinkText: null,
@@ -600,7 +600,7 @@ export const support_data = [
       },
       {
         id: 100049,
-        title: "Will QuickBite be accountable for quality/quantity? ",
+        title: "Will Cravon be accountable for quality/quantity? ",
         description:
           "Quantity and quality of the food is the restaurants' responsibility. However in case of issues with the quality or quantity, kindly submit your feedback and we will pass it on to the restaurant.",
         conversationId: null,
@@ -752,7 +752,7 @@ export const support_data = [
         id: 100059,
         title: "Unable to view the details in my profile",
         description:
-          "Please check if your app is due for an update. If not, please share the details via support@QuickBite.in",
+          "Please check if your app is due for an update. If not, please share the details via support@Cravon.in",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -767,7 +767,7 @@ export const support_data = [
         id: 100060,
         title: "Did not receive referral coupon?",
         description:
-          "Referral coupon is given upon the first successful transaction of the referred person. If you still have not received it, kindly send us your details at support@QuickBite.in. We will contact you within 48 hours.",
+          "Referral coupon is given upon the first successful transaction of the referred person. If you still have not received it, kindly send us your details at support@Cravon.in. We will contact you within 48 hours.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -782,7 +782,7 @@ export const support_data = [
         id: 100061,
         title: "Deactivate my account",
         description:
-          "Please write to us at support@QuickBite.in in the event that you want to deactivate your account.",
+          "Please write to us at support@Cravon.in in the event that you want to deactivate your account.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -797,7 +797,7 @@ export const support_data = [
         id: 100062,
         title: "Unable to view the details in my profile",
         description:
-          "Please check if your app is due for an update. If not, please share the details via support@QuickBite.in",
+          "Please check if your app is due for an update. If not, please share the details via support@Cravon.in",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -840,7 +840,7 @@ export const support_data = [
       },
       {
         id: 100095,
-        title: "My QuickBite Money wallet has been mis-used by someone else",
+        title: "My Cravon Money wallet has been mis-used by someone else",
         description:
           "Please block your wallet by reaching out to our customer care executives. We will work with ICICI to address your issue, if any.",
         conversationId: null,
@@ -856,17 +856,17 @@ export const support_data = [
     ],
   },
   {
-    type: "QuickBite-one-faq",
-    title: "QuickBite One FAQs",
+    type: "Cravon-one-faq",
+    title: "Cravon One FAQs",
     description:
-      "This issue type deals with QuickBite SUPER related issues or queries for the stake holders in the eco-system.",
+      "This issue type deals with Cravon SUPER related issues or queries for the stake holders in the eco-system.",
     data: [
       {
         id: 100333,
         title:
-          "Is there a limit on the number of devices I can use QuickBite One on?",
+          "Is there a limit on the number of devices I can use Cravon One on?",
         description:
-          "Yes. QuickBite One membership can be used only on 2 devices at a time from 8th Feb onwards.\n\nFoodVilla One memberships are priced for individual and personal usage. Having a 2 device limit helps us curb disproportionate usage of benefits and ensures the sustainability of the pricing we offer to all our consumers.",
+          "Yes. Cravon One membership can be used only on 2 devices at a time from 8th Feb onwards.\n\nFoodVilla One memberships are priced for individual and personal usage. Having a 2 device limit helps us curb disproportionate usage of benefits and ensures the sustainability of the pricing we offer to all our consumers.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -879,9 +879,9 @@ export const support_data = [
       },
       {
         id: 100229,
-        title: "Are QuickBite One benefits available at all restaurants?",
+        title: "Are Cravon One benefits available at all restaurants?",
         description:
-          "QuickBite One Free delivery is applicable on ALL food delivery restaurants within 10 kms from your location except Dominos. \nYou are also eligible for member-only extra discounts of up to 30% on select food delivery restaurants. Please note you get this discount over and above the regular offers that you can avail on QuickBite.  ",
+          "Cravon One Free delivery is applicable on ALL food delivery restaurants within 10 kms from your location except Dominos. \nYou are also eligible for member-only extra discounts of up to 30% on select food delivery restaurants. Please note you get this discount over and above the regular offers that you can avail on Cravon.  ",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -895,7 +895,7 @@ export const support_data = [
       {
         id: 100480,
         title:
-          "Is there a minimum order value to avail QuickBite One Flat ₹150 Off coupons on Dineout?",
+          "Is there a minimum order value to avail Cravon One Flat ₹150 Off coupons on Dineout?",
         description:
           'Yes, you can use code "ONE150" on your Dineout bills above Rs 1500 on all Dineout partner restaurants.',
         conversationId: null,
@@ -912,7 +912,7 @@ export const support_data = [
         id: 100228,
         title: "Is there a limit on free deliveries or extra discounts?",
         description:
-          "For our 3-month and 12-month duration plans, you can enjoy free delivery on ALL restaurants upto 10 km and free delivery on all Instamart orders above the minimum order value. You can also avail extra Discounts with QuickBite One on select delivery & Dineout restaurants, Instamart, and Genie.",
+          "For our 3-month and 12-month duration plans, you can enjoy free delivery on ALL restaurants upto 10 km and free delivery on all Instamart orders above the minimum order value. You can also avail extra Discounts with Cravon One on select delivery & Dineout restaurants, Instamart, and Genie.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -956,9 +956,9 @@ export const support_data = [
       {
         id: 100223,
         title:
-          "Can I club QuickBite One extra discount with other offers? Is there an upper limit?",
+          "Can I club Cravon One extra discount with other offers? Is there an upper limit?",
         description:
-          "As a QuickBite One member, you have exclusive access to member only extra discouts of up to 30% on select food delivery restaurants. \nYou also get 2 coupons worth Rs 150 each on Dineout bills, every month of your membership. This is over and above up to 40% flat off at 18,000+ Dineout restuarants.  \nYou also get exclusive item discounts on select Instamart items. Please note you get these discount over and above the regular offers that you can avail on QuickBite & there is no upper limit to this offer.",
+          "As a Cravon One member, you have exclusive access to member only extra discouts of up to 30% on select food delivery restaurants. \nYou also get 2 coupons worth Rs 150 each on Dineout bills, every month of your membership. This is over and above up to 40% flat off at 18,000+ Dineout restuarants.  \nYou also get exclusive item discounts on select Instamart items. Please note you get these discount over and above the regular offers that you can avail on Cravon & there is no upper limit to this offer.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -986,9 +986,9 @@ export const support_data = [
       },
       {
         id: 100224,
-        title: "Are QuickBite One benefits applicable on far away restaurants?",
+        title: "Are Cravon One benefits applicable on far away restaurants?",
         description:
-          "QuickBite One Free delivery is applicable on ALL food delivery restaurants up to 10 kms. Any restaurants beyond 10 km will not be eligible for the free delivery benefit. When you order from a new location, you will enjoy benefits on many more restaurants within 10 km from your new location.",
+          "Cravon One Free delivery is applicable on ALL food delivery restaurants up to 10 kms. Any restaurants beyond 10 km will not be eligible for the free delivery benefit. When you order from a new location, you will enjoy benefits on many more restaurants within 10 km from your new location.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1001,9 +1001,9 @@ export const support_data = [
       },
       {
         id: 100265,
-        title: "Is QuickBite One available in all cities ?",
+        title: "Is Cravon One available in all cities ?",
         description:
-          "Currently QuickBite One is available in select cities only.",
+          "Currently Cravon One is available in select cities only.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1018,7 +1018,7 @@ export const support_data = [
         id: 100231,
         title: "Is there a minimum order value to avail free delivery?",
         description:
-          "QuickBite One members in all active cities will get free delivery from all restaurants within 10 km on all orders of value more than INR 149.",
+          "Cravon One members in all active cities will get free delivery from all restaurants within 10 km on all orders of value more than INR 149.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1033,7 +1033,7 @@ export const support_data = [
         id: 100232,
         title: "Is there a minimum order value to avail extra discount?",
         description:
-          "Extra discounts with QuickBite One are auto-applied when you meet the minimum order value criteria of the restaurant. The minimum order value of each restaurant may vary from one restaurant to another. Please note that extra discounts are flat discounts with no upper limit which are exclusively available only for One members.",
+          "Extra discounts with Cravon One are auto-applied when you meet the minimum order value criteria of the restaurant. The minimum order value of each restaurant may vary from one restaurant to another. Please note that extra discounts are flat discounts with no upper limit which are exclusively available only for One members.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1048,7 +1048,7 @@ export const support_data = [
         id: 100225,
         title: "Can I cancel, pause or transfer my membership?",
         description:
-          "Currently, there are no means of cancelling/pausing/transferring your QuickBite One membership. We are working on this and will ensure we are able to serve you better in the near future.",
+          "Currently, there are no means of cancelling/pausing/transferring your Cravon One membership. We are working on this and will ensure we are able to serve you better in the near future.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1061,9 +1061,9 @@ export const support_data = [
       },
       {
         id: 100233,
-        title: "On which platforms can I use my QuickBite One benefits?",
+        title: "On which platforms can I use my Cravon One benefits?",
         description:
-          "QuickBite One benefits can be availed when ordering through Android, iOS and mobile web but not on desktop.",
+          "Cravon One benefits can be availed when ordering through Android, iOS and mobile web but not on desktop.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1079,7 +1079,7 @@ export const support_data = [
         title:
           "Is there a minimum order value to avail free delivery on restaurants?",
         description:
-          "QuickBite One members in all active cities can avail free delivery on all restaurants within 8 km. This benefit is applicable on all food orders above INR 149.",
+          "Cravon One members in all active cities can avail free delivery on all restaurants within 8 km. This benefit is applicable on all food orders above INR 149.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1123,9 +1123,9 @@ export const support_data = [
       {
         id: 100397,
         title:
-          "Is there a limit on the number of QuickBite One extra discounts I can get on Genie?",
+          "Is there a limit on the number of Cravon One extra discounts I can get on Genie?",
         description:
-          "No, you can enjoy Unlimited Extra Discounts with QuickBite One on Genie. Flat 10% off on delivery fee is auto-applied on all Genie deliveries within your membership tenure/period.",
+          "No, you can enjoy Unlimited Extra Discounts with Cravon One on Genie. Flat 10% off on delivery fee is auto-applied on all Genie deliveries within your membership tenure/period.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1139,7 +1139,7 @@ export const support_data = [
       {
         id: 100269,
         title:
-          "Is there a limit on the number of QuickBite One extra discounts I can get on Instamart?",
+          "Is there a limit on the number of Cravon One extra discounts I can get on Instamart?",
         description:
           "No, you can enjoy Unlimited Extra Discounts on select Instamart Items. Extra discounts are auto applied on the eligible Instamart items, this discounts are over and above your regular offers.",
         conversationId: null,
@@ -1154,9 +1154,9 @@ export const support_data = [
       },
       {
         id: 100313,
-        title: "What is QuickBite Dineout ?",
+        title: "What is Cravon Dineout ?",
         description:
-          'QuickBite Dineout offers exciting offers to customers which can be availed while dining out across restaurants in 34 cities. QuickBite members get 2 coupons worth Rs 150 each, every month of their membership. This is over and above up to 40% flat off at 18,000+ restuarants. These coupons are applicable on all orders above Rs 1500. \nUse code "ONE150" to avail flat Rs 150 off on your Dineout bills.',
+          'Cravon Dineout offers exciting offers to customers which can be availed while dining out across restaurants in 34 cities. Cravon members get 2 coupons worth Rs 150 each, every month of their membership. This is over and above up to 40% flat off at 18,000+ restuarants. These coupons are applicable on all orders above Rs 1500. \nUse code "ONE150" to avail flat Rs 150 off on your Dineout bills.',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1170,9 +1170,9 @@ export const support_data = [
       {
         id: 100481,
         title:
-          "What is the QuickBite One Flat ₹150 Off coupon benefit on Dineout?",
+          "What is the Cravon One Flat ₹150 Off coupon benefit on Dineout?",
         description:
-          'QuickBite One members get 2 coupons worth flat Rs 150 off, per month of their QuickBite One membership. This is a recurring monthly benefit and is available over and above regular discounts of upto 40% off. \nMembers can avail this discount on all Dineout partner restaurants on dining out bills above Rs 1500.  \n\nUse code "ONE150" to avail the coupon.',
+          'Cravon One members get 2 coupons worth flat Rs 150 off, per month of their Cravon One membership. This is a recurring monthly benefit and is available over and above regular discounts of upto 40% off. \nMembers can avail this discount on all Dineout partner restaurants on dining out bills above Rs 1500.  \n\nUse code "ONE150" to avail the coupon.',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1186,7 +1186,7 @@ export const support_data = [
       {
         id: 100398,
         title:
-          "Is there a minimum order value to avail the QuickBite One extra discount on Genie?",
+          "Is there a minimum order value to avail the Cravon One extra discount on Genie?",
         description:
           "No there is no minimum order value to avail Dineout extra discounts.",
         conversationId: null,
@@ -1202,7 +1202,7 @@ export const support_data = [
       {
         id: 100482,
         title:
-          "How can I avail the QuickBite One Flat ₹150 Off coupon benefit on Dineout?",
+          "How can I avail the Cravon One Flat ₹150 Off coupon benefit on Dineout?",
         description:
           'While making a payment at a Dineout partner restaurant, use code "ONE150" at the time of checkout to avail coupon benefit. \nThis is applicable on all transactions above Rs 1500.',
         conversationId: null,
@@ -1218,7 +1218,7 @@ export const support_data = [
       {
         id: 100399,
         title:
-          "Are the QuickBite One extra discounts applicable on all Genie deliveries?",
+          "Are the Cravon One extra discounts applicable on all Genie deliveries?",
         description:
           "Yes, the extra discount of Flat 10% off is applicable on all types of Genie deliveries (including 'Pick up & drop' and 'Order anything from store')",
         conversationId: null,
@@ -1233,9 +1233,9 @@ export const support_data = [
       },
       {
         id: 100315,
-        title: "Have you increased the price of QuickBite One membership ?",
+        title: "Have you increased the price of Cravon One membership ?",
         description:
-          "Yes. We have increased the price of QuickBite One membership. Recently, QuickBite upgraded the One program by introducing 3 big changes in the membership offering, which include “Unlimited free delivery on ALL restaurants up to 10 km, on orders above Rs 149” and “Extra discounts on 1000+ popular items” on Instamart + Existing benefits. We will continue to invest in making QuickBite One more valuable for our members, through our upcoming offering in the dining out/in- restaurant space.",
+          "Yes. We have increased the price of Cravon One membership. Recently, Cravon upgraded the One program by introducing 3 big changes in the membership offering, which include “Unlimited free delivery on ALL restaurants up to 10 km, on orders above Rs 149” and “Extra discounts on 1000+ popular items” on Instamart + Existing benefits. We will continue to invest in making Cravon One more valuable for our members, through our upcoming offering in the dining out/in- restaurant space.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1250,7 +1250,7 @@ export const support_data = [
         id: 100483,
         title: 'Until when are my "ONE150 coupons" on Dineout valid?',
         description:
-          'The ONE150 coupons are an exclusive monthly benefit, given to all QuickBite members with an Active QuickBite One membership. \nFor every active month of the membership, users are provided two "ONE150 coupons" which they can redeem anytime in a span of 30 days. Once exhausted, the coupon benefit will be available the following month. This benefit cannot be carried forward.',
+          'The ONE150 coupons are an exclusive monthly benefit, given to all Cravon members with an Active Cravon One membership. \nFor every active month of the membership, users are provided two "ONE150 coupons" which they can redeem anytime in a span of 30 days. Once exhausted, the coupon benefit will be available the following month. This benefit cannot be carried forward.',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1264,7 +1264,7 @@ export const support_data = [
       {
         id: 100400,
         title:
-          "Are QuickBite One extra discounts on Genie applicable on the store bill?",
+          "Are Cravon One extra discounts on Genie applicable on the store bill?",
         description:
           "No, the extra discount of flat 10% off is applicable only on the delivery fee, not on the bill value of items purchased. ",
         conversationId: null,
@@ -1280,9 +1280,9 @@ export const support_data = [
       {
         id: 100317,
         title:
-          "I am a QuickBite One member. Do I need to pay extra now that prices have increased ?",
+          "I am a Cravon One member. Do I need to pay extra now that prices have increased ?",
         description:
-          "Existing One members can continue to enjoy their existing and new benefits for the duration of their current QuickBite One membership. There is no extra fees which need to be paid.",
+          "Existing One members can continue to enjoy their existing and new benefits for the duration of their current Cravon One membership. There is no extra fees which need to be paid.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1311,9 +1311,9 @@ export const support_data = [
       },
       {
         id: 100401,
-        title: "What are the benefits of QuickBite One membership?",
+        title: "What are the benefits of Cravon One membership?",
         description:
-          "QuickBite One membership offers benefits on Food, Instamart, Genie and Dineout categories on QuickBite. Please refer to the benefits listed on the QuickBite One page for complete details.",
+          "Cravon One membership offers benefits on Food, Instamart, Genie and Dineout categories on Cravon. Please refer to the benefits listed on the Cravon One page for complete details.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1327,9 +1327,9 @@ export const support_data = [
       {
         id: 100402,
         title:
-          "I am an existing member on QuickBite One, will I be able to redeem a coupon?",
+          "I am an existing member on Cravon One, will I be able to redeem a coupon?",
         description:
-          "As an existing QuickBite One member, you would be allowed to extend the membership on coupon application, at the partner’s discretion. This means, based on the partnership terms, you could get a coupon that allows for extension on top of your active QuickBite One membership. ",
+          "As an existing Cravon One member, you would be allowed to extend the membership on coupon application, at the partner’s discretion. This means, based on the partnership terms, you could get a coupon that allows for extension on top of your active Cravon One membership. ",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1343,9 +1343,9 @@ export const support_data = [
       {
         id: 100403,
         title:
-          "Will I be able to renew my expired plan through a QuickBite One coupon?",
+          "Will I be able to renew my expired plan through a Cravon One coupon?",
         description:
-          "Yes, if you are an expired customer, you can use the coupon received to renew onto a QuickBite One membership.",
+          "Yes, if you are an expired customer, you can use the coupon received to renew onto a Cravon One membership.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1358,7 +1358,7 @@ export const support_data = [
       },
       {
         id: 100404,
-        title: "What will be the validity of a QuickBite One coupon?",
+        title: "What will be the validity of a Cravon One coupon?",
         description:
           "Every coupon will have an expiry based on the agreement with the partner. If you apply an expired coupon, you will get an error message stating that your coupon is ineligible when you apply the coupon. ",
         conversationId: null,
@@ -1373,7 +1373,7 @@ export const support_data = [
       },
       {
         id: 100406,
-        title: "What will be the validity of the QuickBite One benefits?",
+        title: "What will be the validity of the Cravon One benefits?",
         description:
           "Please check with the terms of the coupon from the partner from whom you received this coupon.",
         conversationId: null,
@@ -1389,9 +1389,9 @@ export const support_data = [
       {
         id: 100407,
         title:
-          "After applying the coupon, I get a QuickBite One plan price same as the plan price visible to me on the QuickBite app?",
+          "After applying the coupon, I get a Cravon One plan price same as the plan price visible to me on the Cravon app?",
         description:
-          "You may see the same or even lower membership price only when we occasionally offer promotional discounts to select customers based on their usage patterns on the QuickBite app. Note that these promotional discounts are ephemeral in nature. ",
+          "You may see the same or even lower membership price only when we occasionally offer promotional discounts to select customers based on their usage patterns on the Cravon app. Note that these promotional discounts are ephemeral in nature. ",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1405,9 +1405,9 @@ export const support_data = [
       {
         id: 100408,
         title:
-          "I see only certain QuickBite One benefits are available in my city?",
+          "I see only certain Cravon One benefits are available in my city?",
         description:
-          "Each QuickBite One benefit has a city dependency. For example, Dining out benefits as on 1 January, 2023 are only available in 24 cities in India. You may or may not get a QuickBite One benefit based on the location you are in when you place an order. Similarly, Instamart and Food category benefits are available in select cities. ",
+          "Each Cravon One benefit has a city dependency. For example, Dining out benefits as on 1 January, 2023 are only available in 24 cities in India. You may or may not get a Cravon One benefit based on the location you are in when you place an order. Similarly, Instamart and Food category benefits are available in select cities. ",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1422,7 +1422,7 @@ export const support_data = [
         id: 100409,
         title: "I am unable to avail this coupon. What should I do?",
         description:
-          "Please check the terms and conditions on the partner’s website to check if you are eligible to avail the offer. Please email us at (support@QuickBite.in) - This is the email ID which we use for Customer support.",
+          "Please check the terms and conditions on the partner’s website to check if you are eligible to avail the offer. Please email us at (support@Cravon.in) - This is the email ID which we use for Customer support.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1437,7 +1437,7 @@ export const support_data = [
         id: 100498,
         title: "Am I eligible for money-back guarantee?",
         description:
-          "If you are eligible for money-back guarantee, you would get a communication on the QuickBite One page with the money-back guarantee offering. If you do not get the money-back guarantee communication on your QuickBite One page, you are not eligible for it. ",
+          "If you are eligible for money-back guarantee, you would get a communication on the Cravon One page with the money-back guarantee offering. If you do not get the money-back guarantee communication on your Cravon One page, you are not eligible for it. ",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1450,9 +1450,9 @@ export const support_data = [
       },
       {
         id: 100499,
-        title: "What does a money-back guarantee on QuickBite One mean?",
+        title: "What does a money-back guarantee on Cravon One mean?",
         description:
-          "A money-back guarantee is a no-loss proposition for you, wherein QuickBite will cover you in case you are not able to break even on your QuickBite One investment (subscription). After purchasing QuickBite One if a scenario occurs that you save less than the subscription price paid, after the membership expiry, QuickBite will credit back the difference amount back to the user. Credit amount = (Subscription price - Savings during membership period).",
+          "A money-back guarantee is a no-loss proposition for you, wherein Cravon will cover you in case you are not able to break even on your Cravon One investment (subscription). After purchasing Cravon One if a scenario occurs that you save less than the subscription price paid, after the membership expiry, Cravon will credit back the difference amount back to the user. Credit amount = (Subscription price - Savings during membership period).",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1468,7 +1468,7 @@ export const support_data = [
         title:
           "How do I know the savings breakup and how much I have saved during the membership period?",
         description:
-          "QuickBite One membership page (active page) will help you with the live & updated details of the total savings during the membership period to date.",
+          "Cravon One membership page (active page) will help you with the live & updated details of the total savings during the membership period to date.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1484,7 +1484,7 @@ export const support_data = [
         title:
           "How do I know if my money-back guarantee is activated post-purchase?",
         description:
-          "The money-back guarantee gets activated immediately after a user purchases it. For a cohort of users that moneyback is offered - QuickBite will inform the users about the money-back activation through an email post a QuickBite One purchase.",
+          "The money-back guarantee gets activated immediately after a user purchases it. For a cohort of users that moneyback is offered - Cravon will inform the users about the money-back activation through an email post a Cravon One purchase.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1500,7 +1500,7 @@ export const support_data = [
         title:
           "Will Dineout, Instamart & Genie savings also be included while calculating the total savings?",
         description:
-          "Yes. The savings cover the monetary discounts or offers through all QuickBite One enlisted benefits that the user signed up for while they were purchasing the membership.",
+          "Yes. The savings cover the monetary discounts or offers through all Cravon One enlisted benefits that the user signed up for while they were purchasing the membership.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1532,7 +1532,7 @@ export const support_data = [
         title:
           "If my savings are lesser than the subscription price paid, how & when will I be able to avail my money back?",
         description:
-          "We will credit back the money directly via QuickBite Money within 7 business days after membership expiry.  ",
+          "We will credit back the money directly via Cravon Money within 7 business days after membership expiry.  ",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1547,14 +1547,14 @@ export const support_data = [
   },
   {
     type: "foodvilla_money_faq",
-    title: "QuickBite Money FAQs",
-    description: "FAQs regarding QuickBite money",
+    title: "Cravon Money FAQs",
+    description: "FAQs regarding Cravon money",
     data: [
       {
         id: 100505,
-        title: "How do I add QuickBite Money balance in my account?",
+        title: "How do I add Cravon Money balance in my account?",
         description:
-          "You can claim the QuickBite Money vouchers purchased from 3rd party apps or received from your friends, employers etc. on QuickBite app (QuickBite -> Accounts -> QuickBite Money). You can also opt in for refunds in QuickBite Money",
+          "You can claim the Cravon Money vouchers purchased from 3rd party apps or received from your friends, employers etc. on Cravon app (Cravon -> Accounts -> Cravon Money). You can also opt in for refunds in Cravon Money",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1567,9 +1567,9 @@ export const support_data = [
       },
       {
         id: 100506,
-        title: "How do I add QuickBite Gift Card balance to my account?",
+        title: "How do I add Cravon Gift Card balance to my account?",
         description:
-          "You can enter the 16-digit code and 4 digit PIN received in email or SMS on QuickBite Money page after logging in to the QuickBite app.",
+          "You can enter the 16-digit code and 4 digit PIN received in email or SMS on Cravon Money page after logging in to the Cravon app.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1582,9 +1582,9 @@ export const support_data = [
       },
       {
         id: 100507,
-        title: "Where can I use QuickBite Money balance?",
+        title: "Where can I use Cravon Money balance?",
         description:
-          "QuickBite Money can be used to pay for the orders across different categories on QuickBite (Food, Instamart, DineOut, Genie etc.). Choose the QuickBite Money option on QuickBite payments page to use the balance.",
+          "Cravon Money can be used to pay for the orders across different categories on Cravon (Food, Instamart, DineOut, Genie etc.). Choose the Cravon Money option on Cravon payments page to use the balance.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1597,9 +1597,9 @@ export const support_data = [
       },
       {
         id: 100509,
-        title: "Is my money safe with QuickBite Money?",
+        title: "Is my money safe with Cravon Money?",
         description:
-          "Yes, QuickBite Money is powered by Razorpay and us a fully RBI compliant Semi-closed Prepaid Payment Instrument (PPI).",
+          "Yes, Cravon Money is powered by Razorpay and us a fully RBI compliant Semi-closed Prepaid Payment Instrument (PPI).",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1613,9 +1613,9 @@ export const support_data = [
       {
         id: 100510,
         title:
-          "Do I need to upload any documents in order to use QuickBite Money?",
+          "Do I need to upload any documents in order to use Cravon Money?",
         description:
-          "No. You can start using QuickBite Money just by logging in to QuickBite and claiming your QuickBite Money vouchers.",
+          "No. You can start using Cravon Money just by logging in to Cravon and claiming your Cravon Money vouchers.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1628,9 +1628,9 @@ export const support_data = [
       },
       {
         id: 100511,
-        title: "Are there any transaction limits in QuickBite Money?",
+        title: "Are there any transaction limits in Cravon Money?",
         description:
-          "Starting July’23, there won’t be any limit on each transaction amount. Till the month of Jun’23, you might see a restriction using of INR 10,000 per month (QuickBite is gradually moving users to the new experience - see latest updates on QuickBite Money page)",
+          "Starting July’23, there won’t be any limit on each transaction amount. Till the month of Jun’23, you might see a restriction using of INR 10,000 per month (Cravon is gradually moving users to the new experience - see latest updates on Cravon Money page)",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1643,9 +1643,9 @@ export const support_data = [
       },
       {
         id: 100512,
-        title: "Can I transfer my QuickBite Money balance to my bank account?",
+        title: "Can I transfer my Cravon Money balance to my bank account?",
         description:
-          "No, you cannot transfer your QuickBite Money balance to your bank account.",
+          "No, you cannot transfer your Cravon Money balance to your bank account.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1658,9 +1658,9 @@ export const support_data = [
       },
       {
         id: 100513,
-        title: "Where can I view my QuickBite Money transactions?",
+        title: "Where can I view my Cravon Money transactions?",
         description:
-          "You can access QuickBite Money from the ‘My Account’ screen. You can view your transaction history details by clicking on the ‘FoodVilla Money’ section.",
+          "You can access Cravon Money from the ‘My Account’ screen. You can view your transaction history details by clicking on the ‘FoodVilla Money’ section.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1673,9 +1673,9 @@ export const support_data = [
       },
       {
         id: 100514,
-        title: "Does QuickBite Money expire?",
+        title: "Does Cravon Money expire?",
         description:
-          "Starting July’23, all QuickBite Money credits will carry a validity of 365 days from the day you add balance on the QuickBite app. However, you can request for extension of the expiry from the app. For credits older than July’23, some might not have any validity. You can check the validity against each transaction on QuickBite Money page.",
+          "Starting July’23, all Cravon Money credits will carry a validity of 365 days from the day you add balance on the Cravon app. However, you can request for extension of the expiry from the app. For credits older than July’23, some might not have any validity. You can check the validity against each transaction on Cravon Money page.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1688,7 +1688,7 @@ export const support_data = [
       },
       {
         id: 100515,
-        title: "Can I close my QuickBite Money account?",
+        title: "Can I close my Cravon Money account?",
         description:
           "No. But as per RBI regulations, you can disable or block your account from further use. Please get in touch with our Customer Care team in case you wish to do so.",
         conversationId: null,
@@ -1704,7 +1704,7 @@ export const support_data = [
       {
         id: 100516,
         title:
-          "Someone misused my QuickBite Money balance. How do I report it?",
+          "Someone misused my Cravon Money balance. How do I report it?",
         description:
           "Please get in touch with our Customer Care team who will record your complaint and block your account. We will then follow the RBI mandated redressal mechanism to resolve your queries.",
         conversationId: null,
@@ -1720,9 +1720,9 @@ export const support_data = [
       {
         id: 100517,
         title:
-          "I changed my mind, I don’t want my refund to go to my QuickBite Money.",
+          "I changed my mind, I don’t want my refund to go to my Cravon Money.",
         description:
-          "Sorry, once your refund has gone to your QuickBite Money, it cannot be undone. However, you can use the amount in the wallet for your next order on QuickBite.",
+          "Sorry, once your refund has gone to your Cravon Money, it cannot be undone. However, you can use the amount in the wallet for your next order on Cravon.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1736,7 +1736,7 @@ export const support_data = [
       {
         id: 100518,
         title:
-          "Can I transfer my QuickBite Money balance to another QuickBite Money?",
+          "Can I transfer my Cravon Money balance to another Cravon Money?",
         description: "As of now we do not support this functionality.",
         conversationId: null,
         layerConversationId: null,
@@ -1751,7 +1751,7 @@ export const support_data = [
       {
         id: 100519,
         title:
-          "I opted for a refund to my QuickBite Money account, but it is not credited.",
+          "I opted for a refund to my Cravon Money account, but it is not credited.",
         description:
           "We are extremely sorry for the inconvenience. Please reach out to our Customer Care team for a swift resolution.",
         conversationId: null,
@@ -1767,7 +1767,7 @@ export const support_data = [
       {
         id: 100520,
         title:
-          "I am not able to pay using QuickBite Money even after claiming the voucher.",
+          "I am not able to pay using Cravon Money even after claiming the voucher.",
         description:
           "Please reach out to our Customer Care team for a swift resolution.",
         conversationId: null,
@@ -1783,9 +1783,9 @@ export const support_data = [
       {
         id: 100521,
         title:
-          "Can I pay for an order using QuickBite Money and other payment methods?",
+          "Can I pay for an order using Cravon Money and other payment methods?",
         description:
-          "Yes. You can use QuickBite Money along with another payment instrument to pay for an order,  provided the amount available in QuickBite Money is lower than the order value.",
+          "Yes. You can use Cravon Money along with another payment instrument to pay for an order,  provided the amount available in Cravon Money is lower than the order value.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1799,7 +1799,7 @@ export const support_data = [
       {
         id: 100522,
         title:
-          "My order transaction failed but money was deducted from my QuickBite Money",
+          "My order transaction failed but money was deducted from my Cravon Money",
         description:
           "We are sorry if you faced this issue. Please get in touch with our Customer Care team for a swift resolution.",
         conversationId: null,
@@ -1816,14 +1816,14 @@ export const support_data = [
   },
   {
     type: "dineout",
-    title: "QuickBite Dineout FAQs",
+    title: "Cravon Dineout FAQs",
     description: "This issue type deals with FAQ related to dineout",
     data: [
       {
         id: 100242,
-        title: "What is QuickBite Dineout?",
+        title: "What is Cravon Dineout?",
         description:
-          "QuickBite Dineout helps its users discover the best restaurants with exclusive offers near them. All users can avail special restaurant discounts of up to 40% and additional card benefits when paying their restaurant bills via QuickBite Dineout.",
+          "Cravon Dineout helps its users discover the best restaurants with exclusive offers near them. All users can avail special restaurant discounts of up to 40% and additional card benefits when paying their restaurant bills via Cravon Dineout.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1838,7 +1838,7 @@ export const support_data = [
         id: 100246,
         title: "How do I claim a offer?",
         description:
-          'To avail a QuickBite Dineout offer, you would need to pay your dining bill at the restaurant using the QuickBite app. This can be done by searching for that restaurant on the app and tapping the "PAY BILL TO GET OFFER" button. Please note that the relevant offer, depending on the day and time of your visit, will be auto-applied at the time of checkout.',
+          'To avail a Cravon Dineout offer, you would need to pay your dining bill at the restaurant using the Cravon app. This can be done by searching for that restaurant on the app and tapping the "PAY BILL TO GET OFFER" button. Please note that the relevant offer, depending on the day and time of your visit, will be auto-applied at the time of checkout.',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1852,9 +1852,9 @@ export const support_data = [
       {
         id: 100417,
         title:
-          "What is the maximum bill amount that I can pay via QuickBite Dineout at a restaurant in a single transaction?",
+          "What is the maximum bill amount that I can pay via Cravon Dineout at a restaurant in a single transaction?",
         description:
-          "You can pay up to Rs. 50,000 per transaction via QuickBite Dineout at a restaurant. ",
+          "You can pay up to Rs. 50,000 per transaction via Cravon Dineout at a restaurant. ",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1869,7 +1869,7 @@ export const support_data = [
         id: 100441,
         title: "What is GIRF?",
         description:
-          "Great Indian Restaurant Festival (GIRF) is India's largest dining out festival and QuickBite Dineout is back with its 7th edition from 12th April 2023. Buy any of the limited GIRF Deals on the QuickBite app to unlock the most exclusive offers on your favourite restaurants. Make sure to show the deal confirmation SMS at the restaurant before you order. Pay using QuickBite Dineout and save on your bill like never before!",
+          "Great Indian Restaurant Festival (GIRF) is India's largest dining out festival and Cravon Dineout is back with its 7th edition from 12th April 2023. Buy any of the limited GIRF Deals on the Cravon app to unlock the most exclusive offers on your favourite restaurants. Make sure to show the deal confirmation SMS at the restaurant before you order. Pay using Cravon Dineout and save on your bill like never before!",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1884,7 +1884,7 @@ export const support_data = [
         id: 100442,
         title: "How can I purchase GIRF Deal?",
         description:
-          "You can purchase a GIRF deal on QuickBite Dineout by following the below steps: \n1. Open QuickBite Dineout and choose your favourite restaurant.\n2. Pick your preferred GIRF deal available on the restaurant page.\n3. Enter the number of guests, date, and time of your visit as per your preferences.\n4. Select a payment method to complete the payment.\nVoila! You should get a deal confirmation on the app as well as on your register phone number and email.",
+          "You can purchase a GIRF deal on Cravon Dineout by following the below steps: \n1. Open Cravon Dineout and choose your favourite restaurant.\n2. Pick your preferred GIRF deal available on the restaurant page.\n3. Enter the number of guests, date, and time of your visit as per your preferences.\n4. Select a payment method to complete the payment.\nVoila! You should get a deal confirmation on the app as well as on your register phone number and email.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1899,7 +1899,7 @@ export const support_data = [
         id: 100443,
         title: "What are the T&Cs for using the GIRF deal?",
         description:
-          'Once you select your preferred deal at your favourite restaurant, you can review all GIRF related T&C before making the payment. If you have already purchased a GIRF deal, you can view the T&Cs by going to the Dineout page on the QuickBite app. Tap on "View details" under the "My bookings" section.',
+          'Once you select your preferred deal at your favourite restaurant, you can review all GIRF related T&C before making the payment. If you have already purchased a GIRF deal, you can view the T&Cs by going to the Dineout page on the Cravon app. Tap on "View details" under the "My bookings" section.',
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1914,7 +1914,7 @@ export const support_data = [
         id: 100444,
         title: "Where can I check the deal status?",
         description:
-          "You will receive a deal confirmation on the QuickBite App and on your registered contact details through an SMS/email after successful purchasing your GIRF deal. The deal status and details will also be available to you on the Dineout page on the QuickBite app.",
+          "You will receive a deal confirmation on the Cravon App and on your registered contact details through an SMS/email after successful purchasing your GIRF deal. The deal status and details will also be available to you on the Dineout page on the Cravon app.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1959,7 +1959,7 @@ export const support_data = [
         id: 100448,
         title: "Can bank & wallet offers be clubbed with GIRF Deals?",
         description:
-          "Yes. Bank offers can be used along with the GIRF deal discounts. Simply enter the bill amount on the restaurant's payments page on the QuickBite app, and ensure you're selecting your preferred bank offer in the additional offers section before you make the payment. \nHDFC discount is subject to offer T&Cs.",
+          "Yes. Bank offers can be used along with the GIRF deal discounts. Simply enter the bill amount on the restaurant's payments page on the Cravon app, and ensure you're selecting your preferred bank offer in the additional offers section before you make the payment. \nHDFC discount is subject to offer T&Cs.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1975,7 +1975,7 @@ export const support_data = [
         title:
           "Can regular discounts or offers on Dineout be clubbed with GIRF Deals?",
         description:
-          "You can use your QuickBite Money wallet to get restaurant specific discounts on the app. However, you cannot club any GIRF Deals/coupons with any other existing offers on QuickBite or at the restaurant or with any other non-partner third party offers.",
+          "You can use your Cravon Money wallet to get restaurant specific discounts on the app. However, you cannot club any GIRF Deals/coupons with any other existing offers on Cravon or at the restaurant or with any other non-partner third party offers.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -1990,7 +1990,7 @@ export const support_data = [
         id: 100450,
         title: "How do I redeem/avail the deal that I have purchased?",
         description:
-          "You can redeem a GIRF deal by following the below steps: \n1. Ensure to arrive at the restaurant within your booked time slot.\n2. Show your GIRF deal details to the restaurant before you order.\n3. Enjoy your delicious meal.\n4. Pay the bill within 2 hours of your booked slot using QuickBite Dineout. Your deal will get auto-applied and you're done!",
+          "You can redeem a GIRF deal by following the below steps: \n1. Ensure to arrive at the restaurant within your booked time slot.\n2. Show your GIRF deal details to the restaurant before you order.\n3. Enjoy your delicious meal.\n4. Pay the bill within 2 hours of your booked slot using Cravon Dineout. Your deal will get auto-applied and you're done!",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -2021,7 +2021,7 @@ export const support_data = [
         title:
           "What do I do if the restaurant refuses to accept/honor my GIRF Deal?",
         description:
-          "We assure you that this will not happen. In case a restaurant does refuse to acknowledge your GIRF Deal, please reach out to us on the QuickBite Dineout helpcenter and we will resolve this for you.",
+          "We assure you that this will not happen. In case a restaurant does refuse to acknowledge your GIRF Deal, please reach out to us on the Cravon Dineout helpcenter and we will resolve this for you.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,
@@ -2036,7 +2036,7 @@ export const support_data = [
         id: 100453,
         title: "Is there any kids or stag policy for GIRF?",
         description:
-          "Terms and Conditions for kids/stags policy may vary from restaurant to restaurant. Please make sure you check the restaurant detail page for specific terms and conditions before buying your deal. In case of specific questions, feel free to call the restaurant and clarify the terms. The restaurant can be contacted via the phone number on the restaurant detail page on the QuickBite App.",
+          "Terms and Conditions for kids/stags policy may vary from restaurant to restaurant. Please make sure you check the restaurant detail page for specific terms and conditions before buying your deal. In case of specific questions, feel free to call the restaurant and clarify the terms. The restaurant can be contacted via the phone number on the restaurant detail page on the Cravon App.",
         conversationId: null,
         layerConversationId: null,
         ackText: null,

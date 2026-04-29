@@ -10,7 +10,6 @@ import {
   FaTimes,
   FaTwitter,
 } from "react-icons/fa";
-import LOGO from "../../assets/logo.png";
 import SignInSidebar from "../SignInSidebar";
 
 const LandingUiContext = createContext({
@@ -35,6 +34,8 @@ const LandingLayout = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const brandLogo = `${process.env.PUBLIC_URL}/${isDark ? "dark_mode_cravon_logo.png" : "cravon_light_mode_logo.png"}`;
+  const brandIcon = `${process.env.PUBLIC_URL}/${isDark ? "cravon_dark_mode_icon.png" : "cravon_light_mode_icon.png"}`;
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -99,13 +100,10 @@ const LandingLayout = ({ children }) => {
           <div className="mx-auto flex max-w-7xl items-center justify-between px-6 md:px-8">
             <Link to="/" className="group flex items-center gap-3">
               <img
-                src={LOGO}
-                alt="QuickBite logo"
-                className="h-10 w-10 rounded-xl border border-app-border/60 object-cover transition-transform duration-300 group-hover:rotate-6"
+                src={brandLogo}
+                alt="Cravon logo"
+                className="h-10 w-auto max-w-[190px] transition-transform duration-300 group-hover:scale-[1.02]"
               />
-              <span className="font-display text-2xl font-bold tracking-tight text-app-primary">
-                Quick<span className="text-brand">Bite</span>
-              </span>
             </Link>
 
             <nav className="hidden items-center gap-7 md:flex">
@@ -204,12 +202,12 @@ const LandingLayout = ({ children }) => {
               <div>
                 <div className="mb-5 flex items-center gap-3">
                   <img
-                    src={LOGO}
-                    alt="QuickBite logo"
+                    src={brandIcon}
+                    alt="Cravon logo"
                     className="h-8 w-8 rounded-lg border border-app-border/60"
                   />
                   <span className="font-display text-xl font-bold text-app-primary">
-                    Quick<span className="text-brand">Bite</span>
+                    CRAVON
                   </span>
                 </div>
                 <p className="mb-6 text-sm text-app-secondary">
@@ -267,7 +265,7 @@ const LandingLayout = ({ children }) => {
             </div>
 
             <div className="flex flex-col items-center justify-between gap-3 border-t border-app-border/60 pt-7 text-xs text-app-secondary md:flex-row">
-              <p>© 2026 QuickBite. All rights reserved.</p>
+              <p>© 2026 Cravon. All rights reserved.</p>
               <p>Designed for fast cravings, built for every mood.</p>
             </div>
           </div>

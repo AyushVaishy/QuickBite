@@ -20,7 +20,7 @@ const ContactLandingPage = () => {
                 {
                   icon: <FaEnvelope size={22} />,
                   label: "Email Us",
-                  value: "support@quickbite.com",
+                  value: "support@cravon.com",
                 },
                 {
                   icon: <FaPhone size={22} />,
@@ -113,7 +113,7 @@ const ContactLandingPage = () => {
                   "Orders can be cancelled before food preparation starts. If eligible, refund is processed instantly.",
               },
               {
-                question: "What is QuickBite AI?",
+                question: "What is Cravon AI?",
                 answer:
                   "It is our recommendation engine that suggests meals based on your context and preferences.",
               },

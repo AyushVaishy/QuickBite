@@ -93,7 +93,7 @@ const ContactPage = () => {
         <div className="mt-8 bg-orange-500 text-white rounded-3xl shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-4 md:gap-8">
           <div className="flex-1 text-center md:text-left space-y-2">
             <p className="uppercase tracking-wider text-xs font-semibold text-orange-200">
-              QuickBite Cloud Kitchen Update
+              Cravon Cloud Kitchen Update
             </p>
             <h2 className="text-2xl md:text-3xl font-bold leading-snug">
               We’re live as a delivery-only cloud kitchen. Dine-in experience launching soon!
@@ -215,7 +215,7 @@ const ContactPage = () => {
                 Concierge Team
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                Our culinary experts and customer champions are on standby to make every QuickBite experience memorable.
+                Our culinary experts and customer champions are on standby to make every Cravon experience memorable.
               </p>
               <div className="mt-6 space-y-4">
                 <div className="flex items-start gap-3">
@@ -229,7 +229,7 @@ const ContactPage = () => {
                   <span className="p-3 rounded-2xl bg-orange-100 text-orange-600"><FaEnvelope /></span>
                   <div>
                     <p className="text-xs uppercase tracking-wide text-gray-500">Email</p>
-                    <p className="font-semibold text-gray-900 dark:text-white">contact@quickbite.com</p>
+                    <p className="font-semibold text-gray-900 dark:text-white">contact@cravon.com</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

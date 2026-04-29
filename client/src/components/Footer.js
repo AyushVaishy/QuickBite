@@ -22,7 +22,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <p className="uppercase tracking-[0.35em] text-xs text-orange-100 font-semibold">
-                QuickBite Cloud Kitchen
+                Cravon Cloud Kitchen
               </p>
               <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2">
                 Serving cravings across Roorkee & beyond
@@ -63,7 +63,7 @@ const Footer = () => {
                 🍲
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white">QuickBite</h3>
+                <h3 className="text-2xl font-bold text-white">Cravon</h3>
                 <p className="text-xs tracking-[0.3em] uppercase text-orange-400">Cloud Kitchen Co.</p>
               </div>
             </div>
@@ -95,7 +95,7 @@ const Footer = () => {
               <li><Link to="/home" className="hover:text-white transition">Home</Link></li>
               <li><Link to="/help" className="hover:text-white transition">Help & Support</Link></li>
               <li><Link to="/contact" className="hover:text-white transition">Contact</Link></li>
-              <li><a href="#" className="hover:text-white transition">About QuickBite</a></li>
+              <li><a href="#" className="hover:text-white transition">About Cravon</a></li>
               <li><a href="#" className="hover:text-white transition">Investor Relations</a></li>
               <li><a href="#" className="hover:text-white transition">Press</a></li>
             </ul>
@@ -104,12 +104,12 @@ const Footer = () => {
           <div>
             <h4 className="text-sm uppercase tracking-wider text-gray-400 font-semibold">For Customers</h4>
             <ul className="mt-4 space-y-3 text-sm">
-              <li><a href="#" className="hover:text-white transition">QuickBite One Membership</a></li>
+              <li><a href="#" className="hover:text-white transition">Cravon One Membership</a></li>
               <li><a href="#" className="hover:text-white transition">Order on Instamart</a></li>
               <li><a href="#" className="hover:text-white transition">Genie Pickup & Drop</a></li>
               <li><a href="#" className="hover:text-white transition">Coupons & Offers</a></li>
               <li><a href="#" className="hover:text-white transition">Gift Cards</a></li>
-              <li><a href="#" className="hover:text-white transition">QuickBite Money</a></li>
+              <li><a href="#" className="hover:text-white transition">Cravon Money</a></li>
             </ul>
           </div>
 
@@ -118,8 +118,8 @@ const Footer = () => {
             <ul className="mt-4 space-y-3 text-sm">
               <li><a href="#" className="hover:text-white transition">Partner with us</a></li>
               <li><a href="#" className="hover:text-white transition">Partner Onboarding</a></li>
-              <li><a href="#" className="hover:text-white transition">Advertise on QuickBite</a></li>
-              <li><a href="#" className="hover:text-white transition">QuickBite for Business</a></li>
+              <li><a href="#" className="hover:text-white transition">Advertise on Cravon</a></li>
+              <li><a href="#" className="hover:text-white transition">Cravon for Business</a></li>
               <li><a href="#" className="hover:text-white transition">Logistics Partners</a></li>
               <li><a href="#" className="hover:text-white transition">Franchise Opportunities</a></li>
             </ul>
@@ -138,7 +138,7 @@ const Footer = () => {
               </p>
               <p className="flex items-start gap-3 text-gray-400">
                 <FaEnvelopeOpenText className="text-orange-500 mt-1" />
-                <span>support@quickbite.com<br />partnersupport@quickbite.in</span>
+                <span>support@cravon.com<br />partnersupport@cravon.in</span>
               </p>
               <p className="flex items-start gap-3 text-gray-400">
                 <FaClock className="text-orange-500 mt-1" />
@@ -149,7 +149,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} QuickBite Cloud Kitchen Pvt. Ltd. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Cravon Cloud Kitchen Pvt. Ltd. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-white transition">Privacy Policy</a>
             <a href="#" className="hover:text-white transition">Terms of Service</a>

@@ -1,5 +1,5 @@
 /**
- * QuickBite DB Seed — Zomato CSV data (100 Bangalore restaurants)
+ * Cravon DB Seed — Zomato CSV data (100 Bangalore restaurants)
  * Idempotent: wipes seeded data then recreates.
  * Usage: npm run db:seed
  */
@@ -14,13 +14,13 @@ const prisma = new PrismaClient();
 // ─── Static Users ─────────────────────────────────────────────────────────────
 
 const USERS = [
-  { name: "Admin User",      email: "admin@quickbite.com",  role: "ADMIN" },
-  { name: "Rajesh Kumar",    email: "owner1@quickbite.com", role: "RESTAURANT_OWNER" },
-  { name: "Priya Sharma",    email: "owner2@quickbite.com", role: "RESTAURANT_OWNER" },
-  { name: "Arun Nair",       email: "owner3@quickbite.com", role: "RESTAURANT_OWNER" },
-  { name: "Sunita Verma",    email: "user1@quickbite.com",  role: "USER" },
-  { name: "Karan Mehta",     email: "user2@quickbite.com",  role: "USER" },
-  { name: "Ananya Iyer",     email: "user3@quickbite.com",  role: "USER" },
+  { name: "Admin User",      email: "admin@cravon.com",  role: "ADMIN" },
+  { name: "Rajesh Kumar",    email: "owner1@cravon.com", role: "RESTAURANT_OWNER" },
+  { name: "Priya Sharma",    email: "owner2@cravon.com", role: "RESTAURANT_OWNER" },
+  { name: "Arun Nair",       email: "owner3@cravon.com", role: "RESTAURANT_OWNER" },
+  { name: "Sunita Verma",    email: "user1@cravon.com",  role: "USER" },
+  { name: "Karan Mehta",     email: "user2@cravon.com",  role: "USER" },
+  { name: "Ananya Iyer",     email: "user3@cravon.com",  role: "USER" },
 ];
 
 // ─── Restaurant image pool by cuisine ────────────────────────────────────────
@@ -279,9 +279,9 @@ async function main() {
   console.log(`   Restaurants: ${PARSED.length}`);
   console.log(`   Menu items: ${menuTotal}`);
   console.log(`\n🔑 Test credentials (password: Test1234!)`);
-  console.log(`   admin@quickbite.com  → Admin`);
-  console.log(`   owner1@quickbite.com → Restaurant Owner (${Math.ceil(PARSED.length / 3)} restaurants)`);
-  console.log(`   user1@quickbite.com  → Customer`);
+  console.log(`   admin@cravon.com  → Admin`);
+  console.log(`   owner1@cravon.com → Restaurant Owner (${Math.ceil(PARSED.length / 3)} restaurants)`);
+  console.log(`   user1@cravon.com  → Customer`);
 }
 
 main()

@@ -332,7 +332,7 @@ const HomePage = () => {
           We'll be there soon!
         </h2>
         <p className="text-gray-600 dark:text-gray-300 max-w-xl text-center mb-6">
-          {error || "QuickBite is not serving this location yet. We're expanding rapidly and hope to serve your area soon."}
+          {error || "Cravon is not serving this location yet. We're expanding rapidly and hope to serve your area soon."}
         </p>
         <button
           onClick={() => window.dispatchEvent(new Event("openLocationSidebar"))}

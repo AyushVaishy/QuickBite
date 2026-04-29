@@ -1,4 +1,3 @@
-import LOGO from "../assets/logo.png";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -68,6 +67,7 @@ const Header = ({ location, setLocation }) => {
   const unreadCount = useSelector(selectUnreadCount);
   const notifications = useSelector(selectNotifications);
   const [notifOpen, setNotifOpen] = useState(false);
+  const brandIcon = `${process.env.PUBLIC_URL}/${isDark ? "cravon_dark_mode_icon.png" : "cravon_light_mode_icon.png"}`;
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -698,12 +698,12 @@ const Header = ({ location, setLocation }) => {
               {/* Simple Logo */}
               <Link to="/home" className="flex items-center gap-3">
                 <img
-                  src={LOGO}
-                  alt="QuickBite Logo"
+                  src={brandIcon}
+                  alt="Cravon Logo"
                   className="w-12 h-12 rounded-full"
                 />
                 <div className="hidden md:block">
-                  <h1 className="text-2xl font-bold text-orange-600">QuickBite</h1>
+                  <h1 className="text-2xl font-bold text-orange-600">CRAVON</h1>
                   {/* <p className="text-sm text-gray-500">Food Delivery</p> */}
                 </div>
               </Link>

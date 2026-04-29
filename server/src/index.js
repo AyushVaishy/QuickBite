@@ -5,7 +5,7 @@ const prisma = require("./config/prisma");
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
-  console.log("Starting QuickBite backend server...");
+  console.log("Starting Cravon backend server...");
 
   try {
     await prisma.$connect();
@@ -16,7 +16,7 @@ const startServer = async () => {
   }
 
   app.listen(PORT, () => {
-    console.log(`QuickBite server running on http://localhost:${PORT}`);
+    console.log(`Cravon server running on http://localhost:${PORT}`);
   });
 };
 

@@ -16,7 +16,7 @@ const fmtPrice = (p) => `₹${Math.round(p / 100)}`;
 
 function getSavedLocation() {
   try {
-    const s = localStorage.getItem("quickbite_location");
+    const s = localStorage.getItem("cravon_location");
     if (s) {
       const l = JSON.parse(s);
       if (!isNaN(+l.lat) && !isNaN(+l.lng)) return { lat: +l.lat, lng: +l.lng };
@@ -547,7 +547,7 @@ export default function ChatWidget() {
 
       const { lat, lng } = getSavedLocation();
       const firstName = (authUser?.name || authUser?.username || "").split(" ")[0] || "";
-      const savedAddress = localStorage.getItem("quickbite_address") || "";
+      const savedAddress = localStorage.getItem("cravon_address") || "";
 
       // Compact restaurant context — gives Gemini full menu awareness
       const shownRestaurants = (lastRestaurantsRef.current || []).map((r) => ({
@@ -760,7 +760,7 @@ export default function ChatWidget() {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm">Priya · QuickBite AI</p>
+              <p className="font-semibold text-sm">Priya · Cravon AI</p>
               <p className="text-xs opacity-80 truncate">
                 {listening
                   ? "Listening… speak now 🎤"
