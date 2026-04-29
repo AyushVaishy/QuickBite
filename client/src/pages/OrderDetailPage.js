@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+﻿import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
@@ -116,7 +116,7 @@ const ProgressTracker = ({ status }) => {
   return (
     <div className="relative px-2">
       {/* Connecting line background */}
-      <div className="absolute top-5 left-7 right-7 h-0.5 bg-gray-200" />
+      <div className="absolute top-5 left-7 right-7 h-0.5 bg-muted" />
       {/* Connecting line fill */}
       <div
         className="absolute top-5 left-7 h-0.5 bg-primary/50 transition-all duration-700"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams, useOutletContext } from 'react-router-dom';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 import { searchRestaurants } from '../services/restaurantService';
@@ -138,7 +138,7 @@ const SearchResultsPage = () => {
                 ))}
               </div>
             </div>
-            <div className="sm:border-l sm:border-gray-200 sm:dark:border-gray-700 sm:pl-4">
+            <div className="sm:border-l sm:border-border sm:pl-4">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Filter</p>
               <div className="flex flex-wrap gap-2">
                 {[

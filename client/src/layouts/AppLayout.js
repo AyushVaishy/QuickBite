@@ -23,7 +23,7 @@ const AppLayout = () => {
 
   return (
     <>
-      <div className="app min-h-screen bg-white text-gray-900 dark:bg-gray-950">
+      <div className="app min-h-screen bg-background text-foreground">
         <Header location={location} setLocation={handleSetLocation} />
         <Outlet context={{ location, setLocation: handleSetLocation }} />
       </div>

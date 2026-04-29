@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -151,7 +151,7 @@ const CartPage = () => {
             <FaShoppingCart className="text-5xl text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-3">Your Cart is Empty</h1>
-          <p className="text-gray-500 dark:text-gray-300 mb-8">Add some delicious food to get started!</p>
+          <p className="text-muted-foreground mb-8">Add some delicious food to get started!</p>
           <Link
             to="/home"
             className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-hover transition shadow"
@@ -227,7 +227,7 @@ const CartPage = () => {
                       className={`px-2.5 py-1 rounded-full text-xs font-semibold border transition-all ${
                         newAddress.label === l
                           ? "bg-primary text-white border-primary"
-                          : "bg-section border-gray-300 text-muted-foreground"
+                          : "bg-section border-border text-muted-foreground"
                       }`}
                     >
                       {l}
@@ -318,7 +318,7 @@ const CartPage = () => {
                     ? "✓ Coupon applied! Free delivery"
                     : `✓ Coupon applied! You save ₹${couponDiscount}`}
                 </div>
-                <button onClick={handleRemoveCoupon} className="text-gray-400 hover:text-red-500 text-lg leading-none transition">×</button>
+                <button onClick={handleRemoveCoupon} className="text-muted-foreground hover:text-red-500 text-lg leading-none transition">×</button>
               </div>
             )}
             {couponError && (
@@ -357,7 +357,7 @@ const CartPage = () => {
               />
               <div>
                 <div className="font-bold text-foreground">{cartItems[0]?.restaurantName || "Restaurant"}</div>
-                <div className="text-xs text-gray-400">Your order</div>
+                <div className="text-xs text-muted-foreground">Your order</div>
               </div>
             </div>
 
@@ -372,7 +372,7 @@ const CartPage = () => {
                         if (item.quantity <= 1) dispatch(removeItem(item.id));
                         else dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
                       }}
-                      className="w-6 h-6 rounded-full bg-muted text-gray-600 font-bold hover:bg-gray-200 transition flex items-center justify-center text-sm"
+                      className="w-6 h-6 rounded-full bg-muted text-muted-foreground font-bold hover:bg-gray-200 transition flex items-center justify-center text-sm"
                     >−</button>
                     <span className="w-5 text-center text-sm font-semibold text-foreground">{item.quantity}</span>
                     <button

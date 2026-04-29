@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
@@ -10,7 +10,7 @@ const FAQItem = ({ title, description }) => {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="w-full flex justify-between items-start gap-4 py-5 text-left text-gray-900 hover:text-primary-hover transition-colors"
+        className="w-full flex justify-between items-start gap-4 py-5 text-left text-foreground hover:text-primary-hover transition-colors"
       >
         <span className={`text-base font-medium ${isOpen ? "text-primary" : ""}`}>
           {title}

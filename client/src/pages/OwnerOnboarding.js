@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { createRestaurant } from "../services/adminService";
@@ -119,7 +119,7 @@ const OwnerOnboarding = () => {
             <React.Fragment key={i}>
               <div className="flex items-center gap-2">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                  i < step ? "bg-green-500 text-white" : i === step ? "bg-primary/50 text-white" : "bg-gray-200 text-muted-foreground"
+                  i < step ? "bg-green-500 text-white" : i === step ? "bg-primary/50 text-white" : "bg-muted text-muted-foreground"
                 }`}>
                   {i < step ? <FaCheck /> : i + 1}
                 </div>
@@ -128,7 +128,7 @@ const OwnerOnboarding = () => {
                 </span>
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-3 ${i < step ? "bg-green-400" : "bg-gray-200"}`} />
+                <div className={`flex-1 h-0.5 mx-3 ${i < step ? "bg-green-400" : "bg-muted"}`} />
               )}
             </React.Fragment>
           ))}

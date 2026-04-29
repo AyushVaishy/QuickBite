@@ -281,7 +281,7 @@ const LandingHomeContent = () => {
                 <div className="mb-5 text-4xl">{item.icon}</div>
                 <p className="mb-5 italic text-app-secondary">"{item.text}"</p>
                 <p className="font-bold text-app-primary">{item.name}</p>
-                <div className="mt-2 flex justify-center gap-1 text-orange-500">
+                <div className="mt-2 flex justify-center gap-1 text-primary">
                   {[1, 2, 3, 4, 5].map((n) => (
                     <FaStar key={n} size={13} />
                   ))}
