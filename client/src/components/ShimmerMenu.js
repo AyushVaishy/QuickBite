@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 const ShimmerMenuItemRow = () => (
   <div className="flex justify-between items-center p-4 border-b">

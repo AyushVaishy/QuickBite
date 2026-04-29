@@ -1,4 +1,4 @@
-﻿const SkeletonCard = () => (
+const SkeletonCard = () => (
   <div className="bg-card rounded-xl shadow overflow-hidden animate-pulse">
     <div className="w-full h-[160px] bg-muted" />
     <div className="p-3">

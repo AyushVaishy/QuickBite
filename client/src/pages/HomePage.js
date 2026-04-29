@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import RestaurantCard from "../components/RestaurantCard";
 import Shimmer, { ShimmerCategories, ShimmerBrands, ShimmerCarousel } from "../components/Shimmer";
 import FilterModal from "../components/FilterModal";
@@ -610,7 +610,7 @@ const HomePage = () => {
                 <button
                   onClick={() => fetchPage(page + 1)}
                   disabled={loadingMore}
-                  className="px-8 py-3 bg-card border-2 border-gray-800 dark:border-gray-500 text-foreground font-semibold rounded-full hover:bg-gray-900 hover:text-white dark:hover:bg-gray-200 dark:hover:text-foreground transition-all disabled:opacity-50 text-sm"
+                  className="px-8 py-3 bg-card border-2 border-gray-800 dark:border-gray-500 text-foreground font-semibold rounded-full hover:bg-gray-900 hover:text-white dark:hover:bg-gray-200 dark:hover:text-gray-900 transition-all disabled:opacity-50 text-sm"
                 >
                   {loadingMore ? (
                     <span className="flex items-center gap-2">

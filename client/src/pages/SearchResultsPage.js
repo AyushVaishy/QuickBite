@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams, useOutletContext } from 'react-router-dom';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 import { searchRestaurants } from '../services/restaurantService';
