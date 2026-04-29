@@ -19,19 +19,26 @@ const app = express();
 
 // Security & parsing middleware
 app.use(helmet());
+const normalizeOrigin = (origin) => origin.replace(/\/$/, "");
 const ALLOWED_ORIGINS = (process.env.CLIENT_URL || "http://localhost:3000")
   .split(",")
-  .map((o) => o.trim());
+  .map((o) => normalizeOrigin(o.trim()))
+  .filter(Boolean);
+
+if (process.env.NODE_ENV === "production" && !process.env.CLIENT_URL) {
+  console.warn("CORS warning: CLIENT_URL is not set in production. Only localhost fallback is configured.");
+}
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (curl, Postman, mobile apps)
     if (!origin) return callback(null, true);
+    const normalizedOrigin = normalizeOrigin(origin);
     // In development, allow any localhost port
-    if (process.env.NODE_ENV !== "production" && /^http:\/\/localhost:\d+$/.test(origin)) {
+    if (process.env.NODE_ENV !== "production" && /^http:\/\/localhost:\d+$/.test(normalizedOrigin)) {
       return callback(null, true);
     }
-    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes(normalizedOrigin)) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
